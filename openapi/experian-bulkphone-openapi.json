@@ -1,0 +1,1253 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Bulk Phone",
+    "version": "v2"
+  },
+  "servers": [
+    {
+      "url": "https://api.experianaperture.io/"
+    }
+  ],
+  "paths": {
+    "/phone/bulk/v1/batches": {
+      "get": {
+        "tags": [
+          "Bulk Phone"
+        ],
+        "summary": "Gets all batches.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkPhoneV1GetBatchesResponse"
+                },
+                "example": {"result":{"batches":[{"batch_id":"00000000-0000-0000-0000-000000000000","status":"processing","records":100,"records_processed":50,"date_submitted":"2025-09-10T01:02:03.004005Z"},{"batch_id":"00000000-0000-0000-0000-000000000000","status":"completed","records":100,"records_processed":100,"date_submitted":"2025-09-10T01:02:03.004005Z"}]}}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Bulk Phone"
+        ],
+        "summary": "Submits a batch of phone numbers to be validated.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkPhoneV1CreateBatchRequest"
+              },
+              "examples": {
+                "GBR": {
+                  "value": {"defaults":{"output_format":"PLUS_E164","country_iso":"GBR","get_ported_date":true,"supplementary_live_status":{"landline":["GBR"]}},"phones":[{"number":"441206250380"}]}
+                },
+                "USA": {
+                  "value": {"defaults":{"output_format":"NATIONAL","country_iso":"USA","supplementary_live_status":{"mobile":["USA"]}},"phones":[{"number":"12026298914"}]}
+                },
+                "Multiple countries (exclude country_iso with E164 phone numbers)": {
+                  "value": {"defaults":{"output_format":"E164"},"phones":[{"number":"441206250380"},{"number":"12026298914"}]}
+                },
+                "Multiple countries (with country_iso)": {
+                  "value": {"defaults":{"output_format":"E164"},"phones":[{"number":"1206250380","country_iso":"GBR"},{"number":"2026298914","country_iso":"USA"}]}
+                },
+                "With Max Processing Time": {
+                  "value": {"defaults":{"output_format":"E164","country_iso":"GBR","max_processing_time":"PT25M"},"phones":[{"number":"441206250380"},{"number":"441206250381"}]}
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkPhoneV1CreateBatchResponse"
+                },
+                "example": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"submitted"}}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "415": {
+            "description": "Unsupported Media Type"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      }
+    },
+    "/phone/bulk/v1/batches/{batch_id}/start": {
+      "post": {
+        "tags": [
+          "Bulk Phone"
+        ],
+        "summary": "Start processing a batch of phone numbers to be validated.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "description": "Batch ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkPhoneV1StartBatchResponse"
+                },
+                "example": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"processing"}}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      }
+    },
+    "/phone/bulk/v1/batches/{batch_id}": {
+      "get": {
+        "tags": [
+          "Bulk Phone"
+        ],
+        "summary": "Gets the status of a batch of phone numbers to be validated.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "description": "Batch ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Add-Metadata",
+            "in": "header",
+            "description": "Specify whether the response should return all fields and values, in addition to the main core information.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkPhoneV1GetBatchStatusResponse"
+                },
+                "examples": {
+                  "Incomplete": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"processing","records":100,"records_processed":50,"date_submitted":"2025-09-10T01:02:03.004005Z"},"metadata":{"batch_config":{"output_format":"E164","country_iso":"GBR","get_ported_date":true,"supplementary_live_status":{"landline":["GBR"]}}}}
+                  },
+                  "Stopped": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"stopped","reason":"max_processing_time_reached","records":100,"records_processed":75,"date_submitted":"2025-09-10T01:02:03.004005Z","date_ended":"2025-09-10T01:02:03.004005Z"}}
+                  },
+                  "Completed": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"completed","records":100,"records_processed":100,"date_submitted":"2025-09-10T01:02:03.004005Z","date_ended":"2025-09-10T01:02:03.004005Z"}}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      }
+    },
+    "/phone/bulk/v1/batches/{batch_id}/results": {
+      "get": {
+        "tags": [
+          "Bulk Phone"
+        ],
+        "summary": "Gets the validation result of a batch of phone numbers.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "description": "Batch ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Add-Metadata",
+            "in": "header",
+            "description": "Specify whether the response should return all fields and values, in addition to the main core information.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkPhoneV1GetBatchResultsResponse"
+                },
+                "examples": {
+                  "Incomplete": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","credits_charged":0,"status":"processing","statistics":[],"phones":[]}}
+                  },
+                  "Stopped": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","credits_charged":1,"status":"stopped","reason":"max_processing_time_reached","statistics":[{"name":"verified","value":1},{"name":"unprocessed","value":1}],"phones":[{"number":"12269724276","validated_phone_number":"","formatted_phone_number":"","phone_type":"","confidence":"verified"},{"number":"441206250380","validated_phone_number":"","formatted_phone_number":"","phone_type":"","confidence":"unprocessed"}]}}
+                  },
+                  "Completed": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","credits_charged":1,"status":"completed","statistics":[{"name":"verified","value":1}],"phones":[{"number":"12269724276","validated_phone_number":"12269724276","formatted_phone_number":"12269724276","phone_type":"mobile","confidence":"verified","ported_date":"not applicable","disposable_number":"unknown","metadata":{"original_operator_name":"Bell Mobility","original_network_status":"available","original_home_network_identity":"302610","original_country_prefix":"1","original_country_name":"Canada","original_country_iso":"CAN","operator_name":"Rogers Wireless","network_status":"available","home_network_identity":"302720","country_prefix":"1","country_name":"Canada","country_iso":"CAN","is_ported":"no","email_to_sms_address":"2269724276@sms.rogers.com"}}]}}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      }
+    },
+    "/phone/bulk/v1/batches/{batch_id}/stop": {
+      "post": {
+        "tags": [
+          "Bulk Phone"
+        ],
+        "summary": "Stop processing a batch of phone numbers to be validated.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "description": "Batch ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkPhoneV1StopBatchResponse"
+                },
+                "example": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"stopped"}}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BulkPhoneV1CreateBatchRequest": {
+        "required": [
+          "phones"
+        ],
+        "type": "object",
+        "properties": {
+          "defaults": {
+            "$ref": "#/components/schemas/BulkPhoneV1CreateBatchRequestOptions"
+          },
+          "phones": {
+            "maxItems": 10000,
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkPhoneV1CreateBatchRequestPhone"
+            },
+            "description": "List of input components."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Create Batch request."
+      },
+      "BulkPhoneV1CreateBatchRequestOptions": {
+        "type": "object",
+        "properties": {
+          "output_format": {
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string",
+            "description": "The desired format of the phone number: E164, PLUS_E164, NATIONAL, any 3-letter ISO country code.\nIf not specified, the default format, E164, will be used.",
+            "nullable": true,
+            "example": "NATIONAL"
+          },
+          "country_iso": {
+            "maxLength": 3,
+            "minLength": 0,
+            "type": "string",
+            "description": "You can indicate the 3-letter ISO country code if the phone number that is subject to validation doesn't contain a phone country code.",
+            "nullable": true,
+            "example": "GBR"
+          },
+          "get_ported_date": {
+            "type": "boolean",
+            "description": "The date the phone number was last ported, returned only if the number has been moved to a different network.\nThis is an optional field and is included only when get_ported_date is set to true, which incurs an additional click.",
+            "nullable": true,
+            "example": true
+          },
+          "supplementary_live_status": {
+            "$ref": "#/components/schemas/CreateBatchSupplementaryLiveStatus"
+          },
+          "batch_reference_id": {
+            "maxLength": 256,
+            "minLength": 0,
+            "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+            "type": "string",
+            "description": "Optional identifier that will be returned in the response to help you track the batch.",
+            "nullable": true
+          },
+          "max_processing_time": {
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string",
+            "description": "Optional maximum processing time of the batch.\nIf the batch is still processing after this time, it will be stopped.\nThe value should be in ISO 8601 duration format (e.g., \"PT30M\" for 30 minutes).\nMaximum allowed value is \"PT24H\" (24 hours). Minimum allowed value is \"PT1M\" (1 minute).",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The default options that applied to all the phone numbers."
+      },
+      "BulkPhoneV1CreateBatchRequestPhone": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": "string",
+            "description": "The phone number that is the subject of the validation.",
+            "nullable": true,
+            "example": "1234567890"
+          },
+          "country_iso": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "description": "You can indicate the 3-letter ISO country code if the phone number that is subject to validation doesn't contain a phone country code.\nThis will overwrite the country_iso in the default options.",
+            "nullable": true,
+            "example": "GBR"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 phone component."
+      },
+      "BulkPhoneV1CreateBatchResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BulkPhoneV1CreateBatchResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Create Batch response."
+      },
+      "BulkPhoneV1CreateBatchResult": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "description": "Batch ID.",
+            "nullable": true
+          },
+          "batch_reference_id": {
+            "type": "string",
+            "description": "Optional reference identifier to track this batch.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The current Batch status.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Create Batch result."
+      },
+      "BulkPhoneV1GetBatchResultsResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BulkPhoneV1GetBatchResultsResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Get Results response."
+      },
+      "BulkPhoneV1GetBatchResultsResponsePhone": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string",
+            "description": "The phone number that is the subject of the validation.",
+            "nullable": true,
+            "example": "17087694383"
+          },
+          "validated_phone_number": {
+            "type": "string",
+            "description": "The validated phone number. Also includes the international country calling code. Note\nthat this field is returned even if the phone number has a confidence status of \"Invalid\".",
+            "nullable": true,
+            "example": "17087694383"
+          },
+          "formatted_phone_number": {
+            "type": "string",
+            "description": "The phone number in the format you specified in \"output_format\".",
+            "nullable": true,
+            "example": "(708) 769-4383"
+          },
+          "phone_type": {
+            "type": "string",
+            "description": "The type of phone number. Note: Landline is only supported in North America.",
+            "nullable": true,
+            "example": "Mobile"
+          },
+          "confidence": {
+            "type": "string",
+            "description": "The outcome (confidence level) of the validation.",
+            "nullable": true,
+            "example": "Verified"
+          },
+          "ported_date": {
+            "type": "string",
+            "description": "The date the phone number was last ported, returned only if the number has been moved to a different network. \nThis is an optional field and is included only when get_ported_date is set to true, which incurs an additional click.",
+            "nullable": true,
+            "example": "2012-06-27T09:32:09.000Z"
+          },
+          "disposable_number": {
+            "type": "string",
+            "description": "Indicates whether the phone number is a disposable number based on lookup list of disposable numbers.\nIf the number can be found in the lookup list, the value returned will be \"Yes\". Otherwise, the value returned\nwill be \"Unknown\". This value would be returned if the get_disposable_number boolean is set to true.",
+            "nullable": true,
+            "example": "Yes"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/BulkPhoneV1GetBatchResultsResponsePhoneMetadata"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Get Results response."
+      },
+      "BulkPhoneV1GetBatchResultsResponsePhoneMetadata": {
+        "type": "object",
+        "properties": {
+          "original_operator_name": {
+            "type": "string",
+            "description": "The name of the MSISDN operator where the phone number was originally registered.",
+            "nullable": true,
+            "example": "T-Mobile"
+          },
+          "original_network_status": {
+            "type": "string",
+            "description": "The status of the network where the phone number was originally registered.",
+            "nullable": true,
+            "example": "Available"
+          },
+          "original_home_network_identity": {
+            "type": "string",
+            "description": "The Mobile Country Code (MCC) and Mobile Network Code (MNC) where the phone number was originally registered.",
+            "nullable": true,
+            "example": "310200"
+          },
+          "original_country_prefix": {
+            "type": "string",
+            "description": "The international calling code of the country where the phone number was originally registered.",
+            "nullable": true,
+            "example": "1"
+          },
+          "original_country_name": {
+            "type": "string",
+            "description": "The name of the country where the phone number was originally registered.",
+            "nullable": true,
+            "example": "United States of America"
+          },
+          "original_country_iso": {
+            "type": "string",
+            "description": "The 3-letter ISO code of the country where the phone number was originally registered.",
+            "nullable": true,
+            "example": "USA"
+          },
+          "operator_name": {
+            "type": "string",
+            "description": "The name of the MSISDN operator where the phone number is currently registered.",
+            "nullable": true,
+            "example": "Verizon"
+          },
+          "network_status": {
+            "type": "string",
+            "description": "The status of the network where the phone number is currently registered.",
+            "nullable": true,
+            "example": "Available"
+          },
+          "home_network_identity": {
+            "type": "string",
+            "description": "The Mobile Country Code (MCC) and Mobile Network Code (MNC) where the phone number is currently registered.",
+            "nullable": true,
+            "example": "311480"
+          },
+          "country_prefix": {
+            "type": "string",
+            "description": "The international calling code of the country where the phone number is currently registered.",
+            "nullable": true,
+            "example": "1"
+          },
+          "country_name": {
+            "type": "string",
+            "description": "The name of the country where the phone number is currently registered.",
+            "nullable": true,
+            "example": "United States of America"
+          },
+          "country_iso": {
+            "type": "string",
+            "description": "The 3-letter ISO code of the country where the phone number is currently registered.",
+            "nullable": true,
+            "example": "USA"
+          },
+          "is_ported": {
+            "type": "string",
+            "description": "Indicates whether the phone number is ported or not.",
+            "nullable": true,
+            "example": "Yes"
+          },
+          "email_to_sms_address": {
+            "type": "string",
+            "description": "Email address which can be used to send SMS messages to this phone number.",
+            "nullable": true,
+            "example": "7087694383@vtext.com"
+          },
+          "email_to_mms_address": {
+            "type": "string",
+            "description": "Email address which can be used to send MMS messages to this phone number.",
+            "nullable": true,
+            "example": "7087694383@vzwpix.com"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Metadata fields and values that can be returned, in addition to the main core information."
+      },
+      "BulkPhoneV1GetBatchResultsResponseStatistic": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Confidence.",
+            "nullable": true,
+            "example": "Verified"
+          },
+          "value": {
+            "type": "integer",
+            "description": "Count.",
+            "format": "int32",
+            "example": 10
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Get Results response statistic."
+      },
+      "BulkPhoneV1GetBatchResultsResult": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "description": "Batch ID.",
+            "nullable": true
+          },
+          "batch_reference_id": {
+            "type": "string",
+            "description": "Optional reference identifier to track this batch.",
+            "nullable": true
+          },
+          "credits_charged": {
+            "type": "integer",
+            "description": "The number of credits charged for this Batch.",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "description": "The current Batch status.",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "description": "The reason of the current Batch status.",
+            "nullable": true
+          },
+          "statistics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkPhoneV1GetBatchResultsResponseStatistic"
+            },
+            "description": "The statistics of the phone numbers confidence level.",
+            "nullable": true
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkPhoneV1GetBatchResultsResponsePhone"
+            },
+            "description": "The phones validation results.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Get Batch Results result."
+      },
+      "BulkPhoneV1GetBatchStatusBatchConfig": {
+        "type": "object",
+        "properties": {
+          "output_format": {
+            "type": "string",
+            "description": "The desired format of the phone number: E164, PLUS_E164, NATIONAL, any 3-letter ISO country code.",
+            "nullable": true
+          },
+          "country_iso": {
+            "type": "string",
+            "description": "The 3-letter ISO country code if the phone number that is subject to validation doesn't contain a phone country code.",
+            "nullable": true
+          },
+          "get_ported_date": {
+            "type": "boolean",
+            "description": "A boolean indicator to attempt to retrieve the last ported date of the phone number.",
+            "nullable": true
+          },
+          "supplementary_live_status": {
+            "$ref": "#/components/schemas/BulkPhoneV1GetBatchStatusBatchConfigSupplementaryLiveStatus"
+          },
+          "max_processing_time": {
+            "type": "string",
+            "description": "Optional maximum processing time of the batch.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The submitted default options."
+      },
+      "BulkPhoneV1GetBatchStatusBatchConfigSupplementaryLiveStatus": {
+        "type": "object",
+        "properties": {
+          "mobile": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "An indicator to attempt to get supplementary live status for Mobile Phone Number.",
+            "nullable": true
+          },
+          "landline": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "An indicator to attempt to get supplementary live status for Landline Phone Number.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Batch configuration supplementary live status."
+      },
+      "BulkPhoneV1GetBatchStatusMetadata": {
+        "type": "object",
+        "properties": {
+          "batch_config": {
+            "$ref": "#/components/schemas/BulkPhoneV1GetBatchStatusBatchConfig"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Get Batch Status metadata."
+      },
+      "BulkPhoneV1GetBatchStatusResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BulkPhoneV1GetBatchStatusResult"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/BulkPhoneV1GetBatchStatusMetadata"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Get Batch Status response."
+      },
+      "BulkPhoneV1GetBatchStatusResult": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "description": "Batch ID.",
+            "nullable": true
+          },
+          "batch_reference_id": {
+            "type": "string",
+            "description": "Optional reference identifier to track this batch.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The current Batch status.",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "description": "The reason of the current Batch status.",
+            "nullable": true
+          },
+          "records": {
+            "type": "integer",
+            "description": "The number of phone numbers have been submitted.",
+            "format": "int32",
+            "nullable": true
+          },
+          "records_processed": {
+            "type": "integer",
+            "description": "The number of phone numbers have been processed.",
+            "format": "int32",
+            "nullable": true
+          },
+          "date_submitted": {
+            "type": "string",
+            "description": "The date time when the Batch is created in ISO-8601 format.",
+            "format": "date-time"
+          },
+          "date_started": {
+            "type": "string",
+            "description": "The date time when the Batch is started in ISO-8601 format.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "date_ended": {
+            "type": "string",
+            "description": "The date time when the Batch is ended in ISO-8601 format.",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Get Batch Status result."
+      },
+      "BulkPhoneV1GetBatchesBatch": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "description": "Batch ID.",
+            "nullable": true
+          },
+          "batch_reference_id": {
+            "type": "string",
+            "description": "Optional reference identifier to track this batch.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The current Batch status.",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "description": "The reason of the current Batch status.",
+            "nullable": true
+          },
+          "records": {
+            "type": "integer",
+            "description": "The number of phone numbers have been submitted.",
+            "format": "int32"
+          },
+          "records_processed": {
+            "type": "integer",
+            "description": "The number of phone numbers have been processed.",
+            "format": "int32"
+          },
+          "date_submitted": {
+            "type": "string",
+            "description": "The date time when the Batch is created in ISO-8601 format.",
+            "format": "date-time"
+          },
+          "date_started": {
+            "type": "string",
+            "description": "The date time when the Batch is started in ISO-8601 format.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "date_ended": {
+            "type": "string",
+            "description": "The date time when the Batch is ended in ISO-8601 format.",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Get Batches Batch Info."
+      },
+      "BulkPhoneV1GetBatchesResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BulkPhoneV1GetBatchesResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Get Batches response."
+      },
+      "BulkPhoneV1GetBatchesResult": {
+        "type": "object",
+        "properties": {
+          "batches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkPhoneV1GetBatchesBatch"
+            },
+            "description": "Batches.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Get Batches result."
+      },
+      "BulkPhoneV1StartBatchResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BulkPhoneV1StartBatchResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Start Batch response."
+      },
+      "BulkPhoneV1StartBatchResult": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "description": "Batch ID.",
+            "nullable": true
+          },
+          "batch_reference_id": {
+            "type": "string",
+            "description": "Optional reference identifier to track this batch.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The current Batch status.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Start Batch result."
+      },
+      "BulkPhoneV1StopBatchResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BulkPhoneV1StopBatchResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Stop Batch response."
+      },
+      "BulkPhoneV1StopBatchResult": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "description": "Batch ID.",
+            "nullable": true
+          },
+          "batch_reference_id": {
+            "type": "string",
+            "description": "Optional reference identifier to track this batch.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The current Batch status.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Phone V1 Stop Batch result."
+      },
+      "CreateBatchSupplementaryLiveStatus": {
+        "type": "object",
+        "properties": {
+          "mobile": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "An indicator to attempt to get supplementary live status for Mobile Phone Number.",
+            "nullable": true,
+            "example": [
+              "USA"
+            ]
+          },
+          "landline": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "An indicator to attempt to get supplementary live status for Landline Phone Number.",
+            "nullable": true,
+            "example": [
+              "GBR"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "description": "The supplementary live status request model. Please note that this feature has additional charge if requested."
+      },
+      "ResponseError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "A link to documentation that provides more details about the error you’ve encountered.",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the error.",
+            "nullable": true,
+            "example": "Bad Request"
+          },
+          "detail": {
+            "type": "string",
+            "description": "A description of the error.",
+            "nullable": true,
+            "example": "The request body was malformed."
+          },
+          "instance": {
+            "type": "string",
+            "description": "The endpoint that returned the error.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Error model containing the error details."
+      }
+    },
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "http",
+        "description": "Token URL: https://sso.experianaperture.io/oauth2/aust0wkxjeKyT3HRO4x7/v1/token \n\n Flow: clientCredentials",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
+      },
+      "Auth-Token": {
+        "type": "apiKey",
+        "description": "Your unique key, called a token, that is required to submit an API request.",
+        "name": "Auth-Token",
+        "in": "header"
+      },
+      "x-app-key": {
+        "type": "apiKey",
+        "description": "Alternative Auth Token header.",
+        "name": "x-app-key",
+        "in": "header"
+      }
+    }
+  }
+}

@@ -1,20 +1,265 @@
 aid: experian
 name: Experian
-description: 'Experian is a company surfaced via the API Evangelist harvest backlog (source: absent-parent)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'Experian plc is a global information services company and one of the
+  three major consumer credit bureaus, operating across credit risk, identity verification,
+  fraud prevention, marketing data and data quality. Its public API surface spans two
+  distinct platforms: the Experian Global Developer Portal (developer.experian.com),
+  a region-partitioned OAuth2/OpenID Connect gateway fronting credit, business information,
+  KYC/KYB and decisioning products across the US, UK, EMEA, Brazil, India, Singapore
+  and Australia; and Experian Data Quality / Aperture (api.experianaperture.io), which
+  publishes machine-readable OpenAPI 3.0.4 contracts for address, email and phone validation,
+  demographic enrichment, identity append and bulk batch processing. A legacy SOAP
+  contract (Experian QAS Pro OnDemand) remains published and callable alongside the
+  REST surface.'
+image: https://developer.experian.com/themes/custom/experian_devportal/logo.svg
 url: https://raw.githubusercontent.com/api-evangelist/experian/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:absent-parent
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-09-13'
 modified: '2026-09-13'
 tags:
 - Company
-apis: []
+- Credit Bureau
+- Credit Reporting
+- Identity Verification
+- Fraud Prevention
+- Data Quality
+- Address Validation
+- Email Validation
+- Phone Validation
+- Data Enrichment
+- Financial Services
+- Risk Management
+apis:
+- aid: experian:aperture
+  name: Experian Aperture Data Quality API
+  description: 'The consolidated Experian Data Quality REST API — 41 operations across
+    34 paths covering address search/validate/format/layouts, email validation, phone
+    validation, demographic enrichment, identity append, reverse phone append and the
+    bulk batch surface for address, email and phone. Published as OpenAPI 3.0.4 at
+    api.experianaperture.io/docs/openapi.json.'
+  humanURL: https://docs.experianaperture.io/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Data Quality
+  - Address Validation
+  - Email Validation
+  - Phone Validation
+  - Data Enrichment
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-aperture-openapi.json
+  - type: Documentation
+    url: https://docs.experianaperture.io/
+  - type: APIReference
+    url: https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/
+  - type: Console
+    url: https://api.experianaperture.io/docs
+- aid: experian:address-validation
+  name: Experian Address Validation API
+  description: Real-time international address capture and validation — autocomplete,
+    typedown, single-line, lookup and validate search types across 245+ countries,
+    with custom layouts, prompt sets, dataset discovery and what3words reverse geocoding.
+  humanURL: https://docs.experianaperture.io/address-validation/experian-address-validation/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Address Validation
+  - Geocoding
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-addressvalidation-openapi.json
+  - type: Documentation
+    url: https://docs.experianaperture.io/address-validation/experian-address-validation/
+- aid: experian:email-validation
+  name: Experian Email Validation API
+  description: Real-time email address verification returning a confidence classification
+    (verified, unknown, undeliverable, illegitimate) with optional metadata about the
+    mailbox and domain.
+  humanURL: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Email Validation
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-emailvalidationv2-openapi.json
+  - type: Documentation
+    url: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
+- aid: experian:phone-validation
+  name: Experian Phone Validation API
+  description: Real-time phone number validation and line-type identification across
+    global numbering plans, returning formatted numbers, carrier and connectivity signals.
+  humanURL: https://docs.experianaperture.io/phone-validation/experian-phone-validation
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Phone Validation
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-phonevalidation-openapi.json
+  - type: Documentation
+    url: https://docs.experianaperture.io/phone-validation/experian-phone-validation
+- aid: experian:enrichment
+  name: Experian Enrichment API
+  description: Appends demographic, geodemographic, location-insight and property attributes
+    to a validated address or identity key, including Mosaic segmentation and Global
+    Location Insight geocoding.
+  humanURL: https://docs.experianaperture.io/data-resources/global-datasets/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Data Enrichment
+  - Demographics
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-enrichment-openapi.json
+- aid: experian:identity-append
+  name: Experian Identity Append API
+  description: Returns additional contact and identity attributes for a known individual
+    or household, including reverse phone append lookups.
+  humanURL: https://docs.experianaperture.io/identity-append/experian-identity-append/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Identity Verification
+  - Data Enrichment
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-identityappend-openapi.json
+- aid: experian:bulk-validation
+  name: Experian Bulk Validation API
+  description: Asynchronous batch surface for address, email and phone validation —
+    create a batch, start it, poll status and retrieve results, with up to 10,000 records
+    per address batch.
+  humanURL: https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Batch Processing
+  - Data Quality
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-bulkaddress-openapi.json
+  - type: Documentation
+    url: https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
+- aid: experian:address-validate-soap
+  name: Experian Address Validate (Pro OnDemand SOAP)
+  description: The legacy Experian QAS Pro OnDemand SOAP service, still published and
+    documented by Experian Data Quality. Eleven RPCs (DoSearch, DoRefine, DoGetAddress,
+    DoCanSearch, DoGetLayouts, DoGetPromptSet, DoGetData, DoGetDataMapDetail, DoGetExampleAddresses,
+    DoGetLicenseInfo, DoGetSystemInfo) over SOAP 1.1/1.2.
+  humanURL: https://docs.experianaperture.io/address-validation/address-validate-soap/
+  baseURL: https://ws.ondemand.qas.com/ProOnDemand/V3/ProOnDemandService.asmx
+  tags:
+  - Address Validation
+  - SOAP
+  properties:
+  - type: WSDL
+    url: wsdl/experian-proondemand-v3.wsdl
+  - type: Documentation
+    url: https://docs.experianaperture.io/address-validation/address-validate-soap/
+  - type: APIReference
+    url: https://docs.experianaperture.io/address-validation/address-validate-soap/api-reference/api-specification/
+- aid: experian:global-developer-platform
+  name: Experian Global Developer Platform
+  description: 'The region-partitioned Experian API gateway behind developer.experian.com,
+    fronting credit, business information, KYC/KYB, decisioning and verification products.
+    Each region runs its own OAuth2/OIDC issuer and production/sandbox host pair: us-api,
+    uk-api, eu-api, in-api, api.experian.com.au and api.experian.com.sg. Product API
+    reference is gated behind a Developer Portal account; no public OpenAPI is published.'
+  humanURL: https://developer.experian.com/products
+  baseURL: https://us-api.experian.com
+  tags:
+  - Credit Reporting
+  - Identity Verification
+  - Decisioning
+  properties:
+  - type: DeveloperPortal
+    url: https://developer.experian.com/
+  - type: Documentation
+    url: https://developer.experian.com/products
+  - type: GettingStarted
+    url: https://developer.experian.com/tutorials/quick-start-guide
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+x-enrichment:
+  date: '2026-09-13'
+  status: enriched
+  artifacts_added: 49
+  pass: local-v3
+common:
+- type: DomainSecurity
+  url: security/experian-domain-security.yml
+- type: Authentication
+  url: authentication/experian-authentication.yml
+- type: DeveloperPortal
+  url: https://developer.experian.com/
+- type: Documentation
+  url: https://docs.experianaperture.io/
+- type: APIReference
+  url: https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/
+- type: GettingStarted
+  url: https://developer.experian.com/get-started
+- type: Support
+  url: https://community.experianaperture.io/
+- type: HelpCenter
+  url: https://docs.experianaperture.io/global-support-policy/
+- type: Blog
+  url: https://developer.experian.com/blogs
+- type: GitHubOrganization
+  url: https://github.com/experianplc
+- type: Roadmap
+  url: https://docs.experianaperture.io/more/product-roadmap/
+- type: SignUp
+  url: https://developer.experian.com/sso/register
+- type: TermsOfService
+  url: https://developer.experian.com/terms-and-conditions
+- type: PrivacyPolicy
+  url: https://developer.experian.com/privacy-policy
+- type: Website
+  url: https://www.experianplc.com/
+- type: StatusPage
+  url: https://status.edq.com/
+- type: Deprecation
+  url: https://docs.experianaperture.io/end-of-service-life-status
+- type: Security
+  url: https://hackerone.com/experian
+- type: Packages
+  url: packages/experian-packages.yml
+- type: SDKs
+  url: packages/experian-packages.yml
+- type: WellKnown
+  url: well-known/experian-well-known.yml
+- type: LLMsTxt
+  url: llms/experian-llms.txt
+- type: Overlay
+  url: overlays/experian-aperture-overlay.yaml
+- type: Conformance
+  url: conformance/experian-conformance.yml
+- type: Compliance
+  url: security/experian-trust-center.yml
+- type: ErrorCatalog
+  url: errors/experian-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/experian-lifecycle.yml
+- type: OAuthScopes
+  url: scopes/experian-scopes.yml
+- type: VulnerabilityDisclosure
+  url: security/experian-vulnerability-disclosure.yml
+- type: Sandbox
+  url: sandbox/experian-sandbox.yml
+- type: Conventions
+  url: conventions/experian-conventions.yml
+- type: ChangeLog
+  url: changelog/experian-changelog.yml
+- type: Components
+  url: components/experian-components.yml
+- type: DataModel
+  url: data-model/experian-data-model.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Plans
+  url: plans/experian-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/experian-rate-limits.yml
+- type: X-MCPServerCandidate
+  url: mcp/experian-mcp.yml

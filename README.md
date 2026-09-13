@@ -64,4 +64,41 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Experian is a company surfaced via the API Evangelist harvest backlog (source: absent-parent) and added to the network as a stub for full-pipeline profiling.
+Experian plc is a global information services company and one of the three major consumer credit
+bureaus, operating across credit risk, identity verification, fraud prevention, marketing data and
+data quality.
+
+Its public API surface spans two distinct platforms with very different postures.
+
+**Experian Data Quality / Aperture** (`api.experianaperture.io`) is the machine-readable half.
+Eleven OpenAPI 3.0.4 documents are published openly at `api.experianaperture.io/docs/`, covering 41
+operations across 34 paths: address search, validate, format and layouts; email validation; phone
+validation; demographic enrichment; identity append; reverse phone append; and an asynchronous bulk
+batch surface for all three data types. A legacy SOAP contract — Experian QAS Pro OnDemand V3, 11
+RPCs — is still published and callable at `ws.ondemand.qas.com` and is documented by Experian
+alongside the REST surface.
+
+**Experian Global Developer Platform** (`developer.experian.com`) fronts the credit, business
+information, KYC/KYB and decisioning products. It is region-partitioned — the US, UK, EMEA, Brazil,
+India, Singapore and Australia each run their own production and sandbox hosts with their own
+OAuth2/OIDC issuer — and it publishes no OpenAPI. Product reference sits behind a Developer Portal
+account.
+
+## What this profile found
+
+- **11 OpenAPI 3.0.4 documents and 1 WSDL**, saved verbatim in `openapi/` and `wsdl/`.
+- **12 OAuth/OIDC discovery documents** served across ten hosts, saved verbatim in `well-known/`.
+  No `security.txt`, no `api-catalog`, no `apis.json` and no A2A agent card on any Experian host.
+- **Zero `operationId` values across all 41 operations** in the published spec, and zero operation
+  descriptions — the single highest-leverage fix available to Experian in this contract.
+- **A 150 request/minute limit enforced per ACCOUNT**, shared across every license, integration and
+  token, with the `X-Rate-Limit-*` header triplet returned at runtime.
+- **No idempotency mechanism anywhere**, on a surface that includes a billable, non-idempotent bulk
+  batch create.
+- **A documented SDK you cannot install** — the current Data Validation Solutions SDKs ship as
+  GitHub source only; the TypeScript manifest names `@experianplc/edq.dvs.sdk`, which returns 404
+  on npm.
+- **No MCP server and no agent card.** `mcp/` holds a derived candidate tool list, explicitly marked
+  `mode: none`.
+
+See `apis.yml` for the full artifact index.

@@ -1,0 +1,1824 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Bulk Address",
+    "version": "v2"
+  },
+  "servers": [
+    {
+      "url": "https://api.experianaperture.io/"
+    }
+  ],
+  "paths": {
+    "/address/bulk/v1/batches": {
+      "get": {
+        "tags": [
+          "Bulk Address"
+        ],
+        "summary": "Gets all batches.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkAddressV1GetBatchesResponse"
+                },
+                "example": {"result":{"batches":[{"batch_id":"00000000-0000-0000-0000-000000000000","status":"processing","records":100,"records_processed":50,"date_submitted":"2025-09-10T01:02:03.004005Z"},{"batch_id":"00000000-0000-0000-0000-000000000000","status":"completed","records":100,"records_processed":100,"date_submitted":"2025-09-10T01:02:03.004005Z"}]}}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Bulk Address"
+        ],
+        "summary": "Submits a batch of address to be validated.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "Add-Metadata",
+            "in": "header",
+            "description": "Specify whether the response should return metadata values, in addition to the main core information.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "Add-Components",
+            "in": "header",
+            "description": "Specify whether the response should return component values, in addition to the main core information.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "Add-ExtraMatchInfo",
+            "in": "header",
+            "description": "Specify whether the response should return extra match info values, in addition to the main core information.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkAddressV1CreateBatchRequest"
+              },
+              "examples": {
+                "Without Default Country and Datasets": {
+                  "value": {"addresses":[{"address":"Am Sickenbrünnle 12|||Bauschlott|Neulingen|75245","country_iso":"DEU","datasets":["de-address-ed"]},{"address":"3 donghyeon-ro|||boryeong-si|chungcheongnam-do|33430","country_iso":"KOR","datasets":["kr-address-ed"]},{"address":"77 Station Road, Kelty","country_iso":"GBR","datasets":["gb-address"]}]}
+                },
+                "With Default Country and Datasets": {
+                  "value": {"defaults":{"country_iso":"DEU","datasets":["de-address-ed"]},"addresses":[{"address":"Am Sickenbrünnle 12|||Bauschlott|Neulingen|75245"},{"address":"xxx"}]}
+                },
+                "With Max Processing Time": {
+                  "value": {"defaults":{"country_iso":"DEU","datasets":["de-address-ed"],"max_processing_time":"PT25M"},"addresses":[{"address":"Am Sickenbrünnle 12|||Bauschlott|Neulingen|75245"},{"address":"xxx"}]}
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkAddressV1CreateBatchResponse"
+                },
+                "example": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"submitted"}}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "415": {
+            "description": "Unsupported Media Type"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      }
+    },
+    "/address/bulk/v1/batches/{batch_id}/start": {
+      "post": {
+        "tags": [
+          "Bulk Address"
+        ],
+        "summary": "Start processing a batch of address to be validated.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "description": "Batch ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkAddressV1StartBatchResponse"
+                },
+                "example": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"processing"}}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      }
+    },
+    "/address/bulk/v1/batches/{batch_id}": {
+      "get": {
+        "tags": [
+          "Bulk Address"
+        ],
+        "summary": "Gets the status of a batch of address to be validated.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "description": "Batch ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Add-Metadata",
+            "in": "header",
+            "description": "Value to indicate the return of batch_config object.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkAddressV1GetBatchStatusResponse"
+                },
+                "examples": {
+                  "Incomplete": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"processing","records":3,"records_processed":0,"date_submitted":"2025-09-10T01:02:03.004005Z"}}
+                  },
+                  "Stopped": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"stopped","reason":"max_processing_time_reached","records":3,"records_processed":2,"date_submitted":"2025-09-10T01:02:03.004005Z","date_ended":"2025-09-10T01:02:03.004005Z"}}
+                  },
+                  "Completed": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"completed","records":3,"records_processed":3,"date_submitted":"2025-09-10T01:02:03.004005Z","date_ended":"2025-09-10T01:02:03.004005Z"}}
+                  },
+                  "With Metadata": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"completed","records":3,"records_processed":3,"date_submitted":"2025-09-10T01:02:03.004005Z","date_ended":"2025-09-10T01:02:03.004005Z"},"metadata":{"batch_config":{"add_components":true,"add_metadata":true,"add_extra_match_info":true}}}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      }
+    },
+    "/address/bulk/v1/batches/{batch_id}/results": {
+      "get": {
+        "tags": [
+          "Bulk Address"
+        ],
+        "summary": "Gets the validation result of a batch of address.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "description": "Batch ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponse"
+                },
+                "examples": {
+                  "Completed": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","credits_charged":2,"status":"completed","statistics":[{"name":"verified match","value":2}],"addresses":[{"address":"Am Sickenbrünnle 12|||Bauschlott|Neulingen|75245","country_iso":"","datasets":[],"confidence":"verified match","match_type":"","match_confidence":"","match_info":{},"addresses_formatted":[{"layout_name":"default","address":{"CountryIso":"DEU","CountryName":"","PostalCode":"75245","Locality":"Neulingen","Street":"Am Sickenbrünnle","Building":""}}],"components":{"country_name":"GERMANY","country_iso_3":"DEU","country_iso_2":"DE","postal_code":{"full_name":"75245","primary":"75245"},"building":{"building_number":"12"},"street":{"full_name":"Am Sickenbrünnle"},"locality":{"region":{"name":"Baden-Württemberg"},"town":{"name":"Neulingen"},"district":{"name":"Bauschlott"}}},"metadata":{}},{"address":"77 Station Road, Kelty","country_iso":"GBR","datasets":["gb-address"],"confidence":"verified match","match_type":"full_with_post_code","match_confidence":"high","match_info":{"postcode_action":"added","address_action":"corrected","generic_info":["address_cleaned"]},"addresses_formatted":[{"layout_name":"default","address":{"address_line_1":"77 Station Road","address_line_2":"","address_line_3":"","locality":"KELTY","region":"","postal_code":"KY4 0BL","country":"UNITED KINGDOM"}}],"components":{"country_name":"UNITED KINGDOM","country_iso_3":"GBR","country_iso_2":"GB","postal_code":{"full_name":"KY4 0BL","primary":"KY4 0BL"},"building":{"building_number":"77"},"street":{"full_name":"Station Road","name":"Station","type":"Road"},"locality":{"region":{"name":"Fife"},"town":{"name":"KELTY"}}},"metadata":{"address_info":{"identifier":{"udprn":"12353231","paf_address_key":"0748244400000000S"}},"barcode":{"delivery_point_barcode":"(KY40BL2NQ)"}}}]}}
+                  },
+                  "Stopped": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","credits_charged":1,"status":"stopped","reason":"max_processing_time_reached","statistics":[{"name":"verified match","value":1},{"name":"unprocessed","value":1}],"addresses":[{"address":"Am Sickenbrünnle 12|||Bauschlott|Neulingen|75245","country_iso":"","datasets":[],"confidence":"verified match","match_type":"","match_confidence":"","match_info":{},"addresses_formatted":[{"layout_name":"default","address":{"CountryIso":"DEU","CountryName":"","PostalCode":"75245","Locality":"Neulingen","Street":"Am Sickenbrünnle","Building":""}}],"components":{"country_name":"GERMANY","country_iso_3":"DEU","country_iso_2":"DE","postal_code":{"full_name":"75245","primary":"75245"},"building":{"building_number":"12"},"street":{"full_name":"Am Sickenbrünnle"},"locality":{"region":{"name":"Baden-Württemberg"},"town":{"name":"Neulingen"},"district":{"name":"Bauschlott"}}},"metadata":{}},{"address":"77 Station Road, Kelty","country_iso":"","datasets":[],"confidence":"unprocessed"}]}}
+                  },
+                  "Incomplete": {
+                    "value": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","credits_charged":0,"status":"processing","statistics":[],"addresses":[]}}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      }
+    },
+    "/address/bulk/v1/batches/{batch_id}/stop": {
+      "post": {
+        "tags": [
+          "Bulk Address"
+        ],
+        "summary": "Stop processing a batch of address to be validated.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "batch_id",
+            "in": "path",
+            "description": "Batch ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkAddressV1StopBatchResponse"
+                },
+                "example": {"result":{"batch_id":"00000000-0000-0000-0000-000000000000","status":"stopped"}}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BulkAddressV1CreateBatchRequest": {
+        "required": [
+          "addresses"
+        ],
+        "type": "object",
+        "properties": {
+          "defaults": {
+            "$ref": "#/components/schemas/BulkAddressV1CreateBatchRequestOptions"
+          },
+          "addresses": {
+            "maxItems": 10000,
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkAddressV1CreateBatchRequestAddress"
+            },
+            "description": "List of input components."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Create Batch request."
+      },
+      "BulkAddressV1CreateBatchRequestAddress": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": "string",
+            "description": "The address to validate.",
+            "nullable": true,
+            "example": "1 main st, sydney"
+          },
+          "country_iso": {
+            "maxLength": 3,
+            "minLength": 3,
+            "type": "string",
+            "description": "You can indicate the 3-letter ISO country code if the address that is subject to validation doesn't contain an address country code.\nThis will overwrite the country_iso in the default options.",
+            "nullable": true,
+            "example": "AUS"
+          },
+          "datasets": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The datasets to apply.",
+            "nullable": true,
+            "example": [
+              "au-address-gnaf"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 address component."
+      },
+      "BulkAddressV1CreateBatchRequestOptions": {
+        "type": "object",
+        "properties": {
+          "country_iso": {
+            "maxLength": 3,
+            "minLength": 3,
+            "type": "string",
+            "description": "The country ISO3 code of address.",
+            "nullable": true,
+            "example": "USA"
+          },
+          "datasets": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The datasets for address validation.",
+            "nullable": true,
+            "example": [
+              "us-address"
+            ]
+          },
+          "batch_reference_id": {
+            "maxLength": 256,
+            "minLength": 0,
+            "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+            "type": "string",
+            "description": "Optional identifier that will be returned in the response to help you track the batch.",
+            "nullable": true
+          },
+          "max_processing_time": {
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string",
+            "description": "Optional maximum processing time of the batch.\nIf the batch is still processing after this time, it will be stopped.\nThe value should be in ISO 8601 duration format (e.g., \"PT30M\" for 30 minutes).\nMaximum allowed value is \"PT24H\" (24 hours). Minimum allowed value is \"PT1M\" (1 minute).",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The default options that applied to all the addresses."
+      },
+      "BulkAddressV1CreateBatchResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BulkAddressV1CreateBatchResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Create Batch response."
+      },
+      "BulkAddressV1CreateBatchResult": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "description": "Batch ID.",
+            "nullable": true
+          },
+          "batch_reference_id": {
+            "type": "string",
+            "description": "Optional reference identifier to track this batch.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The current Batch status.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Create Batch result."
+      },
+      "BulkAddressV1GetBatchResultsResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Results response."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddress": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "The address that is the subject of the validation.",
+            "nullable": true,
+            "example": "555 Ellis St | Mountain View | CA | 94043"
+          },
+          "country_iso": {
+            "type": "string",
+            "description": "The country ISO of the validation.",
+            "nullable": true,
+            "example": "DEU"
+          },
+          "datasets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The datasets of the validation.",
+            "nullable": true,
+            "example": [
+              "de-address-ed"
+            ]
+          },
+          "confidence": {
+            "type": "string",
+            "description": "The outcome (confidence level) of the validation.",
+            "nullable": true,
+            "example": "verified match"
+          },
+          "match_type": {
+            "type": "string",
+            "description": "Match type for verified address.",
+            "nullable": true,
+            "example": "full_with_post_code"
+          },
+          "match_confidence": {
+            "type": "string",
+            "description": "Match confidence for verified address.",
+            "nullable": true,
+            "example": "high"
+          },
+          "match_info": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMatchInfo"
+          },
+          "addresses_formatted": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressAddressFormatted"
+            },
+            "description": "Addresses formatted details for verified address.",
+            "nullable": true
+          },
+          "components": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponents"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadata"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Results response Address data"
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressAddressFormatted": {
+        "type": "object",
+        "properties": {
+          "layout_name": {
+            "type": "string",
+            "description": "The layout name for address to map.",
+            "nullable": true,
+            "example": "myLayout"
+          },
+          "address": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The address formatted.",
+            "nullable": true,
+            "example": {
+              "CountryIso": "DEU",
+              "CountryName": "",
+              "PostalCode": "75245",
+              "Locality": "Neulingen",
+              "Street": "Am Sickenbrünnle",
+              "Building": ""
+            }
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Results response Address Formatted data"
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressComponents": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "description": "Address language.",
+            "nullable": true,
+            "example": "en-GB"
+          },
+          "country_name": {
+            "type": "string",
+            "description": "The name of the country where the address is located.",
+            "nullable": true,
+            "example": "United Kingdom"
+          },
+          "country_iso_3": {
+            "type": "string",
+            "description": "The 3-letter ISO country code.",
+            "nullable": true,
+            "example": "GBR"
+          },
+          "country_iso_2": {
+            "type": "string",
+            "description": "The 2-letter ISO country code.",
+            "nullable": true,
+            "example": "GB"
+          },
+          "postal_code": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsPostalCode"
+          },
+          "delivery_service": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsDeliveryService"
+          },
+          "secondary_delivery_service": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsDeliveryService"
+          },
+          "sub_building": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuilding"
+          },
+          "building": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsBuilding"
+          },
+          "organization": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsOrganization"
+          },
+          "street": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsStreet"
+          },
+          "secondary_street": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsStreet"
+          },
+          "route_service": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsRouteService"
+          },
+          "locality": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocality"
+          },
+          "physical_locality": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocality"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Results response Address Components data"
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressComponentsBuilding": {
+        "type": "object",
+        "properties": {
+          "building_name": {
+            "type": "string",
+            "description": "The building name.",
+            "nullable": true,
+            "example": "Sir John Peace Building"
+          },
+          "building_number": {
+            "type": "string",
+            "description": "The building number.",
+            "nullable": true,
+            "example": "549"
+          },
+          "secondary_name": {
+            "type": "string",
+            "description": "The secondary building name.",
+            "nullable": true
+          },
+          "secondary_number": {
+            "type": "string",
+            "description": "The secondary name of the building (if available).",
+            "nullable": true
+          },
+          "allotment_number": {
+            "type": "string",
+            "description": "The allotment name where a person or property resides.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The building component."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressComponentsDeliveryService": {
+        "type": "object",
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "description": "The full name of the delivery service.",
+            "nullable": true
+          },
+          "service_type": {
+            "type": "string",
+            "description": "The delivery service type.",
+            "nullable": true
+          },
+          "service_number": {
+            "type": "string",
+            "description": "The delivery service number.",
+            "nullable": true
+          },
+          "post_centre_name": {
+            "type": "string",
+            "description": "The delivery service post center name.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The delivery service component."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressComponentsLocality": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem"
+          },
+          "sub_region": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem"
+          },
+          "town": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem"
+          },
+          "district": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem"
+          },
+          "sub_district": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The locality component."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the locality name",
+            "nullable": true
+          },
+          "code": {
+            "type": "string",
+            "description": "Gets or sets the locality code",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Gets or sets the locality description",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "A single place name, code and a description of its type."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressComponentsOrganization": {
+        "type": "object",
+        "properties": {
+          "department_name": {
+            "type": "string",
+            "description": "The department name within an organization.",
+            "nullable": true
+          },
+          "secondary_department_name": {
+            "type": "string",
+            "description": "The secondary department name within an organization.",
+            "nullable": true
+          },
+          "company_name": {
+            "type": "string",
+            "description": "The company name.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The organization component."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressComponentsPostalCode": {
+        "type": "object",
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "description": "The full name of the postal code.",
+            "nullable": true,
+            "example": "92626-7037"
+          },
+          "primary": {
+            "type": "string",
+            "description": "The primary name of the postal code.",
+            "nullable": true,
+            "example": "92626"
+          },
+          "secondary": {
+            "type": "string",
+            "description": "The secondary name of the postal code.",
+            "nullable": true,
+            "example": "7037"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The post code component."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressComponentsRouteService": {
+        "type": "object",
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "description": "The full name of the route service.",
+            "nullable": true
+          },
+          "service_type": {
+            "type": "string",
+            "description": "The route service type.",
+            "nullable": true
+          },
+          "service_number": {
+            "type": "string",
+            "description": "The route service number.",
+            "nullable": true
+          },
+          "delivery_name": {
+            "type": "string",
+            "description": "The route service delivery name.",
+            "nullable": true
+          },
+          "qualifier": {
+            "type": "string",
+            "description": "The route service qualifier.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The route service component."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressComponentsStreet": {
+        "type": "object",
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "description": "The combination of the other populated secondary street components: prefix, name, type, suffix.",
+            "nullable": true,
+            "example": "Summer St"
+          },
+          "name": {
+            "type": "string",
+            "description": "The street name only.",
+            "nullable": true,
+            "example": "Summer"
+          },
+          "type": {
+            "type": "string",
+            "description": "The street type only.",
+            "nullable": true,
+            "example": "St"
+          },
+          "prefix": {
+            "type": "string",
+            "description": "The street prefix only.",
+            "nullable": true
+          },
+          "suffix": {
+            "type": "string",
+            "description": "The street suffix only.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The street component."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuilding": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of a building or property.",
+            "nullable": true
+          },
+          "entrance": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuildingItem"
+          },
+          "floor": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuildingItem"
+          },
+          "door": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuildingItem"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The sub building component."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuildingItem": {
+        "type": "object",
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "description": "The full name of this subcomponent.",
+            "nullable": true,
+            "example": "L 6"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of this subcomponent.",
+            "nullable": true,
+            "example": "L"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value of this subcomponent.",
+            "nullable": true,
+            "example": "6"
+          }
+        },
+        "additionalProperties": false,
+        "description": "An item of sub-building information, such as a floor or entrance number or name."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressMatchInfo": {
+        "type": "object",
+        "properties": {
+          "postcode_action": {
+            "type": "string",
+            "description": "Postcode action info.",
+            "nullable": true
+          },
+          "address_action": {
+            "type": "string",
+            "description": "Address action info.",
+            "nullable": true
+          },
+          "generic_info": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "General match codes info.",
+            "nullable": true
+          },
+          "aus_info": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "AUS specific match codes info.",
+            "nullable": true
+          },
+          "deu_info": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "DEU specific match codes info.",
+            "nullable": true
+          },
+          "fra_info": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "FRA specific match codes info.",
+            "nullable": true
+          },
+          "gbr_info": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "GBR specific match codes info.",
+            "nullable": true
+          },
+          "nld_info": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "NLD specific match codes info.",
+            "nullable": true
+          },
+          "nzl_info": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "NZL specific match codes info.",
+            "nullable": true
+          },
+          "sgp_info": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "SGP specific match codes info.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Results response Address Match Info data"
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressMetadata": {
+        "type": "object",
+        "properties": {
+          "address_info": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataAddressInfo"
+          },
+          "route_classification": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataRouteClassification"
+          },
+          "barcode": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataBarcode"
+          },
+          "address_classification": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataAddressClassification"
+          },
+          "dpv": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataDpv"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The address metadata."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressMetadataAddressClassification": {
+        "type": "object",
+        "properties": {
+          "address_type": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataAddressClassificationAddressType"
+          },
+          "delivery_type": {
+            "type": "string",
+            "description": "Type of mail delivery at the address. Either \"business\", \"residential\" or \"mixed\".",
+            "nullable": true,
+            "example": "Business"
+          },
+          "is_deliverable": {
+            "type": "string",
+            "description": "Indicator if the address is deliverable - applicable to NZL addresses only.",
+            "nullable": true,
+            "example": "Y"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Address deliverability and type indicators."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressMetadataAddressClassificationAddressType": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The code of the address type (applicable to USA, AUS and NZL addresses).",
+            "nullable": true,
+            "example": "S"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the address type (applicable to USA, AUS and NZL addresses).",
+            "nullable": true,
+            "example": "Street"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The address type."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressMetadataAddressInfo": {
+        "type": "object",
+        "properties": {
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Source of address information.",
+            "nullable": true
+          },
+          "number_of_households": {
+            "type": "string",
+            "description": "Number of households for records in GBR Not Yet Built, or multi-occupancy count of the owning delivery point for GBR Multiple Residence.",
+            "nullable": true,
+            "example": "1"
+          },
+          "just_built_date": {
+            "type": "string",
+            "description": "Construction date of the record, if it has been constructed in the last 6 months (GBR specific).",
+            "nullable": true,
+            "example": "20210605"
+          },
+          "identifier": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataAddressInfoIdentifier"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Address information."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressMetadataAddressInfoIdentifier": {
+        "type": "object",
+        "properties": {
+          "udprn": {
+            "type": "string",
+            "description": "Royal Mail's Unique Delivery Point Reference Number, an eight-digit code assigned to every delivery point in the Postcode Address File (PAF).",
+            "nullable": true,
+            "example": "12353232"
+          },
+          "umrrn": {
+            "type": "string",
+            "description": "Royal Mail's Unique Multiple Residence Reference Number, an eight-digit code linked to UDPRNs in Royal Mail's Multiple Residence dataset.",
+            "nullable": true,
+            "example": "50101642"
+          },
+          "dpid": {
+            "type": "string",
+            "description": "Australia Post's Delivery Point Identifier, an eight-digit number that uniquely identifies a physical location to which Australia Post delivers mail - applicable to AUS and NZL addresses.",
+            "nullable": true,
+            "example": "62147712"
+          },
+          "gnafpid": {
+            "type": "string",
+            "description": "Geoscape Australia's Geocoded National Address File Persistent Identifier (G-NAF ID).",
+            "nullable": true,
+            "example": "GAVIC424477161"
+          },
+          "hin": {
+            "type": "string",
+            "description": "Household Identification Number (applicable for AUS addresses).",
+            "nullable": true,
+            "example": "203060068"
+          },
+          "paf_address_key": {
+            "type": "string",
+            "description": "PAF Address key (GBR specific).",
+            "nullable": true,
+            "example": "2304084100000000S"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The ID metadata of formatted address."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressMetadataBarcode": {
+        "type": "object",
+        "properties": {
+          "delivery_point_barcode": {
+            "type": "string",
+            "description": "The delivery point barcode (applicable for USA addresses only).",
+            "nullable": true,
+            "example": "02139430177"
+          },
+          "check_digit": {
+            "type": "string",
+            "description": "The delivery point barcode's check digit (applicable for USA addresses only).",
+            "nullable": true,
+            "example": "3"
+          },
+          "sort_plan_number": {
+            "type": "string",
+            "description": "The sort plan number barcode (applicable for AUS addresses only).",
+            "nullable": true,
+            "example": "022"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Address barcode."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressMetadataDpv": {
+        "type": "object",
+        "properties": {
+          "cmra_indicator": {
+            "type": "string",
+            "description": "Indicates that the address is a private business that acts as a commercial mail-receiving agent for specific clients.",
+            "nullable": true,
+            "example": "Y"
+          },
+          "seed_indicator": {
+            "type": "string",
+            "description": "Seed records are control records placed by the USPS to prevent unauthorized tampering (e.g., creation of lists containing every single delivery point in a geographical region). A seed address will deactivate DPV functionality. To re-activate, please visit the Self Service Portal.",
+            "nullable": true,
+            "example": "Y"
+          },
+          "dpv_indicator": {
+            "type": "string",
+            "description": "Indicates whether selected address is confirmed as deliverable via DPV (Delivery Point Validation) process. For all possible values, please visit our technical documentation portal.",
+            "nullable": true,
+            "example": "Y"
+          },
+          "footnotes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "USPS codes denoting DPV match levels. For a list of all possible values, please visit our technical documentation portal.",
+            "nullable": true,
+            "example": [
+              "AA",
+              "BB"
+            ]
+          },
+          "vacancy_indicator": {
+            "type": "string",
+            "description": "An address known to be unoccupied for over 90 days and therefore not receiving mail deliveries.",
+            "nullable": true,
+            "example": "Y"
+          },
+          "no_stats_indicator": {
+            "type": "string",
+            "description": "An address known to not receive mail deliveries (e.g. a house under construction).",
+            "nullable": true,
+            "example": "Y"
+          },
+          "pbsa_indicator": {
+            "type": "string",
+            "description": "Indicates addresses known to be Post Office Box Street Addresses (PBSA).",
+            "nullable": true,
+            "example": "Y"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Delivery Point Validation information for the address (USA only)."
+      },
+      "BulkAddressV1GetBatchResultsResponseAddressMetadataRouteClassification": {
+        "type": "object",
+        "properties": {
+          "carrier_route": {
+            "type": "string",
+            "description": "The carrier route value (applicable for USA addresses only).",
+            "nullable": true,
+            "example": "C077"
+          },
+          "id": {
+            "type": "string",
+            "description": "The street identifier (applicable for AUS addresses only).",
+            "nullable": true,
+            "example": "38396"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Address deliverability and type indicators."
+      },
+      "BulkAddressV1GetBatchResultsResponseResult": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "description": "Batch ID.",
+            "nullable": true
+          },
+          "batch_reference_id": {
+            "type": "string",
+            "description": "Optional reference identifier to track this batch.",
+            "nullable": true
+          },
+          "credits_charged": {
+            "type": "integer",
+            "description": "The number of credits charged for this Batch.",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "description": "The current Batch status.",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "description": "The reason of the current Batch status.",
+            "nullable": true
+          },
+          "statistics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseStatistic"
+            },
+            "description": "The statistics of the address confidence level.",
+            "nullable": true
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkAddressV1GetBatchResultsResponseAddress"
+            },
+            "description": "The Addresses validation results.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Batch Results result."
+      },
+      "BulkAddressV1GetBatchResultsResponseStatistic": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Confidence.",
+            "nullable": true,
+            "example": "verified"
+          },
+          "value": {
+            "type": "integer",
+            "description": "Count.",
+            "format": "int32",
+            "example": 10
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Results response statistic."
+      },
+      "BulkAddressV1GetBatchStatusMetadata": {
+        "type": "object",
+        "properties": {
+          "batch_config": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchStatusMetadataBatchConfig"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Batch Status metadata."
+      },
+      "BulkAddressV1GetBatchStatusMetadataBatchConfig": {
+        "type": "object",
+        "properties": {
+          "country_iso": {
+            "type": "string",
+            "description": "Country ISO.",
+            "nullable": true
+          },
+          "datasets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Datasets.",
+            "nullable": true
+          },
+          "add_components": {
+            "type": "boolean",
+            "description": "Add components.",
+            "nullable": true
+          },
+          "add_metadata": {
+            "type": "boolean",
+            "description": "Add metadata.",
+            "nullable": true
+          },
+          "add_extra_match_info": {
+            "type": "boolean",
+            "description": "Add extra match info.",
+            "nullable": true
+          },
+          "max_processing_time": {
+            "type": "string",
+            "description": "Optional maximum processing time of the batch.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Batch Status metadata's batch config."
+      },
+      "BulkAddressV1GetBatchStatusResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchStatusResult"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchStatusMetadata"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Batch Status response."
+      },
+      "BulkAddressV1GetBatchStatusResult": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "description": "Batch ID.",
+            "nullable": true
+          },
+          "batch_reference_id": {
+            "type": "string",
+            "description": "Optional reference identifier to track this batch.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The current Batch status.",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "description": "The reason of the current Batch status.",
+            "nullable": true
+          },
+          "records": {
+            "type": "integer",
+            "description": "The number of address have been submitted.",
+            "format": "int32",
+            "nullable": true
+          },
+          "records_processed": {
+            "type": "integer",
+            "description": "The number of address have been processed.",
+            "format": "int32",
+            "nullable": true
+          },
+          "date_submitted": {
+            "type": "string",
+            "description": "The date time when the Batch is created in ISO-8601 format.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "date_started": {
+            "type": "string",
+            "description": "The date time when the Batch is started in ISO-8601 format.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "date_ended": {
+            "type": "string",
+            "description": "The date time when the Batch is ended in ISO-8601 format.",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Batch Status result."
+      },
+      "BulkAddressV1GetBatchesBatch": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "description": "Batch ID.",
+            "nullable": true
+          },
+          "batch_reference_id": {
+            "type": "string",
+            "description": "Optional reference identifier to track this batch.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The current Batch status.",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "description": "The reason of the current Batch status.",
+            "nullable": true
+          },
+          "records": {
+            "type": "integer",
+            "description": "The number of addresses have been submitted.",
+            "format": "int32"
+          },
+          "records_processed": {
+            "type": "integer",
+            "description": "The number of addresses have been processed.",
+            "format": "int32"
+          },
+          "date_submitted": {
+            "type": "string",
+            "description": "The date time when the Batch is created in ISO-8601 format.",
+            "format": "date-time"
+          },
+          "date_started": {
+            "type": "string",
+            "description": "The date time when the Batch is started in ISO-8601 format.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "date_ended": {
+            "type": "string",
+            "description": "The date time when the Batch is ended in ISO-8601 format.",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Batches Batch Info."
+      },
+      "BulkAddressV1GetBatchesResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BulkAddressV1GetBatchesResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Batches response."
+      },
+      "BulkAddressV1GetBatchesResult": {
+        "type": "object",
+        "properties": {
+          "batches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkAddressV1GetBatchesBatch"
+            },
+            "description": "Batches.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Get Batches result."
+      },
+      "BulkAddressV1StartBatchResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BulkAddressV1StartBatchResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Start Batch response."
+      },
+      "BulkAddressV1StartBatchResult": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "description": "Batch ID.",
+            "nullable": true
+          },
+          "batch_reference_id": {
+            "type": "string",
+            "description": "Optional reference identifier to track this batch.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The current Batch status.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Start Batch result."
+      },
+      "BulkAddressV1StopBatchResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/BulkAddressV1StopBatchResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Stop Batch response."
+      },
+      "BulkAddressV1StopBatchResult": {
+        "type": "object",
+        "properties": {
+          "batch_id": {
+            "type": "string",
+            "description": "Batch ID.",
+            "nullable": true
+          },
+          "batch_reference_id": {
+            "type": "string",
+            "description": "Optional reference identifier to track this batch.",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The current Batch status.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bulk Address V1 Stop Batch result."
+      },
+      "ResponseError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "A link to documentation that provides more details about the error you’ve encountered.",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the error.",
+            "nullable": true,
+            "example": "Bad Request"
+          },
+          "detail": {
+            "type": "string",
+            "description": "A description of the error.",
+            "nullable": true,
+            "example": "The request body was malformed."
+          },
+          "instance": {
+            "type": "string",
+            "description": "The endpoint that returned the error.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Error model containing the error details."
+      }
+    },
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "http",
+        "description": "Token URL: https://sso.experianaperture.io/oauth2/aust0wkxjeKyT3HRO4x7/v1/token \n\n Flow: clientCredentials",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
+      },
+      "Auth-Token": {
+        "type": "apiKey",
+        "description": "Your unique key, called a token, that is required to submit an API request.",
+        "name": "Auth-Token",
+        "in": "header"
+      },
+      "x-app-key": {
+        "type": "apiKey",
+        "description": "Alternative Auth Token header.",
+        "name": "x-app-key",
+        "in": "header"
+      }
+    }
+  }
+}

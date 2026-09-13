@@ -1,0 +1,184 @@
+generated: '2026-09-13'
+method: derived
+source: openapi/experian-aperture-openapi.json (389 component schemas, 34 paths, 41 operations),
+  enriched from https://docs.experianaperture.io/address-validation/experian-address-validation/layouts/introduction/
+note: 'The Experian Data Quality model has an unusual centre of gravity. There is no user, account,
+  customer or subscription object anywhere in the contract — entitlement lives entirely in the
+  Auth-Token and never appears as a resource. What the model is actually built around is one durable
+  identifier, global_address_key, which is the handle a search returns and every subsequent
+  operation consumes. The rest of the graph is either configuration the caller owns (layouts,
+  prompt sets), reference data Experian owns (datasets), or asynchronous job state (batches).
+  Relationships are expressed by identifier reference in request and response bodies, not by
+  hypermedia links or $ref-linked resources, so the graph below is derived from id-bearing fields
+  and path parameters.'
+entities:
+- name: AddressSuggestion
+  description: A candidate address returned by a search, carrying the key that identifies it for the
+    rest of the flow.
+  primary_key: global_address_key
+  schemas:
+  - AddressSearchV1Response
+  - AddressSuggestion
+  produced_by:
+  - POST /address/search/v1
+  - POST /address/lookup/v1
+  - POST /address/lookup/v2
+  - POST /address/validate/v1
+- name: FormattedAddress
+  description: A fully resolved, layout-formatted address with components, formatted lines, match
+    info and optional enrichment.
+  key_fields:
+  - global_address_key
+  - paf_address_key
+  - lpi_key
+  - organization_key
+  schemas:
+  - AddressFormatV1Response
+  - AddressFormatted
+  - AddressComponent
+  produced_by:
+  - GET /address/format/v1/{global_address_key}
+  - POST /address/format/v1/{global_address_key}
+  - POST /address/suggestions/format/v1
+- name: AddressLayout
+  description: A named, caller-owned definition of which address elements appear in a formatted
+    response and in what order. A first-class CRUD resource.
+  primary_key: name
+  schemas:
+  - AddressLayout
+  - AddressLayoutV2
+  - AddressLayoutV2Line
+  - AddressLayoutV2LineElement
+  managed_by:
+  - POST /address/layouts/v1
+  - POST /address/layouts/v2
+  - GET /address/layouts/v2
+  - GET /address/layouts/v2/{name}
+  - PUT /address/layouts/v2/{name}
+  - DELETE /address/layouts/v2/{name}
+- name: Dataset
+  description: A country-scoped reference dataset (Royal Mail PAF, USPS, Australia DataFusion,
+    LINZ, Global Location Insight and so on) that a search is executed against.
+  primary_key: dataset id
+  schemas:
+  - AddressDatasetsV1Response
+  - AddressDatasetsCountryResult
+  - AddressDatasetElement
+  produced_by:
+  - GET /address/datasets/v1
+- name: PromptSet
+  description: A named definition of the input fields presented to a user for a given country and
+    search type — the input-side counterpart of a layout.
+  produced_by:
+  - POST /address/promptsets/v1
+- name: AddressEnrichment
+  description: Geodemographic, geocode, location-insight and Mosaic attributes attached to a
+    resolved address key.
+  key_fields:
+  - global_address_key
+  schemas:
+  - AddressEnrichment
+  - AddressEnrichmentGeocodes
+  produced_by:
+  - POST /enrichment/v2
+- name: EmailValidationResult
+  description: A confidence classification plus optional metadata for a submitted email address.
+  produced_by:
+  - POST /email/validation/v1
+  - POST /email/validate/v2
+- name: PhoneValidationResult
+  description: Validation, line type, portability and connectivity attributes for a submitted phone
+    number, optionally formatted to PLUS_E164.
+  produced_by:
+  - POST /phone/validate/v2
+- name: IdentityAppendResult
+  description: Additional contact/identity attributes returned for a known individual or a phone
+    number.
+  produced_by:
+  - POST /identity/append/v1
+  - POST /phone/append/v1
+- name: Batch
+  description: An asynchronous bulk job over address, email or phone records. Has an explicit
+    lifecycle — created, started, polled, results retrieved, optionally stopped.
+  primary_key: batch_id
+  secondary_key: batch_reference_id
+  schemas:
+  - BulkAddressV1CreateBatchRequest
+  - BulkAddressV1CreateBatchResponse
+  - BulkAddressV1GetBatchResultsResponse
+  managed_by:
+  - POST /address/bulk/v1/batches
+  - GET /address/bulk/v1/batches
+  - POST /address/bulk/v1/batches/{batch_id}/start
+  - GET /address/bulk/v1/batches/{batch_id}
+  - GET /address/bulk/v1/batches/{batch_id}/results
+  - POST /address/bulk/v1/batches/{batch_id}/stop
+  note: The same six-operation shape is repeated verbatim for /email/bulk/v1 and /phone/bulk/v1.
+- name: BatchRecord
+  description: One address, email or phone record inside a batch, with its own result and match info.
+  belongs_to: Batch
+  via: batch_id
+relationships:
+- from: AddressSuggestion
+  to: FormattedAddress
+  type: has_one
+  via: global_address_key
+  note: The core join in the whole API. A search returns keys; formatting, refining, stepping in and
+    enrichment all take that key as input.
+- from: AddressSuggestion
+  to: AddressSuggestion
+  type: has_many
+  via: global_address_key / suggestions_key
+  note: Hierarchical refinement — POST /address/suggestions/refine/v1/{key} and GET
+    /address/suggestions/stepin/v1/{global_address_key} walk a container address down to its
+    sub-premises.
+- from: FormattedAddress
+  to: AddressLayout
+  type: belongs_to
+  via: layout name
+  note: The layout applied is named in the format request; it determines the response shape.
+- from: FormattedAddress
+  to: AddressEnrichment
+  type: has_one
+  via: global_address_key
+- from: AddressLayout
+  to: Dataset
+  type: belongs_to
+  via: AddressLayoutV2AppliesTo
+  note: A custom layout declares which datasets/countries it applies to.
+- from: Dataset
+  to: PromptSet
+  type: has_many
+  via: dataset id + search type
+- from: Batch
+  to: BatchRecord
+  type: has_many
+  via: batch_id
+- from: PhoneValidationResult
+  to: IdentityAppendResult
+  type: has_one
+  via: phone number
+  note: POST /phone/append/v1 (reverse phone append) takes a number and returns the identity behind
+    it — the one operation in the surface that traverses from contact datum to person.
+identifier_conventions:
+- field: global_address_key
+  scope: Experian-global, opaque, returned by search and consumed by format/refine/stepin/enrichment
+  note: Not documented as stable over time; treat as a session-scoped handle unless Experian states
+    otherwise.
+- field: batch_id
+  scope: per batch, server-assigned, path parameter on five operations
+- field: batch_reference_id
+  scope: per batch, caller-assigned correlation value (21 occurrences)
+- field: transaction_id / Reference-ID
+  scope: per request, caller-assigned, for support traceability — see conventions/
+- field: paf_address_key
+  scope: UK only — the Royal Mail PAF key
+- field: lpi_key
+  scope: UK only — Local Land and Property Gazetteer LPI key, alongside UPRN
+absent_entities:
+  note: 'No User, Account, Organization, Subscription, Credit, Invoice, Webhook, ApiKey or Token
+    resource exists in the contract. Account management, credit balance, token issuance and domain/IP
+    allowlisting are all done in the Self Service Portal web UI and are not exposed as API resources —
+    which means an agent can call Experian but cannot administer its own access to Experian.'
+render: null
+render_note: No subway/ diagram exists in this repo yet.

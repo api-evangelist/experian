@@ -1,0 +1,821 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Identity Append",
+    "version": "v2"
+  },
+  "servers": [
+    {
+      "url": "https://api.experianaperture.io/"
+    }
+  ],
+  "paths": {
+    "/identity/append/v1": {
+      "post": {
+        "tags": [
+          "Identity Append (USA only)"
+        ],
+        "summary": "Submit an individual's name, postal address, and/or email to append the individual's relevant contact information or email risk score.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "Timeout-Seconds",
+            "in": "header",
+            "description": "Maximum time you are prepared to wait for a response, expressed in seconds. Acceptable values: 2-15. If a timeout occurs, an HTTP status code of 408 - Request Timeout will be returned.",
+            "schema": {
+              "maximum": 15,
+              "minimum": 2,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Add-Metadata",
+            "in": "header",
+            "description": "Specify whether the response should return all fields and values, in addition to the main core information.",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdentityAppendRequest"
+              },
+              "examples": {
+                "Identity Append - Email: Append an individual’s email to their contact information": {
+                  "value": {"components":{"first_name":["John"],"middle_name":["Abraham"],"last_name":["Smith"],"address_line_1":["1 Main Street"],"town":["Phoenix"],"region":["AZ"],"postal_code":["94133"]},"attributes":["email"]}
+                },
+                "Identity Append - Reverse Email: Append contact information to an individual’s email": {
+                  "value": {"components":{"first_name":["tom"],"last_name":["Smith"],"email":["support@experian.com"]},"attributes":["contact"]}
+                },
+                "Identity Append - Email Risk Score: The information of the risk of a fraudulent profile": {
+                  "value": {"components":{"first_name":["Joe"],"last_name":["Bloggs"],"address_line_1":["123 Main St"],"town":["New York"],"region":["NY"],"postal_code":["10000"],"email":["demo@experian.com"],"phone":["00123564789"],"country_iso_2":["US"],"ip_address":["255.255.255.255"],"user_agent":["python-requests/2.27.1"]},"attributes":["risk"]}
+                },
+                "Identity Append - Phone: Append an individual’s phone to their contact information": {
+                  "value": {"components":{"first_name":["ronald"],"middle_name":[""],"last_name":["biggerstaff"],"address_line_1":["1157 bolens creek rd"],"town":["burnsville"],"sub_region":["Yancey"],"region":["NC"],"postal_code":["28714"]},"options":[{"name":"dnc_preference","value":"flag"}],"attributes":["phone"]}
+                },
+                "Identity Append - Reverse Phone: Append contact information to an individual’s phone": {
+                  "value": {"components":{"phone":["0123564789"]},"options":[{"name":"match_preference","value":"only"}],"attributes":["contact"]}
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityAppendResponse"
+                },
+                "examples": {
+                  "Identity Append - Email: Append an individual's email to their contact information": {
+                    "value": {"result":{"email":"John.A.Smith@example.com"},"metadata":{"email_detail":{"email_type":"individual"}}}
+                  },
+                  "Identity Append - Reverse Email: Append contact information to an individual's email": {
+                    "value": {"result":{"contacts":[{"first_name":"THOMAS","last_name":"SMITH","address_line_1":"1153 S GILCHRIST ST","town":"TERRE HAUTE","region":"IN","postal_code":"47802-4742","country_iso_3":"USA"}]}}
+                  },
+                  "Identity Append - Email Risk Score: The information of the risk of a fraudulent profile": {
+                    "value": {"result":{"risk":{"score":100,"tumbling_risk":3,"domain_risk":5}},"metadata":{"email_detail":{"date_first_seen":"2016-08-09","longevity":3,"velocity":10,"popularity":10,"domain":{"date_first_seen":"now","longevity":3,"velocity":10,"popularity":10,"domain_type":"freeisp"},"confidence":"verified","verbose_output":"verified","verbose_reason":"Valid email address."},"address_detail":{"first_name_match":"match","last_name_match":"no_match","address_line_1_match":"no_data","town_match":"no_data","postal_code_match":"no_data","deliverability":"undeliverable","deliverability_detail":"missing_primary","address_type":{"code":"S","description":"Street"}},"ip_detail":{"routing_type":"fixed","organization":"experian","proxy_type":"tor","hosting_facility":true,"latitude":38.89768,"longitude":-77.03651}}}
+                  },
+                  "Identity Append - Phone: Append an individual's phone to their contact information": {
+                    "value": {"result":{"phones":["123-456-7890","0987-654-321","456-789-01234","123-321-01234"]},"metadata":{"phone_detail":[{"phone_type":"mobile","number":"123-456-7890","dnc":false,"dnc_date_revised":"2023-08-31","rank":0},{"phone_type":"landline","number":"0987-654-321","dnc":true,"dnc_date_revised":"2023-09-16","rank":1},{"phone_type":"pager","number":"456-789-01234","dnc":false,"dnc_date_revised":"2023-10-10","rank":2},{"phone_type":"unknown","number":"123-321-01234","dnc":true,"dnc_date_revised":"2023-11-29","rank":3}]}}
+                  },
+                  "Identity Append - Reverse Phone: Append contact information to an individual's phone": {
+                    "value": {"result":{"contacts":[{"number":"1234-567-890","first_name":"JOHN","middle_name":"JR","last_name":"DOE","address_line_1":"12 AVE APT 123","town":"NEW YORK","region":"NY","postal_code":"12345-1234","country_iso_3":"USA"}]},"metadata":{"phone_detail":[{"phone_type":"mobile","number":"1234-567-890","match_confidence":"high"}]}}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "415": {
+            "description": "Unsupported Media Type"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EmailRiskResult": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "integer",
+            "description": "A score indicating the risk level. Low score: 0, High score: 100",
+            "format": "int32",
+            "nullable": true,
+            "example": "100"
+          },
+          "tumbling_risk": {
+            "type": "integer",
+            "description": "A score indicating multiple variations of the same email address. 0 indicates no tumbling detected, while values of 1, 2 and 3 indicated a linear risk of tumbling detected.",
+            "format": "int32",
+            "nullable": true,
+            "example": "3"
+          },
+          "domain_risk": {
+            "type": "integer",
+            "description": "A score indicating the domain risk level, based on historical information and industry data. Low score: 0, High score: 10.",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The risk of a fraudulent profile."
+      },
+      "IdentityAppendAddressDetail": {
+        "type": "object",
+        "properties": {
+          "first_name_match": {
+            "type": "string",
+            "description": "Checks to see if the first name matches first names previously associated with that email.",
+            "nullable": true,
+            "example": "match"
+          },
+          "last_name_match": {
+            "type": "string",
+            "description": "Checks to see if the last name matches last names previously associated with that email.",
+            "nullable": true,
+            "example": "no_match"
+          },
+          "address_line_1_match": {
+            "type": "string",
+            "description": "Checks to see if the address line matches the address line previously associated with that email.",
+            "nullable": true,
+            "example": "no_data"
+          },
+          "town_match": {
+            "type": "string",
+            "description": "Checks to see if the town matches the town data previously associated with that email.",
+            "nullable": true,
+            "example": "no_data"
+          },
+          "postal_code_match": {
+            "type": "string",
+            "description": "Checks to see if the postal code matches the postal code data previously associated with that email.",
+            "nullable": true,
+            "example": "no_data"
+          },
+          "deliverability": {
+            "type": "string",
+            "description": "Checks if the address is deliverable.",
+            "nullable": true,
+            "example": "undeliverable"
+          },
+          "deliverability_detail": {
+            "type": "string",
+            "description": "Deliverable sub status.",
+            "nullable": true,
+            "example": "missing_primary"
+          },
+          "address_type": {
+            "$ref": "#/components/schemas/IdentityAppendAddressDetailAddressType"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The Address Detail metadata."
+      },
+      "IdentityAppendAddressDetailAddressType": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Indicates the address type.",
+            "nullable": true,
+            "example": "S"
+          },
+          "description": {
+            "type": "string",
+            "description": "Indicates the description of the code.",
+            "nullable": true,
+            "example": "Street"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The Address Detail metadata's address type information."
+      },
+      "IdentityAppendContactResponse": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "description": "The first name of the individual.",
+            "nullable": true,
+            "example": "John"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "The last name of the individual.",
+            "nullable": true,
+            "example": "Smith"
+          },
+          "address_line_1": {
+            "type": "string",
+            "description": "The first line of the individual’s address.",
+            "nullable": true,
+            "example": "1 Main Street"
+          },
+          "town": {
+            "type": "string",
+            "description": "The town, city or suburb of the individual’s address.",
+            "nullable": true,
+            "example": "Phoenix"
+          },
+          "region": {
+            "type": "string",
+            "description": "The state or province abbreviation of the individual’s address.",
+            "nullable": true,
+            "example": "AZ"
+          },
+          "postal_code": {
+            "type": "string",
+            "description": "The postal code of the individual’s address.",
+            "nullable": true,
+            "example": "94133"
+          },
+          "country_iso_3": {
+            "type": "string",
+            "description": "The country iso 3 of the individual’s address.",
+            "nullable": true,
+            "example": "USA"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The individuals contact information matched to the email or phone supplied."
+      },
+      "IdentityAppendEmailDetail": {
+        "type": "object",
+        "properties": {
+          "email_type": {
+            "type": "string",
+            "description": "The type of email based on its classification of intended purpose, i.e. individual, business or education.",
+            "nullable": true,
+            "example": "individual"
+          },
+          "date_first_seen": {
+            "type": "string",
+            "description": "The date the email address first appeared in the records.",
+            "nullable": true,
+            "example": "2016-08-09"
+          },
+          "longevity": {
+            "type": "integer",
+            "description": "A score relating to when the email address was first discovered. From 0 (not discovered) to 3 (Discovered over a year ago).",
+            "format": "int32",
+            "nullable": true,
+            "example": "3"
+          },
+          "velocity": {
+            "type": "integer",
+            "description": "A score reflecting the activity of the email address over the last 6 months, from 0 (no activity) to 10 (most active).",
+            "format": "int32",
+            "nullable": true,
+            "example": "10"
+          },
+          "popularity": {
+            "type": "integer",
+            "description": "A score assessing the email address's visibility over the last 12 months based on the number of sources that have received the address, ranging from 0 (no sources) to 10 (most sources).",
+            "format": "int32",
+            "nullable": true,
+            "example": "10"
+          },
+          "domain": {
+            "$ref": "#/components/schemas/IdentityAppendEmailDetailDomain"
+          },
+          "confidence": {
+            "type": "string",
+            "description": "The outcome (confidence level) of the validation.",
+            "nullable": true,
+            "example": "verified"
+          },
+          "verbose_output": {
+            "type": "string",
+            "description": "The verbose output of the validation.",
+            "nullable": true,
+            "example": "verified"
+          },
+          "verbose_reason": {
+            "type": "string",
+            "description": "The verbose output description of the validation.",
+            "nullable": true,
+            "example": "Valid email address."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Additional fields details that can be returned alongside the Identity Append result."
+      },
+      "IdentityAppendEmailDetailDomain": {
+        "type": "object",
+        "properties": {
+          "date_first_seen": {
+            "type": "string",
+            "description": "The date the domain first appeared in the records. The value \"now\" will be returned if the domain is new.",
+            "nullable": true,
+            "example": "now"
+          },
+          "longevity": {
+            "type": "integer",
+            "description": "A score relating to when the domain was first discovered. From 0 (not discovered) to 3 (Discovered over a year ago).",
+            "format": "int32",
+            "nullable": true,
+            "example": "3"
+          },
+          "velocity": {
+            "type": "integer",
+            "description": "A score reflecting the activity of the domain over the last 6 months, from 0 (no activity) to 10 (most active).",
+            "format": "int32",
+            "nullable": true,
+            "example": "10"
+          },
+          "popularity": {
+            "type": "integer",
+            "description": "A score assessing the domain's visibility over the last 12 months based on the number of sources that have received the address, ranging from 0 (no sources) to 10 (most sources).",
+            "format": "int32",
+            "nullable": true,
+            "example": "10"
+          },
+          "domain_type": {
+            "type": "string",
+            "description": "The type of domain.",
+            "nullable": true,
+            "example": "freeisp"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The Email Detail metadata Domain info."
+      },
+      "IdentityAppendInputComponents": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The first name of the individual.",
+            "nullable": true,
+            "example": [
+              "John"
+            ]
+          },
+          "middle_name": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The middle name of the individual.",
+            "nullable": true,
+            "example": [
+              "Abraham"
+            ]
+          },
+          "last_name": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The last name of the individual.",
+            "nullable": true,
+            "example": [
+              "Smith"
+            ]
+          },
+          "address_line_1": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The first line of the individual’s address.",
+            "nullable": true,
+            "example": [
+              "1 Main Street"
+            ]
+          },
+          "town": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The town, city or suburb of the individual’s address.",
+            "nullable": true,
+            "example": [
+              "Phoenix"
+            ]
+          },
+          "sub_region": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The county of the individual’s address.",
+            "nullable": true,
+            "example": [
+              "Yancey"
+            ]
+          },
+          "region": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The state or province abbreviation of the individual’s address.",
+            "nullable": true,
+            "example": [
+              "AZ"
+            ]
+          },
+          "postal_code": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The postal code of the individual’s address.",
+            "nullable": true,
+            "example": [
+              "94133"
+            ]
+          },
+          "email": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The email of the individual.",
+            "nullable": true,
+            "example": [
+              "John.A.Smith@example.com"
+            ]
+          },
+          "phone": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The phone number of the individual.",
+            "nullable": true,
+            "example": [
+              "1234567890"
+            ]
+          },
+          "country_iso_2": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The country of the individual in two letter ISO code.",
+            "nullable": true,
+            "example": [
+              "US"
+            ]
+          },
+          "ip_address": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The ip address of the individual.",
+            "nullable": true,
+            "example": [
+              "255.255.255.255"
+            ]
+          },
+          "user_agent": {
+            "maxItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The user agent of the individual.",
+            "nullable": true,
+            "example": [
+              "python-requests/2.27.1"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "description": "The identity input component."
+      },
+      "IdentityAppendInputOptions": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the option.",
+            "nullable": true,
+            "example": "dnc_preference"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value of the option.",
+            "nullable": true,
+            "example": "flag | exclude | only"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The identity append request options."
+      },
+      "IdentityAppendIpDetail": {
+        "type": "object",
+        "properties": {
+          "routing_type": {
+            "type": "string",
+            "description": "Indicates the IP Routing Type (IPRT), which specifies how the connection is routed through the Internet and can be used to determine how close the user is to the public IP address.",
+            "nullable": true,
+            "example": "fixed"
+          },
+          "organization": {
+            "type": "string",
+            "description": "The registering organization, which can include many types of entities, including corporate, government, or educational entities, and ISPs managing the allocation and use of network blocks.",
+            "nullable": true,
+            "example": "experian"
+          },
+          "proxy_type": {
+            "type": "string",
+            "description": "The network or protocol utilized by the server to proxy the user connection is identified.",
+            "nullable": true,
+            "example": "tor"
+          },
+          "hosting_facility": {
+            "type": "boolean",
+            "description": "A value of \"true\" indicates that the IP address is associated with a hosting facility; otherwise the value is \"false\".",
+            "nullable": true,
+            "example": "true"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "The latitude of the identified location.",
+            "format": "double",
+            "nullable": true,
+            "example": "38.89768"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "The longitude of the identified location.",
+            "format": "double",
+            "nullable": true,
+            "example": "-77.03651"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The Ip Address Detail metadata."
+      },
+      "IdentityAppendMetadata": {
+        "type": "object",
+        "properties": {
+          "email_detail": {
+            "$ref": "#/components/schemas/IdentityAppendEmailDetail"
+          },
+          "address_detail": {
+            "$ref": "#/components/schemas/IdentityAppendAddressDetail"
+          },
+          "ip_detail": {
+            "$ref": "#/components/schemas/IdentityAppendIpDetail"
+          },
+          "phone_detail": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentityAppendPhoneDetail"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The metadata model."
+      },
+      "IdentityAppendPhoneDetail": {
+        "type": "object",
+        "properties": {
+          "phone_type": {
+            "type": "string",
+            "description": "The type of phone based on its classification of intended purpose, i.e. mobile, landline, pager or unknown.",
+            "nullable": true,
+            "example": "mobile"
+          },
+          "number": {
+            "type": "string",
+            "description": "The phone number of the individual.",
+            "nullable": true,
+            "example": "123-456-7890"
+          },
+          "dnc": {
+            "type": "boolean",
+            "description": "A value of \"true\" indicates that the phone number appears on the Do Not Call list; otherwise the value is \"false\"",
+            "nullable": true,
+            "example": "true"
+          },
+          "dnc_date_revised": {
+            "type": "string",
+            "description": "The last date the phone number appeared on the Do Not Call list.",
+            "nullable": true,
+            "example": "2023-08-31"
+          },
+          "rank": {
+            "type": "integer",
+            "description": "The rank of the phone number most likely in use by the individual.",
+            "format": "int32",
+            "nullable": true,
+            "example": "0"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The Phone Detail metadata."
+      },
+      "IdentityAppendRequest": {
+        "required": [
+          "attributes",
+          "components"
+        ],
+        "type": "object",
+        "properties": {
+          "components": {
+            "$ref": "#/components/schemas/IdentityAppendInputComponents"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentityAppendInputOptions"
+            },
+            "description": "The identity append request options.",
+            "nullable": true
+          },
+          "attributes": {
+            "maxItems": 1,
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Type of the request.",
+            "example": [
+              "email"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "description": "The request model.\n\nFor more information on what elements are mandatory or optional, please visit the Technical Documentation site for\n<a href=\"https://docs.experianaperture.io/identity-append/experian-identity-append/api-reference/email-append/\">Email Append</a>, \n<a href=\"https://docs.experianaperture.io/identity-append/experian-identity-append/api-reference/reverse-email-append/\">Reverse Email Append</a>, \n<a href=\"https://docs.experianaperture.io/identity-append/experian-identity-append/api-reference/phone-append/\">Phone Append</a>\nand \n<a href=\"https://docs.experianaperture.io/identity-append/experian-identity-append/api-reference/risk-score/\">Risk Score</a>."
+      },
+      "IdentityAppendResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/IdentityAppendResult"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/IdentityAppendMetadata"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response model."
+      },
+      "IdentityAppendResult": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email of the individual.",
+            "nullable": true,
+            "example": "John.A.Smith@example.com"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentityAppendContactResponse"
+            },
+            "nullable": true
+          },
+          "risk": {
+            "$ref": "#/components/schemas/EmailRiskResult"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The matched phone number(s) of the individual.",
+            "nullable": true,
+            "example": "[ \"123-456-7890\", \"098-765-4321\"]"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Details about the result, such as email, contact, or risk score."
+      },
+      "ResponseError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "A link to documentation that provides more details about the error you’ve encountered.",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the error.",
+            "nullable": true,
+            "example": "Bad Request"
+          },
+          "detail": {
+            "type": "string",
+            "description": "A description of the error.",
+            "nullable": true,
+            "example": "The request body was malformed."
+          },
+          "instance": {
+            "type": "string",
+            "description": "The endpoint that returned the error.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Error model containing the error details."
+      }
+    },
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "http",
+        "description": "Token URL: https://sso.experianaperture.io/oauth2/aust0wkxjeKyT3HRO4x7/v1/token \n\n Flow: clientCredentials",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
+      },
+      "Auth-Token": {
+        "type": "apiKey",
+        "description": "Your unique key, called a token, that is required to submit an API request.",
+        "name": "Auth-Token",
+        "in": "header"
+      },
+      "x-app-key": {
+        "type": "apiKey",
+        "description": "Alternative Auth Token header.",
+        "name": "x-app-key",
+        "in": "header"
+      }
+    }
+  }
+}

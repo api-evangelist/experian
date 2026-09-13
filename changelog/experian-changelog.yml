@@ -1,0 +1,81 @@
+generated: '2026-09-13'
+method: searched
+source: https://docs.experianaperture.io/address-validation/experian-address-validation/help/release-notes/
+docs:
+- https://docs.experianaperture.io/address-validation/experian-address-validation/help/release-notes/
+- https://docs.experianaperture.io/address-validation/address-validate-soap/help/release-notes/
+- https://docs.experianaperture.io/more/product-roadmap/
+note: 'Experian Data Quality publishes dated, per-product release notes as documentation pages — not
+  a feed, not a machine-readable changelog, and with no RSS or Atom. Entries are prose descriptions
+  of what shipped, dated to the day. No version numbers are attached to entries; the API itself
+  versions by path segment, so a release note describes a behavioural change inside an existing
+  version rather than a new one. The window below is the recent set from the Address Validation
+  notes, the most active of the product changelogs. The Global Developer Platform
+  (developer.experian.com) publishes no changelog at all.'
+scheme: dated prose entries, per product, no semantic version tags
+feed: null
+feed_note: No RSS/Atom/JSON feed is published for release notes. The only machine-consumable Experian
+  feed found is the status page incident feed at https://status.edq.com/history.atom.
+current_version: null
+current_version_note: Versioning is per-endpoint path segment (v1/v2/v3), not a product-wide release
+  number, so there is no single current version to record.
+entries:
+- date: '2026-06-18'
+  product: Experian Address Validation
+  type: addition
+  breaking: false
+  highlight: Bulk Address Validation API added — validate multiple addresses in one call, up to
+    10,000 addresses per submission.
+- date: '2026-01-08'
+  product: Experian Address Validation
+  type: addition
+  breaking: false
+  highlight: DPID Mode for Australia DataFusion introduced via the Add-DPID header, returning
+    Delivery Point Identifiers where available.
+- date: '2025-08-28'
+  product: Experian Address Validation
+  type: addition
+  breaking: false
+  highlight: Autocomplete search extended to additional UK location, government and Mosaic
+    enrichment elements.
+- date: '2025-07-11'
+  product: Experian Address Validation
+  type: addition
+  breaking: false
+  highlight: Customized Autocomplete searching with region inclusion/exclusion options for USA,
+    Canada and Australia.
+- date: '2025-05-08'
+  product: Experian Enrichment
+  type: addition
+  breaking: false
+  highlight: Premium Global Location Insight "lite" offering launched — essential geocoding without
+    time-zone attributes.
+- date: '2025-04-25'
+  product: Data Validation Solutions SDKs
+  type: addition
+  breaking: false
+  highlight: New software development kits for popular programming languages released on GitHub
+    (the edq-data-validation-sdks monorepo — .NET, Java, TypeScript).
+- date: '2025-03-28'
+  product: Layout Builder
+  type: improvement
+  breaking: false
+  highlight: Layout Builder UI enhanced so users can update existing custom layouts.
+- date: '2025-03-11'
+  product: Experian Address Validation
+  type: addition
+  breaking: false
+  highlight: Emergency Services proposition introduced for UK local authorities — name, address,
+    UPRN and what3words location searching.
+- date: '2025-01-15'
+  product: Layout Builder
+  type: addition
+  breaking: false
+  highlight: Layout deletion and detailed historical activity logs with email-based user tracking.
+- date: '2024-10-17'
+  product: Experian Address Validation
+  type: addition
+  breaking: false
+  highlight: Granular verification flags made available for the Validate search type across multiple
+    countries, showing which address components were modified.
+breaking_changes_in_window: 0

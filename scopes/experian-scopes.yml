@@ -1,0 +1,109 @@
+generated: '2026-09-13'
+method: probed
+source: the OAuth/OIDC discovery documents fetched in this pass and saved verbatim under well-known/
+docs: https://developer.experian.com/tutorials/oauth-20-tutorial
+note: 'Experian publishes no API scope reference — no page names a scope that grants access to a
+  product. What it does serve is discovery metadata on ten hosts, and the scopes_supported arrays in
+  those documents are the only authoritative scope data that exists publicly. They say something
+  worth recording: on the Global Developer Platform, the ONLY supported scope is `openid`. Access to a
+  product is not expressed as a scope at all — it is granted per application in the Developer Portal
+  and enforced server-side, so an access token carries no readable statement of what it may do. On
+  the Aperture side, entitlement is carried entirely by the Auth-Token header plus per-integration
+  domain and IP allowlists, with the standard OIDC profile scopes available from the Okta issuer for
+  user authentication only. In short: scope-based authorization is effectively absent from
+  Experian''s public API surface, and that is a finding, not a gap in the search.'
+model: no product scopes published; entitlement is out-of-band
+issuers:
+- issuer: https://sso.experianaperture.io
+  platform: Experian Data Quality (Aperture) SSO
+  vendor: Okta
+  document: well-known/experian-sso-openid-configuration.json
+  scopes_supported:
+  - openid
+  - email
+  - profile
+  - address
+  - phone
+  - offline_access
+  - groups
+  scope_note: Standard OIDC profile scopes only. None of them grants access to an Aperture API
+    product; they describe the authenticated user.
+  grant_types_supported:
+  - authorization_code
+  - implicit
+  - refresh_token
+  - password
+  - client_credentials
+  - urn:ietf:params:oauth:grant-type:device_code
+  token_endpoint_auth_methods_supported:
+  - client_secret_basic
+  - client_secret_post
+  - client_secret_jwt
+  - private_key_jwt
+  - none
+  pkce: [S256]
+  admin_scopes_note: 'The oauth-authorization-server document additionally advertises ~80 okta.*
+    administrative scopes (okta.users.manage, okta.apps.manage, okta.apiTokens.manage and so on).
+    These are the Okta tenant management API''s own scopes, exposed because the issuer is an Okta org
+    authorization server — they are not Experian API scopes and are not grantable to an ordinary
+    integration. Recorded here so a reader does not mistake them for an Experian product surface.'
+- issuer: https://us-api.experian.com
+  platform: Experian Global Developer Platform (US production)
+  document: well-known/experian-us-api-openid-configuration.json
+  scopes_supported: [openid]
+  grant_types_supported: [password]
+  token_endpoint_auth_methods_supported: [client_secret_post, none]
+  pkce: null
+- issuer: https://sandbox-us-api.experian.com
+  platform: Experian Global Developer Platform (US sandbox)
+  document: well-known/experian-sandbox-us-api-openid-configuration.json
+  scopes_supported: [openid]
+  grant_types_supported: [password]
+- issuer: https://uk-api.experian.com
+  platform: Experian Global Developer Platform (UK production)
+  document: well-known/experian-uk-api-openid-configuration.json
+  scopes_supported: [openid]
+  grant_types_supported: [password]
+- issuer: https://sandbox-uk-api.experian.com
+  platform: Experian Global Developer Platform (UK sandbox)
+  document: well-known/experian-sandbox-uk-api-openid-configuration.json
+  scopes_supported: [openid]
+  grant_types_supported: [password]
+- issuer: https://eu-api.experian.com
+  platform: Experian Global Developer Platform (EMEA production)
+  document: well-known/experian-eu-api-openid-configuration.json
+  scopes_supported: [openid]
+  grant_types_supported: [password]
+- issuer: https://sandbox-eu-api.experian.com
+  platform: Experian Global Developer Platform (EMEA sandbox)
+  document: well-known/experian-sandbox-eu-api-openid-configuration.json
+  scopes_supported: [openid]
+  grant_types_supported: [password]
+- issuer: https://sandbox-in-api.experian.com
+  platform: Experian Global Developer Platform (India sandbox)
+  document: well-known/experian-sandbox-in-api-openid-configuration.json
+  scopes_supported: [openid]
+  grant_types_supported: [password]
+- issuer: https://api.experian.com.au
+  platform: Experian Global Developer Platform (Australia production)
+  document: well-known/experian-api-au-openid-configuration.json
+  scopes_supported: [openid]
+  grant_types_supported: [password]
+- issuer: https://sandbox-api.experian.com.au
+  platform: Experian Global Developer Platform (Australia sandbox)
+  document: well-known/experian-sandbox-api-au-openid-configuration.json
+  scopes_supported: [openid]
+  grant_types_supported: [password]
+- issuer: https://sandbox-api.experian.com.sg
+  platform: Experian Global Developer Platform (Singapore sandbox)
+  document: well-known/experian-sandbox-api-sg-openid-configuration.json
+  scopes_supported: [openid]
+  grant_types_supported: [password]
+scopes: []
+scopes_note: The scopes[] list is deliberately empty. No Experian product scope exists to record, and
+  listing the OIDC profile scopes or the Okta admin scopes here would misrepresent them as API
+  permissions.
+agent_readiness_implication: 'An agent holding an Experian access token cannot determine from the
+  token, or from any discovery document, which products it may call. It finds out by calling and
+  reading the 403. The published 403 causes confirm this is the intended design — "the token is valid,
+  but it is associated with another product or you have insufficient credits."'

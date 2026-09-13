@@ -1,0 +1,247 @@
+generated: '2026-09-13'
+method: probed
+source: live HTTP probes of every host in apis.yml (registrable domain + www, each apis[].baseURL
+  host, every OpenAPI servers[] host, the docs/console host, and the SSO issuer named in the
+  Aperture OpenAPI OAuth2 securityScheme description)
+note: 'Experian serves no security.txt, api-catalog, ai-plugin, apis.json or agent card on any
+  probed host. What it does serve, consistently, is OAuth/OIDC discovery: every regional Global
+  Developer Platform host (production and sandbox) publishes a real /.well-known/openid-configuration,
+  and the Aperture SSO issuer (sso.experianaperture.io, an Okta tenant) publishes both
+  openid-configuration and oauth-authorization-server. www.experian.com and www.experian.co.uk sit
+  behind an Imperva "Pardon Our Interruption" bot challenge and were probed with a browser
+  User-Agent; they returned 404/403 for every well-known path, not a challenge page.'
+path_echo_control: passed
+soft_404_control:
+  note: negative-control path /.well-known/experian-negative-control-7f3ab91c.json was requested on
+    every host that returned a 200; sso.experianaperture.io returned 404 and us-api.experian.com
+    returned 400. No host echoes arbitrary well-known paths.
+  probes:
+  - url: https://sso.experianaperture.io/.well-known/experian-negative-control-7f3ab91c.json
+    status: 404
+  - url: https://us-api.experian.com/.well-known/experian-negative-control-7f3ab91c.json
+    status: 400
+hit_count: 12
+hosts:
+- host: https://experian.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://www.experian.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://www.experianplc.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+- host: https://www.experian.co.uk
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+    note: Imperva bot challenge; re-fetched with a browser User-Agent and still 403
+  - path: /.well-known/agent-card.json
+    status: 403
+  - path: /.well-known/agent.json
+    status: 403
+- host: https://developer.experian.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://api.experianaperture.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://docs.experianaperture.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://sso.experianaperture.io
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: experian-sso-openid-configuration.json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: experian-sso-oauth-authorization-server.json
+  - path: /.well-known/security.txt
+    status: 405
+  - path: /.well-known/oauth-protected-resource
+    status: 405
+  - path: /.well-known/api-catalog
+    status: 405
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://us-api.experian.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: experian-us-api-openid-configuration.json
+  - path: /.well-known/security.txt
+    status: 400
+  - path: /.well-known/oauth-authorization-server
+    status: 400
+  - path: /.well-known/oauth-protected-resource
+    status: 400
+  - path: /.well-known/api-catalog
+    status: 400
+  - path: /.well-known/apis.json
+    status: 400
+  - path: /apis.json
+    status: 400
+  - path: /.well-known/agent-card.json
+    status: 400
+  - path: /.well-known/agent.json
+    status: 400
+- host: https://sandbox-us-api.experian.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: experian-sandbox-us-api-openid-configuration.json
+- host: https://uk-api.experian.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: experian-uk-api-openid-configuration.json
+- host: https://sandbox-uk-api.experian.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: experian-sandbox-uk-api-openid-configuration.json
+- host: https://eu-api.experian.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: experian-eu-api-openid-configuration.json
+- host: https://sandbox-eu-api.experian.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: experian-sandbox-eu-api-openid-configuration.json
+- host: https://sandbox-in-api.experian.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: experian-sandbox-in-api-openid-configuration.json
+- host: https://api.experian.com.au
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: experian-api-au-openid-configuration.json
+- host: https://sandbox-api.experian.com.au
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: experian-sandbox-api-au-openid-configuration.json
+- host: https://sandbox-api.experian.com.sg
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: experian-sandbox-api-sg-openid-configuration.json
+- host: https://ws.ondemand.qas.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404

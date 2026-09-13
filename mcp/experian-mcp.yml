@@ -1,0 +1,133 @@
+generated: '2026-09-13'
+method: derived
+status: candidate
+source: openapi/experian-aperture-openapi.json
+note: 'No official Experian MCP server exists. Searched the MCP registries, the modelcontextprotocol
+  GitHub organization, npm (the only Experian-scoped npm packages are @experian-ecs/connected-web-sdk
+  and @experian-ecs/connected-api-sdk — web/embedded SDKs, not MCP servers), the Experian GitHub
+  organizations experianplc and experiandataquality, and both documentation sites. Nothing was found,
+  and no /mcp endpoint was probed or guessed: inventing an endpoint URL that happened to answer 200
+  would read as a verified agent surface, which is exactly the failure this field exists to prevent.
+  The tools below are a CANDIDATE mapping derived from the published OpenAPI, offered as a design
+  the provider could adopt — they are not callable today.'
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: derived
+server:
+  name: experian-aperture
+  transport: null
+  url: null
+tools:
+- name: search_address
+  description: Search for an address using autocomplete, typedown, single-line or validate search
+    types within a country dataset, returning suggestions keyed by global_address_key.
+  source_operation: openapi/experian-aperture-openapi.json#POST /address/search/v1
+  consequence: read
+- name: validate_address
+  description: Validate a supplied address in one call and return the verification match level and
+    granular component verification flags.
+  source_operation: openapi/experian-aperture-openapi.json#POST /address/validate/v1
+  consequence: read
+- name: format_address
+  description: Return the fully formatted address for a global_address_key, optionally under a named
+    custom layout.
+  source_operation: openapi/experian-aperture-openapi.json#GET /address/format/v1/{global_address_key}
+  consequence: read
+- name: lookup_address
+  description: Look up addresses by a structured identifier such as postal code, UPRN or what3words
+    location.
+  source_operation: openapi/experian-aperture-openapi.json#POST /address/lookup/v2
+  consequence: read
+- name: refine_address_suggestions
+  description: Refine an ambiguous suggestion set using a refinement term.
+  source_operation: openapi/experian-aperture-openapi.json#POST /address/suggestions/refine/v1/{key}
+  consequence: read
+- name: stepin_address_suggestions
+  description: Step into a container address (a building) to list its sub-premises.
+  source_operation: openapi/experian-aperture-openapi.json#GET /address/suggestions/stepin/v1/{global_address_key}
+  consequence: read
+- name: list_address_datasets
+  description: List the country datasets available to the calling token and the search types each
+    supports.
+  source_operation: openapi/experian-aperture-openapi.json#GET /address/datasets/v1
+  consequence: read
+- name: validate_email
+  description: Validate an email address and return its confidence classification, optionally with
+    mailbox and domain metadata.
+  source_operation: openapi/experian-aperture-openapi.json#POST /email/validate/v2
+  consequence: read
+- name: validate_phone
+  description: Validate a phone number, returning line type, portability and connectivity attributes
+    and optionally PLUS_E164 formatting.
+  source_operation: openapi/experian-aperture-openapi.json#POST /phone/validate/v2
+  consequence: read
+- name: enrich_address
+  description: Append geodemographic, geocode, location-insight and Mosaic attributes to a resolved
+    address key.
+  source_operation: openapi/experian-aperture-openapi.json#POST /enrichment/v2
+  consequence: read
+  sensitivity: Returns personal and household-level demographic attributes. An MCP server exposing
+    this tool should require explicit per-call consent.
+- name: append_identity
+  description: Return additional contact and identity attributes for a known individual.
+  source_operation: openapi/experian-aperture-openapi.json#POST /identity/append/v1
+  consequence: read
+  sensitivity: Personally identifying data. Same consent caveat as enrich_address.
+- name: append_reverse_phone
+  description: Return the identity associated with a phone number.
+  source_operation: openapi/experian-aperture-openapi.json#POST /phone/append/v1
+  consequence: read
+  sensitivity: Personally identifying data. Same consent caveat as enrich_address.
+- name: create_bulk_batch
+  description: Create an asynchronous bulk validation batch for address, email or phone records.
+  source_operation: openapi/experian-aperture-openapi.json#POST /address/bulk/v1/batches
+  consequence: write
+  note: Billable per successful record and NOT idempotent — see conventions/experian-conventions.yml.
+- name: start_bulk_batch
+  description: Start a created batch processing.
+  source_operation: openapi/experian-aperture-openapi.json#POST /address/bulk/v1/batches/{batch_id}/start
+  consequence: write
+  reversal: stop_bulk_batch
+- name: get_bulk_batch_status
+  description: Poll the status of a batch.
+  source_operation: openapi/experian-aperture-openapi.json#GET /address/bulk/v1/batches/{batch_id}
+  consequence: read
+- name: get_bulk_batch_results
+  description: Retrieve the results of a completed batch.
+  source_operation: openapi/experian-aperture-openapi.json#GET /address/bulk/v1/batches/{batch_id}/results
+  consequence: read
+- name: stop_bulk_batch
+  description: Stop a running batch.
+  source_operation: openapi/experian-aperture-openapi.json#POST /address/bulk/v1/batches/{batch_id}/stop
+  consequence: write
+  note: The only published reversal path in the surface. No window is stated for how long after
+    start a stop is honoured.
+- name: manage_address_layout
+  description: Create, read, update or delete a named custom address layout.
+  source_operation: openapi/experian-aperture-openapi.json#POST|GET|PUT|DELETE /address/layouts/v2
+  consequence: write
+  note: DELETE is irreversible — no restore or soft-delete is documented.
+coverage:
+  openapi_operations: 41
+  candidate_tools: 18
+  note: The 41 operations collapse to 18 candidate tools because the bulk surface repeats an
+    identical six-operation shape three times (address, email, phone); the candidate tools take the
+    record type as a parameter instead.
+searched:
+  registries:
+  - name: modelcontextprotocol/servers
+    result: no Experian entry
+  - name: npm
+    result: no Experian MCP package; @experian-ecs packages are web/API SDKs
+  - name: github.com/experianplc
+    result: two repos, neither MCP
+  - name: github.com/experiandataquality
+    result: three repos, none MCP
+  - name: docs.experianaperture.io
+    result: no MCP mention
+  - name: developer.experian.com
+    result: no MCP mention

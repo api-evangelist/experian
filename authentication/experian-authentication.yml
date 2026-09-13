@@ -1,0 +1,118 @@
+generated: '2026-09-13'
+method: searched
+docs:
+- https://developer.experian.com/tutorials/oauth-20-tutorial
+- https://developer.experian.com/tutorials/quick-start-guide
+- https://docs.experianaperture.io/address-validation/experian-address-validation/get-started/securing-your-integration/
+- https://docs.experianaperture.io/more/self-service-portal/
+note: 'Baseline derived from the eleven published OpenAPI documents, then upgraded from the two
+  provider documentation sets. Experian runs TWO different authentication models on two platforms and
+  the spec only describes one of them. Aperture (api.experianaperture.io): a static Auth-Token header
+  issued per integration from the Self Service Portal, with x-app-key documented as an alternative
+  header carrying the same value, plus an OAuth2 clientCredentials flow against the Okta issuer
+  sso.experianaperture.io. Entitlement is additionally bounded by per-integration domain and IP
+  allowlists — a valid token presented from an unlisted domain or IP returns 403, which is a genuine
+  second factor most API providers do not offer. Global Developer Platform (developer.experian.com):
+  OAuth2 resource-owner password grant against the regional host''s own /oauth2/v1/token, using the
+  developer''s portal username and password together with an application client_id and
+  client_secret, returning a Bearer access token and a refresh token. Every region runs its own
+  issuer; ten of them serve a live OIDC discovery document (see well-known/). No product scopes exist
+  on either platform — see scopes/experian-scopes.yml.'
+platforms:
+- platform: Experian Data Quality (Aperture)
+  primary: Auth-Token header
+  alternative_header: x-app-key
+  oauth2_flow: clientCredentials
+  token_endpoint: https://sso.experianaperture.io/oauth2/aust0wkxjeKyT3HRO4x7/v1/token
+  issuer: https://sso.experianaperture.io
+  issued_from: https://docs.experianaperture.io/more/self-service-portal/
+  additional_controls:
+  - per-integration domain allowlist
+  - per-integration IP allowlist
+  key_prefix_convention: none — environment is selected by hostname, not by key shape
+  rotation: managed in the Self Service Portal; no rotation API
+- platform: Experian Global Developer Platform
+  primary: OAuth2 resource-owner password grant
+  token_endpoint_pattern: https://{region-host}/oauth2/v1/token
+  credentials:
+  - Developer Portal username and password
+  - application client_id and client_secret from "My Apps"
+  returns:
+  - Bearer access_token
+  - refresh_token
+  issuers: see scopes/experian-scopes.yml — ten regional issuers, each serving OIDC discovery
+  deprecated_grant_note: The password grant is deprecated in OAuth 2.1 and the current OAuth security
+    BCP. Recorded as observed fact, not endorsed.
+  source: https://developer.experian.com/tutorials/quick-start-guide
+auth_failure_semantics:
+  '401': The Auth-Token provided is incorrect.
+  '403':
+  - token is valid but associated with another product, or the account has insufficient credits
+  - token is disabled and must be activated in the Self Service Portal
+  - the calling domain is not on the integration allowlist
+  - the calling IP is not on the integration allowlist
+  source: errors/experian-problem-types.yml
+source: openapi/experian-addressvalidation-openapi.json, openapi/experian-aperture-openapi.json,
+  openapi/experian-bulkaddress-openapi.json, openapi/experian-bulkemail-openapi.json, openapi/experian-bulkphone-openapi.json,
+  openapi/experian-emailvalidation-openapi.json, openapi/experian-emailvalidationv2-openapi.json,
+  openapi/experian-enrichment-openapi.json, openapi/experian-identityappend-openapi.json, openapi/experian-phonevalidation-openapi.json,
+  openapi/experian-reversephoneappend-openapi.json
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: OAuth2
+  type: http
+  scheme: Bearer
+  bearerFormat: JWT
+  description: "Token URL: https://sso.experianaperture.io/oauth2/aust0wkxjeKyT3HRO4x7/v1/token\
+    \ \n\n Flow: clientCredentials"
+  sources:
+  - openapi/experian-addressvalidation-openapi.json
+  - openapi/experian-aperture-openapi.json
+  - openapi/experian-bulkaddress-openapi.json
+  - openapi/experian-bulkemail-openapi.json
+  - openapi/experian-bulkphone-openapi.json
+  - openapi/experian-emailvalidation-openapi.json
+  - openapi/experian-emailvalidationv2-openapi.json
+  - openapi/experian-enrichment-openapi.json
+  - openapi/experian-identityappend-openapi.json
+  - openapi/experian-phonevalidation-openapi.json
+  - openapi/experian-reversephoneappend-openapi.json
+- name: Auth-Token
+  type: apiKey
+  in: header
+  parameter: Auth-Token
+  description: Your unique key, called a token, that is required to submit an API request.
+  sources:
+  - openapi/experian-addressvalidation-openapi.json
+  - openapi/experian-aperture-openapi.json
+  - openapi/experian-bulkaddress-openapi.json
+  - openapi/experian-bulkemail-openapi.json
+  - openapi/experian-bulkphone-openapi.json
+  - openapi/experian-emailvalidation-openapi.json
+  - openapi/experian-emailvalidationv2-openapi.json
+  - openapi/experian-enrichment-openapi.json
+  - openapi/experian-identityappend-openapi.json
+  - openapi/experian-phonevalidation-openapi.json
+  - openapi/experian-reversephoneappend-openapi.json
+- name: x-app-key
+  type: apiKey
+  in: header
+  parameter: x-app-key
+  description: Alternative Auth Token header.
+  sources:
+  - openapi/experian-addressvalidation-openapi.json
+  - openapi/experian-aperture-openapi.json
+  - openapi/experian-bulkaddress-openapi.json
+  - openapi/experian-bulkemail-openapi.json
+  - openapi/experian-bulkphone-openapi.json
+  - openapi/experian-emailvalidation-openapi.json
+  - openapi/experian-emailvalidationv2-openapi.json
+  - openapi/experian-enrichment-openapi.json
+  - openapi/experian-identityappend-openapi.json
+  - openapi/experian-phonevalidation-openapi.json
+  - openapi/experian-reversephoneappend-openapi.json

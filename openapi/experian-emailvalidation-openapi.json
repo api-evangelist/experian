@@ -1,0 +1,275 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Email Validation",
+    "version": "v2"
+  },
+  "servers": [
+    {
+      "url": "https://api.experianaperture.io/"
+    }
+  ],
+  "paths": {
+    "/email/validation/v1": {
+      "post": {
+        "tags": [
+          "Email Validation"
+        ],
+        "summary": "Submits an email address to the service to be validated and returns the result of the validation.",
+        "parameters": [
+          {
+            "name": "Reference-Id",
+            "in": "header",
+            "description": "Optional identifier that will be returned in the response to help you track the request.",
+            "schema": {
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[\\w\\-\\/\\:\\.\\,\\(\\) ]+$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailValidationV1Request"
+              },
+              "example": {"email":"support@experian.com","timeout":5}
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailValidationV1Request"
+              },
+              "example": "<request xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n  <email>support@experian.com</email>\n  <timeout>5</timeout>\n</request>"
+            },
+            "application/x-msgpack": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailValidationV1Request"
+              },
+              "example": {"email":"support@experian.com","timeout":5}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailValidationV1Response"
+                },
+                "example": {"transaction_id":"00000000-0000-0000-0000-000000000000","result":{"email":"support@experian.com","confidence":"illegitimate","verbose":"roleAccount"}}
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailValidationV1Response"
+                },
+                "example": "<response xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n  <result>\n    <email>support@experian.com</email>\n    <confidence>illegitimate</confidence>\n    <verbose>roleAccount</verbose>\n  </result>\n  <transaction_id>00000000-0000-0000-0000-000000000000</transaction_id>\n</response>"
+              },
+              "application/x-msgpack": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailValidationV1Response"
+                },
+                "example": {"transaction_id":"00000000-0000-0000-0000-000000000000","result":{"email":"support@experian.com","confidence":"illegitimate","verbose":"roleAccount"}}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "406": {
+            "description": "Not Acceptable"
+          },
+          "408": {
+            "description": "Request Timeout"
+          },
+          "415": {
+            "description": "Unsupported Media Type"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [ ]
+          },
+          {
+            "Auth-Token": [ ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EmailValidationV1Confidence": {
+        "enum": [
+          "verified",
+          "undeliverable",
+          "unreachable",
+          "illegitimate",
+          "disposable",
+          "unknown"
+        ],
+        "type": "string",
+        "description": "The outcome (confidence level) of the validation."
+      },
+      "EmailValidationV1Request": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The email address that is the subject of the validation.",
+            "example": "support@experian.com"
+          },
+          "timeout": {
+            "type": "integer",
+            "description": "Maximum time you are prepared to wait for a response, expressed in seconds. Acceptable values: 3-15. If a timeout occurs, a confidence status of \"unknown\" and a verbose result of \"timeout\" will be returned.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The request model.",
+        "xml": {
+          "name": "request"
+        }
+      },
+      "EmailValidationV1Response": {
+        "type": "object",
+        "properties": {
+          "reference_id": {
+            "type": "string",
+            "description": "If you chose to submit a \"Reference-Id\" in the response body, the value will be returned with the response.",
+            "nullable": true
+          },
+          "transaction_id": {
+            "type": "string",
+            "description": "Unique Experian-assigned transaction identifier.",
+            "nullable": true,
+            "example": "ab123ab1-abc1-1234-abcd-ab1a123a1a12"
+          },
+          "error": {
+            "$ref": "#/components/schemas/ResponseError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/EmailValidationV1Result"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response model.",
+        "xml": {
+          "name": "response"
+        }
+      },
+      "EmailValidationV1Result": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email address that is the subject of the validation.",
+            "nullable": true,
+            "example": "support@experian.com"
+          },
+          "confidence": {
+            "$ref": "#/components/schemas/EmailValidationV1Confidence"
+          },
+          "verbose": {
+            "type": "string",
+            "description": "Additional information on the confidence level.",
+            "nullable": true,
+            "example": "verified, mailboxFull, unreachable"
+          },
+          "corrections": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "xml": {
+                "name": "correction"
+              }
+            },
+            "description": "A list of more likely email addresses. Suggestions include fixes to syntax errors in the provided email address, typos in domains etc.",
+            "nullable": true,
+            "xml": {
+              "name": "corrections",
+              "wrapped": true
+            }
+          }
+        },
+        "additionalProperties": false,
+        "description": "Details about the result. Includes the validated data and its confidence level."
+      },
+      "ResponseError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "A link to documentation that provides more details about the error you’ve encountered.",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the error.",
+            "nullable": true,
+            "example": "Bad Request"
+          },
+          "detail": {
+            "type": "string",
+            "description": "A description of the error.",
+            "nullable": true,
+            "example": "The request body was malformed."
+          },
+          "instance": {
+            "type": "string",
+            "description": "The endpoint that returned the error.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Error model containing the error details."
+      }
+    },
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "http",
+        "description": "Token URL: https://sso.experianaperture.io/oauth2/aust0wkxjeKyT3HRO4x7/v1/token \n\n Flow: clientCredentials",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
+      },
+      "Auth-Token": {
+        "type": "apiKey",
+        "description": "Your unique key, called a token, that is required to submit an API request.",
+        "name": "Auth-Token",
+        "in": "header"
+      },
+      "x-app-key": {
+        "type": "apiKey",
+        "description": "Alternative Auth Token header.",
+        "name": "x-app-key",
+        "in": "header"
+      }
+    }
+  }
+}

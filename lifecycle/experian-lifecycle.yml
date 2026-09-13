@@ -1,0 +1,99 @@
+generated: '2026-09-13'
+method: searched
+source: https://docs.experianaperture.io/end-of-service-life-status, https://docs.experianaperture.io/saas-services-sla,
+  https://status.edq.com/, https://docs.experianaperture.io/more/product-roadmap/
+note: 'Experian Data Quality is unusually strong on lifecycle for an enterprise data vendor: a named
+  End of Service Life policy with a public table of 60+ dated product retirements, a numeric SaaS SLA
+  with uptime and support-resolution targets, a dated forward roadmap, and a live status page. What
+  is absent is the runtime half — no Deprecation or Sunset response headers (RFC 8594) are documented
+  on any endpoint, and no operation in the published OpenAPI carries deprecated: true. The policy
+  lives on web pages an agent must read; nothing reaches the caller in-band.'
+versioning:
+  scheme: path
+  note: Version is a path segment on every Aperture endpoint (/address/search/v1, /email/validate/v2,
+    /enrichment/v2, /address/layouts/v2). Multiple major versions run side by side — email validation
+    is documented at both v1 (EOSL 30-Apr-2026) and v2, address layouts at v1 and v2. The SOAP
+    surface versions by path too (ProOnDemand/V1, /V2, /V3) with V3 the recommended endpoint.
+  current:
+  - api: Experian Address Validation
+    version: v1 / v2 (per-operation)
+  - api: Experian Email Validation
+    version: v2 (v1 retiring 30-Apr-2026)
+  - api: Experian Phone Validation
+    version: v2
+  - api: Experian Enrichment
+    version: v2
+  - api: Experian Address Validate SOAP
+    version: V3
+deprecation_policy:
+  published: true
+  name: End of Service Life (EOSL) policy
+  url: https://docs.experianaperture.io/end-of-service-life-status
+  mechanism: public dated table
+  summary: 'Experian publishes a public End of Service Life table covering 60+ products, each with an
+    EOSL date and an EOSL duration measured from last ship date. Durations observed range from 6 to
+    18 months. The page states: "As product versions enter the EOSL process timelines will be
+    published here."'
+  examples:
+  - product: Email Validate API
+    eosl: '2026-04-30'
+    duration: 18 months
+  - product: Global Phone Validate
+    eosl: '2026-09-30'
+    duration: 18 months
+  - product: CorrectAddress Web Service
+    eosl: '2027-11-15'
+    duration: 18 months
+  - product: Aperture Data Studio v1
+    eosl: '2023-03-31'
+    duration: expired
+  runtime_headers:
+    deprecation: false
+    sunset: false
+    rfc8594: false
+    note: 'No Deprecation or Sunset header is documented anywhere in the API reference, and no
+      operation in the published OpenAPI sets deprecated: true. Retirement is announced only on the
+      EOSL web page.'
+sla:
+  published: true
+  url: https://docs.experianaperture.io/saas-services-sla
+  uptime:
+  - services:
+    - Experian Address Validation
+    - Experian Email Validation
+    - Experian Phone Validation
+    target: 99.99%
+  - services:
+    - other Experian Data Quality SaaS services
+    target: 99.95%
+  support_targets:
+  - severity: P1
+    definition: complete loss of service
+    resolution_target: 2 working hours
+  - severity: P2
+    definition: service degradation
+    resolution_target: 6 working hours
+  - severity: P3
+    definition: minor issues
+    resolution_target: 7 business days, or agreed case by case
+  maintenance:
+    advance_notice: minimum 21 days
+    typical_window: 0 to 3 hours
+status_page:
+  published: true
+  url: https://status.edq.com/
+  vendor: Atlassian Statuspage
+  feeds:
+  - https://status.edq.com/history.atom
+  uptime_history: https://status.edq.com/uptime
+  note: Covers Experian Data Quality services including Hosted Aperture Data Studio and the regional
+    EAV cloud instances; referenced directly from the documented 503 response.
+roadmap:
+  published: true
+  url: https://docs.experianaperture.io/more/product-roadmap/
+  format: dated, three-lane (Available / Building / Planning), refreshed August 2026
+  disclaimer: '"releases, scope and timings are subject to change at our discretion without prior
+    warning."'
+deprecated_operations: []
+deprecated_operations_note: 'Derived from openapi/experian-aperture-openapi.json — zero of the 41
+  operations carry deprecated: true.'

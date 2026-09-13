@@ -1,0 +1,47 @@
+generated: '2026-09-13'
+method: generated
+source: openapi/experian-aperture-openapi.json, conventions/experian-conventions.yml,
+  errors/experian-problem-types.yml, rate-limits/experian-rate-limits.yml,
+  lifecycle/experian-lifecycle.yml
+note: 'Four packaged Agent Skills covering the marquee flows of the Experian Aperture Data Quality
+  API. Every operation cited is grounded in openapi/experian-aperture-openapi.json and was verified
+  against it. One deliberate deviation from the usual shape: the skills address operations by METHOD
+  and PATH rather than by operationId, because Experian''s published spec declares zero operationIds
+  across all 41 operations — there is nothing to cite. No skills are written for the Experian Global
+  Developer Platform (credit, business information, KYC/KYB), because it publishes no machine-readable
+  contract to ground them in; writing them would mean inventing the operations.'
+provider_published_skills:
+  found: false
+  probed:
+  - https://docs.experianaperture.io/llms.txt
+  - https://developer.experian.com/llms.txt
+  - https://github.com/experianplc (AGENTS.md / skills/)
+  - https://github.com/experiandataquality (AGENTS.md / skills/)
+  note: Experian publishes no AGENTS.md, no skills/ directory and no llms.txt on any surface probed.
+skills:
+- name: experian-address-capture
+  file: experian-address-capture.md
+  api: Experian Address Validation API
+  flow: search, refine or step in, then format a verified address
+  operations: 7
+  consequence: read-only
+- name: experian-bulk-validation
+  file: experian-bulk-validation.md
+  api: Experian Bulk Validation API
+  flow: create, start, poll, retrieve, stop an asynchronous batch
+  operations: 6
+  consequence: write, billable, not idempotent, reversal window unstated
+  requires_human_confirmation: true
+- name: experian-address-layouts
+  file: experian-address-layouts.md
+  api: Experian Address Validation API
+  flow: manage the named server-side layouts that shape formatted responses
+  operations: 5
+  consequence: write, account-wide shared state, DELETE is irreversible
+  requires_human_confirmation: true
+- name: experian-contact-data-enrichment
+  file: experian-contact-data-enrichment.md
+  api: Experian Aperture Data Quality API
+  flow: validate email and phone; append identity and demographic attributes
+  operations: 6
+  consequence: read-only but returns personal data; FCRA/GLBA permissible purpose applies in the US

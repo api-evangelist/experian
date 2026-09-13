@@ -1,0 +1,120 @@
+generated: '2026-09-13'
+method: searched
+source: https://registry.npmjs.org, https://api.nuget.org, https://pypi.org, https://rubygems.org,
+  https://search.maven.org, https://github.com/experianplc, https://github.com/experiandataquality,
+  https://docs.experianaperture.io/address-validation/experian-address-validation/get-started/ways-to-integrate/
+note: 'Experian ships first-party client code from three separate org identities — @experian-ecs
+  (Experian Consumer Services, npm, actively released), experianplc / experiandataquality (GitHub
+  source-only), and Experian plc on NuGet (a 2018-era Business Information Services client). The
+  headline finding is a distribution gap, not an absence: the current Data Validation Solutions SDKs
+  (.NET, Java, TypeScript) are published only as source in a GitHub monorepo — the TypeScript package
+  manifest names itself "@experianplc/edq.dvs.sdk" at version 0.0.1 but that name resolves to 404 on
+  npm, and no matching artifact exists on NuGet or Maven Central. A consumer cannot `npm install` or
+  `dotnet add package` the SDK Experian tells them to use; they must clone and build it.'
+packages:
+- language: javascript
+  registry: npm
+  name: "@experian-ecs/connected-web-sdk"
+  url: https://www.npmjs.com/package/@experian-ecs/connected-web-sdk
+  install: npm install @experian-ecs/connected-web-sdk
+  official: true
+  version: 2.5.2
+  published: '2026-08-14'
+  source_code: https://github.com/eps-na/connected-solutions-web-sdk
+  note: Embedded Experiences web SDK for Experian Consumer Services. Maintained by npm users
+    tvatter-experian and ecs_npm_admin under the @experian-ecs scope; 20 published versions.
+- language: javascript
+  registry: npm
+  name: "@experian-ecs/connected-api-sdk"
+  url: https://www.npmjs.com/package/@experian-ecs/connected-api-sdk
+  install: npm install @experian-ecs/connected-api-sdk
+  official: true
+  version: 1.7.0
+  published: '2026-04-22'
+  source_code: https://github.com/eps-na/connected-solutions-api-sdk
+  note: Connected Experience API SDK for Experian Consumer Services; 10 published versions,
+    same @experian-ecs maintainers.
+- language: dotnet
+  registry: nuget
+  name: Experian.Api.Client
+  url: https://www.nuget.org/packages/Experian.Api.Client
+  install: dotnet add package Experian.Api.Client
+  official: true
+  version: 2.0.0-build001
+  published: '2018-11-02'
+  note: 'Authors field reads "Experian plc". Targets .NET Standard 2.0 and, per its own description,
+    "supports BIS API''s but should grow in the future to support others" (Business Information
+    Services). Four published versions, the newest a 2018 prerelease — an eight-year-old client
+    against a platform that has since re-partitioned by region. Strongest abandonment signal in this
+    artifact.'
+- language: multiple
+  registry: github
+  name: edq-data-validation-sdks
+  url: https://github.com/experianplc/edq-data-validation-sdks
+  install: git clone https://github.com/experianplc/edq-data-validation-sdks
+  official: true
+  version: null
+  published: null
+  languages:
+  - csharp
+  - java
+  - typescript
+  note: 'The current, documented SDK for Address/Email/Phone Validation, linked from the Experian
+    Data Quality "Ways to integrate" page and announced in the 25 April 2025 release notes. version
+    and published are null because the registry lookup found nothing to record: the TypeScript
+    package.json declares name "@experianplc/edq.dvs.sdk" version 0.0.1, and registry.npmjs.org
+    returns 404 for that name; no GitHub Releases or tags are published either. Last pushed
+    2025-09-04.'
+- language: typescript
+  registry: github
+  name: Experian-Address-Validation
+  url: https://github.com/experianplc/Experian-Address-Validation
+  install: git clone https://github.com/experianplc/Experian-Address-Validation
+  official: true
+  version: null
+  published: null
+  note: First-party TypeScript reference integration for the address capture API ("International
+    address capture optimized for your use case"), linked from the docs as sample code. Source-only,
+    no registry artifact, no releases. Last pushed 2026-07-16.
+- language: java
+  registry: github
+  name: aperture-data-studio-sdk
+  url: https://github.com/experiandataquality/aperture-data-studio-sdk
+  install: git clone https://github.com/experiandataquality/aperture-data-studio-sdk
+  official: true
+  version: null
+  published: null
+  note: SDK and pre-configured Java project for extending Aperture Data Studio. Source-only; no
+    Maven Central coordinate was found for any experian groupId. Last pushed 2024-06-28.
+- language: javascript
+  registry: github
+  name: GlobalIntuitive
+  url: https://github.com/experiandataquality/GlobalIntuitive
+  install: git clone https://github.com/experiandataquality/GlobalIntuitive
+  official: true
+  version: null
+  published: null
+  note: First-party browser library for the Global Intuitive autocomplete address-capture API.
+    Source-only, unpinned, no registry artifact. Last pushed 2021-02-02 — superseded in practice by
+    Experian-Address-Validation.
+registries_probed:
+- registry: npm
+  result: two actively-released first-party packages under @experian-ecs; "@experianplc/edq.dvs.sdk"
+    (the name the documented SDK gives itself) returns 404
+- registry: nuget
+  result: Experian.Api.Client by "Experian plc", newest version 2018-11-02
+- registry: pypi
+  result: no first-party package. pyexperian 1.0.2 (2015-12-02) is third-party (AbleEng /
+    Carlos e. Rivera) and is deliberately not listed above.
+- registry: maven-central
+  result: no results for "experian"
+- registry: rubygems
+  result: no first-party gem; all "experian" gems are third-party wrappers
+- registry: crates.io
+  result: zero results for "experian"
+- registry: packagist
+  result: eight third-party "experian" packages (magepow, capsphere, laraditz, krakerag/experian-qas
+    and others); no first-party Experian namespace
+- registry: pkg.go.dev
+  result: no first-party Go module. Only third-party wrappers (github.com/cuvva/cuvva-public-go
+    lib/experian/icache and lib/experian/wasp)

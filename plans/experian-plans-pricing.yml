@@ -1,0 +1,27 @@
+generated: '2026-09-13'
+method: searched
+source: https://docs.experianaperture.io/address-validation/experian-address-validation/overview/costs/
+docs:
+- https://docs.experianaperture.io/address-validation/experian-address-validation/overview/costs/
+- https://docs.experianaperture.io/free-trials/data-validation/
+- https://developer.experian.com/products
+plan_count: 0
+note: 'Experian publishes no priced plans, no tier table and no list price on any public surface, on
+  either platform. What it does publish is the BILLING UNIT, which is more than most enterprise
+  providers disclose: an Experian Data Quality request costs one credit when it returns HTTP 200
+  with a metadata status of S200 or S206, and costs nothing for any other status — so a failed or
+  empty request is free. The credit price itself, volume bands and overage terms are negotiated:
+  "Please contact us for details on our costs of submitting a request to the API." Everything is
+  license-gated; a token is issued by an account manager, not self-served. plan_count is 0 because
+  that is the true measurement, not because the page was not read.'
+billing_model:
+  unit: credit
+  billable_when: HTTP 200 with metadata status code S200 or S206
+  free_when: any other status code
+  source: https://docs.experianaperture.io/address-validation/experian-address-validation/overview/costs/
+free_trial:
+  available: true
+  url: https://docs.experianaperture.io/free-trials/data-validation/
+  note: Experian offers a data-validation free trial and trials for the Salesforce and Microsoft
+    Dynamics 365 connectors. No self-service paid tier follows it.
+plans: []

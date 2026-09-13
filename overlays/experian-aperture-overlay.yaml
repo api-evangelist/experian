@@ -1,0 +1,139 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Experian Aperture Data Quality API
+  version: 1.0.0
+extends: openapi/experian-aperture-openapi.json
+x-generated: '2026-09-13'
+x-method: generated
+x-source: openapi/experian-aperture-openapi.json plus the artifacts derived from it in this repo
+x-note: >-
+  This overlay records API Evangelist enhancements to Experian's published contract. It NEVER mutates
+  the original document. Two gaps drove it. First, not one of the 41 operations in Experian's
+  published spec carries an operationId — measured, zero of 41 — which makes the contract unusable by
+  every code generator and every tool that binds a tool name to an operation, and is why the agent
+  skills in this repo have to address operations by method and path. This overlay does not invent
+  operationIds into the provider's document; it records the gap as an extension so the absence is
+  legible rather than silent. Second, the runtime semantics Experian documents on web pages —
+  the account-wide 150 req/min limit and its X-Rate-Limit-* headers, the rfc9457-shaped error
+  envelope, the reversibility posture of the two write surfaces — appear nowhere in the contract, so
+  an agent reading only the spec cannot see them.
+actions:
+  - target: $.info
+    description: Record the contract-quality gaps measured against the published document and point
+      at the derived artifacts that fill them.
+    update:
+      x-api-evangelist:
+        measured: '2026-09-13'
+        operations: 41
+        operations_with_operationid: 0
+        operations_with_summary: 41
+        operations_with_description: 0
+        operations_with_tags: 41
+        components_schemas: 389
+        spec_declares_tags_array: false
+        note: >-
+          Every operation has a summary and a tag but none has an operationId and none has a
+          description. The document also declares no top-level tags[] array, so the tag names used on
+          operations are undescribed. These are the highest-leverage single fixes available to
+          Experian in this contract.
+        derived_artifacts:
+          authentication: authentication/experian-authentication.yml
+          conventions: conventions/experian-conventions.yml
+          errors: errors/experian-problem-types.yml
+          rate_limits: rate-limits/experian-rate-limits.yml
+          lifecycle: lifecycle/experian-lifecycle.yml
+          data_model: data-model/experian-data-model.yml
+          conformance: conformance/experian-conformance.yml
+          mcp_candidate: mcp/experian-mcp.yml
+  - target: $.info
+    description: Attach the published contact and licensing context absent from info.
+    update:
+      x-documentation-url: https://docs.experianaperture.io/
+      x-support-url: https://community.experianaperture.io/
+      x-status-page: https://status.edq.com/
+      x-terms-url: https://docs.experianaperture.io/standard-terms-and-conditions-and-policies
+      x-sla-url: https://docs.experianaperture.io/saas-services-sla
+      x-eosl-url: https://docs.experianaperture.io/end-of-service-life-status
+  - target: $.info
+    description: Record the runtime rate-limit contract, which the spec does not express.
+    update:
+      x-rate-limit:
+        scope: per-account
+        window: 1 minute
+        limit: 150
+        adjustable: false
+        status_on_exhaustion: 429
+        headers:
+          - X-Rate-Limit-Limit
+          - X-Rate-Limit-Remaining
+          - X-Rate-Limit-Reset
+        retry_after: false
+        source: https://docs.experianaperture.io/address-validation/experian-address-validation/help/rate-limiting/
+  - target: $.info
+    description: Record the error-envelope semantics and the fact that the RFC 9457 media type is
+      not used.
+    update:
+      x-error-format:
+        shape: rfc9457-shaped
+        media_type: application/json
+        problem_json: false
+        wrapper: error
+        members:
+          - type
+          - title
+          - detail
+          - instance
+        missing_members:
+          - status
+        catalog: errors/experian-problem-types.yml
+  - target: $.info
+    description: Record the agent-safety posture of the surface — idempotency, dry-run and
+      reversibility — none of which the contract expresses.
+    update:
+      x-agent-safety:
+        idempotency:
+          coverage: none
+          header: null
+        dry_run: false
+        reversibility:
+          grade: documented
+          reversible_writes:
+            - surface: bulk batches
+              reversal: POST /{address|email|phone}/bulk/v1/batches/{batch_id}/stop
+              window_stated: false
+          irreversible_writes:
+            - surface: custom address layouts
+              operation: DELETE /address/layouts/v2/{name}
+              note: no restore or soft-delete is documented
+        read_only_majority: true
+        pii_operations:
+          - POST /enrichment/v2
+          - POST /identity/append/v1
+          - POST /phone/append/v1
+        pii_note: >-
+          These three operations return personal or household-level data about identifiable people.
+          Any agent integration should treat them as consent-gated regardless of what the API
+          permits, and any use in the United States falls under FCRA permissible-purpose rules.
+  - target: $.components.securitySchemes.Auth-Token
+    description: Record the operational controls attached to the token that the scheme description
+      omits.
+    update:
+      x-issued-from: https://docs.experianaperture.io/more/self-service-portal/
+      x-additional-controls:
+        - per-integration domain allowlist (403 when the calling domain is not allowlisted)
+        - per-integration IP allowlist (403 when the calling IP is not allowlisted)
+      x-environment-selection: by hostname, not by key prefix — a token's value does not reveal
+        whether it is test or live
+  - target: $.servers
+    description: Note that the single declared server is the only Aperture host; the Global
+      Developer Platform is a separate, region-partitioned surface with no published contract.
+    update:
+      x-related-platforms:
+        - name: Experian Global Developer Platform
+          hosts:
+            - https://us-api.experian.com
+            - https://uk-api.experian.com
+            - https://eu-api.experian.com
+            - https://api.experian.com.au
+          contract_published: false
+          portal: https://developer.experian.com/

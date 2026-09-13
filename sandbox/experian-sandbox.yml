@@ -1,0 +1,72 @@
+generated: '2026-09-13'
+method: searched
+source: https://developer.experian.com/tutorials/quick-start-guide, https://docs.experianaperture.io/free-trials/data-validation/,
+  https://api.experianaperture.io/docs
+note: 'The two Experian platforms answer this very differently. The Global Developer Platform runs a
+  real, separately-hosted sandbox: every region has a dedicated sandbox hostname with its own OAuth2
+  issuer, and each one serves a live /.well-known/openid-configuration (all eight were probed and
+  returned 200 — see well-known/experian-well-known.yml). Experian Data Quality / Aperture has no
+  sandbox environment at all: the documented path is a time-limited free trial against production
+  plus a hosted Swagger console, and its own "Make a test call" page walks you through calling the
+  live API with a real licensed token. No published test tokens, no magic test values, no test cards
+  or fixture identifiers were found on either platform — every environment requires a
+  credential a human must be granted.'
+environments:
+- platform: Experian Global Developer Platform
+  mode: sandbox
+  hosts:
+  - https://sandbox-us-api.experian.com
+  - https://sandbox-uk-api.experian.com
+  - https://sandbox-eu-api.experian.com
+  - https://sandbox-in-api.experian.com
+  - https://sandbox-api.experian.com.au
+  - https://sandbox-api.experian.com.sg
+  token_endpoint: https://sandbox-us-api.experian.com/oauth2/v1/token
+  auth: OAuth2 password grant (Developer Portal username/password plus the client_id and
+    client_secret generated when registering an application under "My Apps")
+  self_service: true
+  self_service_note: A Developer Portal account can be created and email-verified without a sales
+    conversation; sandbox credentials follow from registering an application. Access to a given
+    product's sandbox data is still granted per product.
+  test_data: Most products allow testing in the sandbox with supplied test data; the specific test
+    records are shown inside the authenticated product pages and are not published openly.
+  source: https://developer.experian.com/tutorials/quick-start-guide
+- platform: Experian Global Developer Platform
+  mode: production
+  hosts:
+  - https://us-api.experian.com
+  - https://uk-api.experian.com
+  - https://eu-api.experian.com
+  - https://api.experian.com.au
+  auth: OAuth2 password grant against the regional /oauth2/v1/token
+- platform: Experian Data Quality (Aperture)
+  mode: production-only
+  hosts:
+  - https://api.experianaperture.io
+  auth: Auth-Token header (or x-app-key), issued per integration from the Self Service Portal
+  sandbox: false
+  sandbox_note: No sandbox or test host exists. The "Make a test call" page directs you to call the
+    production API with your licensed token, or to use the example requests in the hosted Swagger
+    console.
+  source: https://docs.experianaperture.io/address-validation/experian-address-validation/get-started/make-a-test-call/
+console:
+  available: true
+  url: https://api.experianaperture.io/docs
+  type: Swagger UI
+  note: 'A hosted Swagger UI serving eleven selectable OpenAPI documents (All, plus one per product).
+    tryItOutEnabled is false in its configuration, so it is a browsable reference rather than an
+    executable console; it does carry example requests covering combinations of region and search
+    type.'
+free_trial:
+  available: true
+  url: https://docs.experianaperture.io/free-trials/data-validation/
+  scope: data validation, plus Salesforce and Microsoft Dynamics 365 / Power Platform connector trials
+test_values:
+  published: false
+  note: No published test tokens, magic identifiers, test addresses, test email addresses or test
+    phone numbers were found on either platform. Nothing is recorded here rather than inventing
+    plausible ones.
+key_prefixes:
+  published: false
+  note: Experian documents no test-vs-live key prefix convention. Environment is selected by
+    hostname, not by key shape, which means a token cannot be told apart from its value alone.

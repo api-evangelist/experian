@@ -1,0 +1,90 @@
+generated: '2026-09-13'
+method: searched
+source: https://docs.experianaperture.io/integrations/, https://docs.experianaperture.io/address-validation/experian-address-validation/get-started/ways-to-integrate/,
+  https://www.npmjs.com/package/@experian-ecs/connected-web-sdk, https://github.com/experianplc/Experian-Address-Validation
+note: 'Experian ships client-side surfaces in two very different shapes. Experian Consumer Services
+  publishes "Embedded Experiences" as a versioned npm web SDK — a genuine drop-in component library,
+  actively released. Experian Data Quality instead ships address-capture as browser libraries
+  distributed only as GitHub source, plus a long list of pre-built connectors for enterprise commerce
+  and CRM platforms, which are installable applications rather than developer components. None of the
+  Data Quality browser libraries is published to a package registry or a CDN with a pinned URL, so a
+  consumer cannot version-pin what they embed — they clone and build. That is the finding.'
+families:
+- family: Embedded Experiences (Experian Consumer Services)
+  description: Prebuilt embeddable consumer-facing experiences (credit and identity surfaces) for
+    partner web properties.
+  components:
+  - name: "@experian-ecs/connected-web-sdk"
+    type: web SDK / embeddable UI
+    registry: npm
+    url: https://www.npmjs.com/package/@experian-ecs/connected-web-sdk
+    version: 2.5.2
+    published: '2026-08-14'
+    official: true
+    pinnable: true
+  - name: "@experian-ecs/connected-api-sdk"
+    type: companion API SDK
+    registry: npm
+    url: https://www.npmjs.com/package/@experian-ecs/connected-api-sdk
+    version: 1.7.0
+    published: '2026-04-22'
+    official: true
+    pinnable: true
+  loader: npm / bundler
+- family: Address capture (Experian Data Quality)
+  description: Browser libraries that bind a form field to the address search API and render an
+    autocomplete/typedown picker.
+  components:
+  - name: Experian-Address-Validation
+    type: TypeScript browser library
+    registry: github
+    url: https://github.com/experianplc/Experian-Address-Validation
+    version: null
+    published: null
+    official: true
+    pinnable: false
+    note: The current documented sample integration. No npm package, no CDN build, no release tags —
+      an embedder cannot pin a version, and neither can a consumer tell what they are running.
+  - name: GlobalIntuitive
+    type: JavaScript browser library
+    registry: github
+    url: https://github.com/experiandataquality/GlobalIntuitive
+    version: null
+    published: null
+    official: true
+    pinnable: false
+    note: Older autocomplete library for the Global Intuitive API; last pushed 2021-02-02.
+  loader: script include from a self-hosted build
+- family: Platform connectors (Experian Data Quality)
+  description: Pre-built, installable integrations that put validation inside a commerce or CRM
+    platform's own UI. Distinct from SDKs — an administrator installs these, a developer does not
+    embed them.
+  components:
+  - name: Shopify
+    type: checkout UI extension
+    url: https://docs.experianaperture.io/integrations/shopify/
+  - name: BigCommerce
+    type: storefront integration
+    url: https://docs.experianaperture.io/integrations/bigcommerce/
+  - name: Salesforce Sales and Service Cloud (Lightning)
+    type: managed package
+    url: https://docs.experianaperture.io/integrations/salesforce-sales-and-service-cloud-lightning/
+  - name: Salesforce Commerce Cloud
+    type: cartridge
+    url: https://docs.experianaperture.io/integrations/salesforce-commerce-cloud/
+  - name: Microsoft Dynamics 365 and Power Platform
+    type: connector
+    url: https://docs.experianaperture.io/integrations/microsoft-dynamics-365-and-power-platform/
+  - name: SAP S/4HANA
+    type: add-on
+    url: https://docs.experianaperture.io/integrations/sap-s4hana/
+  - name: Snowflake
+    type: native app / data share
+    url: https://docs.experianaperture.io/integrations/snowflake/
+  - name: Integration Wizard
+    type: guided configuration tool
+    url: https://docs.experianaperture.io/integrations/integration-wizard/
+cdn_distribution:
+  available: false
+  note: No jsDelivr, unpkg or Experian-hosted CDN build was found for any address-capture library.
+    Every browser component must be built from source and self-hosted.

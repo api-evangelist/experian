@@ -1,0 +1,38 @@
+generated: '2026-09-13'
+method: searched
+source: https://docs.experianaperture.io/address-validation/experian-address-validation/help/rate-limiting/
+docs:
+- https://docs.experianaperture.io/address-validation/experian-address-validation/help/rate-limiting/
+- https://docs.experianaperture.io/phone-validation/experian-phone-validation/overview/rate-limiting/
+- https://docs.experianaperture.io/address-validation/address-validate-soap/api-reference/rate-limiting/
+limit_count: 1
+note: 'Experian Data Quality publishes one hard, numeric, account-wide limit and the three response
+  headers that carry it at runtime — a genuinely agent-readable rate-limit signal. The Global
+  Developer Platform (developer.experian.com) publishes no limits at all; its per-product quotas are
+  set in the commercial contract. The documented limit is explicitly non-negotiable: "It cannot be
+  increased or changed."'
+rate_limits:
+- api: Experian Aperture Data Quality API
+  scope: per-account
+  note: Enforced per account and shared across all licenses, integrations and tokens — not per key
+    and not per endpoint. A busy integration therefore starves the account's other integrations.
+  window: 1 minute
+  limit: 150
+  unit: requests
+  burst: null
+  status_on_exhaustion: 429
+  headers:
+  - name: X-Rate-Limit-Limit
+    meaning: maximum requests allowed per minute
+  - name: X-Rate-Limit-Remaining
+    meaning: requests remaining in the current window
+  - name: X-Rate-Limit-Reset
+    meaning: UTC epoch timestamp at which the window resets
+  source: https://docs.experianaperture.io/phone-validation/experian-phone-validation/overview/rate-limiting/
+timeouts:
+  note: Separate documented request timeouts exist per search type.
+  source: https://docs.experianaperture.io/address-validation/experian-address-validation/help/timeouts/
+not_documented:
+- api: Experian Global Developer Platform
+  note: No published rate limits for the regional credit / business information / KYC surfaces. An
+    honest zero — the numbers are contractual, not public.

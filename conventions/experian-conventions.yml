@@ -1,0 +1,151 @@
+generated: '2026-09-13'
+method: searched
+source: openapi/experian-aperture-openapi.json, https://docs.experianaperture.io/address-validation/experian-address-validation/,
+  https://developer.experian.com/tutorials/quick-start-guide
+docs:
+- https://docs.experianaperture.io/address-validation/experian-address-validation/get-started/securing-your-integration/
+- https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/status-codes-and-error-responses/
+- https://docs.experianaperture.io/address-validation/experian-address-validation/help/rate-limiting/
+cross_links:
+  errors: errors/experian-problem-types.yml
+  lifecycle: lifecycle/experian-lifecycle.yml
+  authentication: authentication/experian-authentication.yml
+  rate_limits: rate-limits/experian-rate-limits.yml
+  sandbox: sandbox/experian-sandbox.yml
+auth:
+  style: header token (primary) or OAuth2 client-credentials bearer (Aperture); OAuth2 password
+    grant bearer (Global Developer Platform)
+  headers:
+  - Auth-Token
+  - x-app-key
+  - Authorization
+  note: 'The Aperture surface is primarily a static header token — Auth-Token, issued per integration
+    from the Self Service Portal, with x-app-key documented as an alternative header for the same
+    value. An OAuth2 clientCredentials flow against the Okta issuer sso.experianaperture.io is also
+    declared in the spec. The Global Developer Platform is different: OAuth2 password grant against
+    the regional host''s own /oauth2/v1/token, returning a Bearer access token plus a refresh token.
+    Two platforms, two auth models.'
+  additional_controls:
+  - domain allowlisting per integration (403 when the calling domain is not allowlisted)
+  - IP allowlisting per integration (403 when the calling IP is not allowlisted)
+idempotency:
+  supported: false
+  coverage: none
+  scope: []
+  header: null
+  retention: null
+  note: 'No Idempotency-Key header, no request-deduplication mechanism and no replay-safety guarantee
+    is documented or declared anywhere in the Aperture OpenAPI, the API reference, or the Global
+    Developer Portal tutorials. The closest thing is Reference-ID (and the SDK "transaction id"),
+    which is a client-supplied correlation identifier for tracing a transaction inside Experian
+    systems — it is validated for format (a malformed value returns 400) but nothing states it
+    deduplicates a retried request. Recorded as none rather than partial for that reason. This
+    matters less here than it would elsewhere, because the mutating surface is small and
+    mostly idempotent by nature (see reversibility below).'
+pagination:
+  style: none
+  note: 'No collection endpoint in the 41-operation surface paginates. The list-shaped operations —
+    GET /address/datasets/v1, GET /address/layouts/v2, GET /address/bulk/v1/batches and its email and
+    phone siblings — return whole collections with no limit/offset/cursor parameter and no next-page
+    field. Result-set size on the search operations is instead capped up front by a
+    max_suggestions-style request option, which is a truncation control, not pagination.'
+  params: []
+  response_fields: []
+field_expansion:
+  supported: true
+  mechanism: layouts and prompt sets
+  note: Response shape is controlled by named layouts rather than a sparse-fieldset query parameter.
+    A layout is a first-class, CRUD-managed resource (POST/GET/PUT/DELETE /address/layouts/v2) that
+    selects which address elements come back; prompt sets do the equivalent for input fields. This is
+    field selection promoted to server-side configuration.
+metadata:
+  supported: true
+  mechanism: Add-Metadata request header
+  note: An Add-Metadata header opts the response into additional metadata blocks; an invalid value
+    returns 400.
+request_tracing:
+  supported: true
+  header: Reference-ID
+  note: A client-supplied Reference-ID header uniquely identifies a transaction within Experian's
+    systems and is the value support asks for when investigating a call. The first-party SDKs expose
+    it as SetTransactionId. Format-validated — a malformed value returns 400. No server-generated
+    request id is documented in responses.
+versioning:
+  style: path segment
+  note: See lifecycle/experian-lifecycle.yml. /v1, /v2, /v3 in the path; multiple majors served
+    concurrently; retirement announced on the EOSL page, never in a response header.
+error_envelope:
+  shape: rfc9457-shaped, wrapped in an "error" object, served as application/json
+  fields:
+  - type
+  - title
+  - detail
+  - instance
+  detail: errors/experian-problem-types.yml
+rate_limit_signaling:
+  headers:
+  - X-Rate-Limit-Limit
+  - X-Rate-Limit-Remaining
+  - X-Rate-Limit-Reset
+  status: 429
+  retry_after: false
+  note: Experian returns the X-Rate-Limit-* triplet rather than the RFC 9239 RateLimit-* names, and
+    no Retry-After header is documented. X-Rate-Limit-Reset is a UTC epoch timestamp, so an agent
+    can compute its own backoff. Detail in rate-limits/experian-rate-limits.yml.
+content_negotiation:
+  note: Accept and Content-Type are strictly validated — an unsupported Accept returns 406 and an
+    unsupported Content-Type returns 415, both documented on 40 and 25 operations respectively.
+timeouts:
+  client_supplied: true
+  range: 3 to 15 seconds
+  note: Requests may specify a timeout value; a value outside 3-15 returns 400. Server-side timeout
+    returns 408.
+  source: https://docs.experianaperture.io/address-validation/experian-address-validation/help/timeouts/
+dry_run_mode:
+  supported: false
+  note: No preview, simulate or validate-only mode is documented. Not applicable in spirit for the
+    validation endpoints, which are themselves non-mutating.
+reversibility:
+  grade: documented
+  note: 'The Aperture surface is overwhelmingly read-shaped — 41 operations, of which the great
+    majority are queries that create no durable state (address/email/phone search, validate, format,
+    lookup, enrich, append). Two genuinely mutating surfaces exist, and only one of them has a
+    reversal path. Grade is `documented` rather than `verified` because Experian names the reversal
+    operations but states no window for either: nothing in the docs says how long a bulk batch may be
+    stopped after starting, or whether a deleted custom layout can be recovered at all.'
+  write_surfaces:
+  - surface: Bulk validation batches
+    operations:
+    - POST /address/bulk/v1/batches (create)
+    - POST /address/bulk/v1/batches/{batch_id}/start
+    - POST /email/bulk/v1/batches, POST /email/bulk/v1/batches/{batch_id}/start
+    - POST /phone/bulk/v1/batches, POST /phone/bulk/v1/batches/{batch_id}/start
+    reversal:
+      exists: true
+      operation: POST /{address|email|phone}/bulk/v1/batches/{batch_id}/stop
+      semantics: stops a running batch
+      window: null
+      window_stated: false
+      note: A stop operation is published for all three bulk families, which is a real reversal path
+        for the most consequential write in the surface. No documentation states how long after start
+        a stop is honoured, whether records already processed are still billed, or whether a stopped
+        batch can be restarted. Billing is per successful record (see plans/), so an unreversed
+        runaway batch has a direct cost, which is exactly why the missing window matters.
+  - surface: Custom address layouts
+    operations:
+    - POST /address/layouts/v1, POST /address/layouts/v2 (create)
+    - PUT /address/layouts/v2/{name} (update)
+    - DELETE /address/layouts/v2/{name} (delete)
+    reversal:
+      exists: false
+      operation: null
+      window: null
+      window_stated: false
+      note: 'No undo, restore or soft-delete is documented for a deleted custom layout. Layout
+        deletion was added in the 15 January 2025 release alongside "detailed historical activity
+        logs with email-based user tracking" — the logs record who deleted a layout, which is
+        auditability, not reversibility. An agent deleting a layout other integrations depend on
+        cannot put it back: it must be recreated from its definition. Treat DELETE
+        /address/layouts/v2/{name} as irreversible.'
+  read_only_note: All search, validate, format, lookup, enrichment and append operations are
+    non-mutating; reversibility is na for them.

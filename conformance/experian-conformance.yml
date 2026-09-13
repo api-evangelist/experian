@@ -1,0 +1,161 @@
+generated: '2026-09-13'
+method: derived
+source: openapi/experian-aperture-openapi.json, well-known/experian-sso-openid-configuration.json,
+  well-known/experian-sso-oauth-authorization-server.json, well-known/experian-us-api-openid-configuration.json,
+  wsdl/experian-proondemand-v3.wsdl, plus the Experian Data Quality documentation cited per entry
+note: 'Cross-cutting conformance is real and measurable here: OAuth 2.0 and OpenID Connect discovery
+  documents are served on ten separate hosts, and the SOAP surface carries a genuine WSDL 1.1
+  contract. Domain-standard conformance is where this record is interesting — Experian Data Quality
+  is an address/identity data business, and its contract declares the reference schemes that market
+  actually runs on (E.164, ISO 3166 alpha-3, UK PAF/UPRN, USPS, what3words, Australian DPID) inside
+  the spec itself rather than only in prose. Everything below points at the exact spec location or
+  the exact fetched document; nothing is asserted from a marketing page.'
+conformance:
+- id: oauth2
+  conforms: true
+  evidence: 'components.securitySchemes.OAuth2 in openapi/experian-aperture-openapi.json declares a
+    clientCredentials flow against https://sso.experianaperture.io/oauth2/aust0wkxjeKyT3HRO4x7/v1/token;
+    https://sso.experianaperture.io/.well-known/oauth-authorization-server returned HTTP 200 with a
+    full RFC 8414 authorization-server metadata document (saved verbatim).'
+- id: rfc8414
+  conforms: true
+  evidence: OAuth 2.0 Authorization Server Metadata served at
+    https://sso.experianaperture.io/.well-known/oauth-authorization-server (HTTP 200) declaring
+    issuer, authorization_endpoint, token_endpoint, registration_endpoint and a grant_types_supported
+    list including client_credentials and urn:ietf:params:oauth:grant-type:device_code.
+- id: oidc
+  conforms: true
+  evidence: 'OpenID Connect Discovery 1.0 documents returned HTTP 200 on ten hosts and were saved
+    verbatim: sso.experianaperture.io plus the Global Developer Platform production and sandbox hosts
+    for US, UK, EU, IN, AU and SG. Each declares issuer, authorization_endpoint, token_endpoint and
+    jwks_uri. See well-known/experian-well-known.yml.'
+- id: oidc-discovery-multi-region
+  conforms: true
+  evidence: Ten distinct issuers — one per Experian Global Developer Platform region and environment
+    — each serving its own /.well-known/openid-configuration. Region is a first-class boundary in
+    Experian's identity architecture, not a routing detail.
+- id: rfc7523-client-credentials
+  conforms: true
+  evidence: grant_types_supported in well-known/experian-sso-oauth-authorization-server.json includes
+    client_credentials; the Aperture OpenAPI names clientCredentials as the OAuth2 flow.
+- id: oauth2-password-grant
+  conforms: true
+  evidence: 'well-known/experian-us-api-openid-configuration.json declares grant_types_supported:
+    ["password"] only, and the Global Developer Portal quick-start documents a password-grant POST to
+    /oauth2/v1/token returning a Bearer access token and a refresh token. Recorded as conformance to
+    a grant type that RFC 9700 / OAuth 2.1 deprecates — accurate, and worth a reader knowing.'
+  note: This is a factual conformance record, not an endorsement. The resource owner password
+    credentials grant is deprecated in OAuth 2.1 and in the current security BCP.
+- id: rfc9457
+  conforms: false
+  evidence: 'components.schemas.ResponseError carries exactly the RFC 9457 member set (type, title,
+    detail, instance) but the media type is application/json throughout, never
+    application/problem+json, and no "status" member is present. Shape without registration — see
+    errors/experian-problem-types.yml, recorded there as rfc9457-shaped.'
+- id: bearer-token-rfc6750
+  conforms: true
+  evidence: components.securitySchemes.OAuth2 is type http, scheme Bearer, bearerFormat JWT.
+- id: apikey-header-auth
+  conforms: true
+  evidence: components.securitySchemes.Auth-Token and x-app-key, both apiKey in header.
+- id: pagination
+  conforms: false
+  evidence: No pagination parameters or response envelope exist on any of the 34 paths; the
+    collection endpoints (GET /address/datasets/v1, GET /address/layouts/v2, GET
+    /{address,email,phone}/bulk/v1/batches) return whole collections. See conventions/.
+- id: idempotency
+  conforms: false
+  evidence: No Idempotency-Key header or replay-protection mechanism appears in the spec or the
+    documentation. Reference-ID is a correlation identifier, not a deduplication key. See
+    conventions/experian-conventions.yml idempotency.coverage - none.
+- id: rate-limit-headers
+  conforms: partial
+  evidence: 'Experian returns X-Rate-Limit-Limit, X-Rate-Limit-Remaining and X-Rate-Limit-Reset —
+    the de-facto pre-standard header triplet, documented at
+    https://docs.experianaperture.io/address-validation/experian-address-validation/help/rate-limiting/
+    — rather than the IETF draft RateLimit-* names, and no Retry-After. Real runtime signal,
+    non-standard spelling.'
+- id: soap-1.1
+  conforms: true
+  evidence: wsdl/experian-proondemand-v3.wsdl — a WSDL 1.1 definitions document, targetNamespace
+    http://www.qas.com/OnDemand-2011-03, service QASOnDemandIntermediary, eleven operations, fetched
+    verbatim from https://ws.ondemand.qas.com/ProOnDemand/V3/ProOnDemandService.asmx?WSDL.
+- id: openapi-3.0.4
+  conforms: true
+  evidence: All eleven published Experian Data Quality specification documents declare openapi
+    3.0.4.
+- id: gdpr
+  conforms: unknown
+  evidence: Privacy statements are published (https://www.experianplc.com/privacy,
+    https://developer.experian.com/privacy-policy) and regional EDQ terms exist, but no DPA,
+    sub-processor list or Article 28 artifact was found on a public first-party surface. Recorded
+    unknown rather than true.
+domain_standards:
+- id: e164
+  name: ITU-T E.164 international telephone numbering plan
+  conforms: true
+  evidence: 'The phone validation and bulk-phone request schemas declare an output_format enumeration
+    whose values include PLUS_E164 — for example
+    components.schemas.BulkPhoneV1CreateBatchRequest, example GBR: {"defaults": {"output_format":
+    "PLUS_E164", "country_iso": "GBR"}}. 14 occurrences of E164 across openapi/experian-aperture-openapi.json.'
+  market: telephony / contact data
+  note: The contract lets a caller ask for numbers normalised into the international standard rather
+    than a vendor-specific format. An integrator who already speaks E.164 needs no adapter.
+- id: iso-3166-1-alpha-3
+  name: ISO 3166-1 alpha-3 country codes
+  conforms: true
+  evidence: country_iso appears 260 times across openapi/experian-aperture-openapi.json, with
+    three-letter values throughout the examples (GBR, USA, AUS, CAN, NZL). Country is the primary
+    partitioning dimension of every dataset in the address, phone and enrichment surfaces.
+  market: international address and contact data
+- id: uk-paf-uprn
+  name: Royal Mail PAF and Unique Property Reference Number (UPRN)
+  conforms: true
+  evidence: UPRN appears 41 times and PAF 20 times in openapi/experian-aperture-openapi.json; the UK
+    dataset reference documents both, and the Emergency Services proposition (11 March 2025 release)
+    supports UPRN search explicitly. A Royal Mail PAF EULA is listed among Experian's published
+    standard terms.
+  market: UK addressing
+  note: UPRN is the UK public-sector canonical property identifier. Returning it is what makes this
+    API joinable to local-authority and Ordnance Survey data without a bespoke match step.
+- id: what3words
+  name: what3words three-word geocoding
+  conforms: true
+  evidence: 51 occurrences in openapi/experian-aperture-openapi.json; a documented proposition,
+    "Reverse geocoding via what3words", at
+    https://docs.experianaperture.io/address-validation/experian-address-validation/propositions/reverse-geocoding-via-what3words/
+  market: geocoding
+- id: usps-addressing
+  name: USPS address standardisation
+  conforms: partial
+  evidence: USPS referenced 6 times in openapi/experian-aperture-openapi.json; a USPS data-provider
+    EULA is listed in Experian's published standard terms, and a USA dataset reference page is
+    published. No CASS certification claim was found on a first-party page, so this is recorded as
+    partial rather than true.
+  market: US addressing
+- id: au-dpid
+  name: Australia Post Delivery Point Identifier (DPID)
+  conforms: true
+  evidence: 'Add-DPID request header introduced in the 8 January 2026 release note for Australia
+    DataFusion; DPID appears in openapi/experian-aperture-openapi.json. Source:
+    https://docs.experianaperture.io/address-validation/experian-address-validation/help/release-notes/'
+  market: Australian addressing
+domain_standards_absent:
+  note: 'No credit-reporting data standard is declared anywhere in the published contract. This is
+    the significant absence for a company of this kind. Experian is one of three US consumer
+    reporting agencies and the furnisher-facing exchange format in that market is Metro 2 (CDIA); the
+    UK equivalents run through SCOR. Neither appears in any public Experian API artifact, because the
+    credit surface — the Global Developer Platform — publishes no machine-readable contract at all.
+    Recorded as an absence, not a failure: the standard exists in Experian''s business, just not in
+    anything it publishes for a machine to read.'
+  probed_and_absent:
+  - scim
+  - odata
+  - fhir
+  - fapi
+  - psd2
+  - openrtb
+  - json:api
+  - iso-20022
+  - x12
+  - hl7

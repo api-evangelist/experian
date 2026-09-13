@@ -1,0 +1,118 @@
+generated: '2026-09-13'
+method: searched
+source: openapi/experian-aperture-openapi.json (4xx/5xx responses across all 41 operations), enriched
+  from https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/status-codes-and-error-responses/
+docs: https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/status-codes-and-error-responses/
+format: rfc9457-shaped
+format_note: 'The error body carries exactly the RFC 9457 Problem Details member set — type, title,
+  detail, instance — under the schema components.schemas.ResponseError, nested inside a top-level
+  "error" object. It is NOT served as application/problem+json; the media type is application/json
+  throughout, and no "status" member is present. So an agent gets RFC 9457 semantics without the RFC
+  9457 content-type negotiation. Recorded as rfc9457-shaped rather than rfc9457 for that reason.'
+envelope:
+  wrapper: error
+  media_type: application/json
+  fields:
+  - name: type
+    type: string
+    nullable: true
+    description: A link to documentation that provides more details about the error encountered.
+  - name: title
+    type: string
+    nullable: true
+    description: The title of the error.
+    example: Bad Request
+  - name: detail
+    type: string
+    nullable: true
+    description: A description of the error.
+    example: The request body was malformed.
+  - name: instance
+    type: string
+    nullable: true
+    description: The endpoint that returned the error.
+coverage:
+  operations: 41
+  operations_with_4xx: 41
+  operations_with_5xx: 41
+  note: Every one of the 41 operations in the consolidated spec declares 400, 401, 403, 406, 408,
+    429, 500 and 503; 404 on 24 and 415 on 25 (the operations that accept a request body).
+problem_types:
+- status: 400
+  title: Bad Request
+  meaning: Request failed due to malformed syntax.
+  causes:
+  - An invalid field was submitted (for example a malformed email field).
+  - An unsupported timeout value was specified — the accepted range is 3 to 15 seconds.
+  - No authentication token was provided.
+  - The request body was malformed, empty, or missing required fields.
+  - An invalid Reference-ID header was submitted.
+  - An invalid Add-Metadata header was submitted.
+  remediation: Correct the offending field or header and resend. Tokens are retrieved from the Self
+    Service Portal.
+  retryable: false
+- status: 401
+  title: Unauthorized
+  meaning: The Auth-Token provided is incorrect.
+  remediation: Sign in to the Self Service Portal (https://docs.experianaperture.io/more/self-service-portal/)
+    to find the correct token.
+  retryable: false
+- status: 403
+  title: Forbidden
+  meaning: The request is not authorized to use this service.
+  causes:
+  - The token is valid but associated with a different product, or the account has insufficient credits.
+  - The token is disabled and must be activated in the Self Service Portal.
+  - The calling domain is not on the integration's domain allowlist.
+  - The calling IP address is not on the integration's IP allowlist.
+  remediation: Check product entitlement, credit balance, token state and the domain/IP allowlists in
+    the Self Service Portal.
+  retryable: false
+- status: 404
+  title: Not Found
+  meaning: The requested resource could not be found.
+  remediation: Verify the endpoint URL; contact support if it persists.
+  retryable: false
+- status: 406
+  title: Not Acceptable
+  meaning: An invalid Accept header was specified.
+  remediation: Send a supported Accept value — see the Supported data formats page.
+  retryable: false
+- status: 408
+  title: Request Timeout
+  meaning: The request timed out; the web server failed to respond within the specified time frame.
+  remediation: Resend the request. A per-search-type timeout budget is documented at
+    https://docs.experianaperture.io/address-validation/experian-address-validation/help/timeouts/
+  retryable: true
+- status: 415
+  title: Unsupported Media Type
+  meaning: An invalid Content-Type header was specified.
+  remediation: Send a supported Content-Type value — see the Supported data formats page.
+  retryable: false
+- status: 429
+  title: Too Many Requests
+  meaning: Too many requests were sent; the account has been temporarily throttled to protect all
+    customers.
+  remediation: Back off until the window named by X-Rate-Limit-Reset. The account-wide limit is 150
+    requests per minute and cannot be raised.
+  retryable: true
+  signal_headers:
+  - X-Rate-Limit-Limit
+  - X-Rate-Limit-Remaining
+  - X-Rate-Limit-Reset
+- status: 500
+  title: Internal Server Error
+  meaning: An unexpected server error was encountered.
+  remediation: Resend; contact support if it persists.
+  retryable: true
+- status: 503
+  title: Service Unavailable
+  meaning: The service is currently unavailable.
+  remediation: Check the status page at https://status.edq.com/ before retrying.
+  retryable: true
+metadata_status_codes:
+  note: 'Separately from the HTTP status, Experian Data Quality returns a metadata status code in the
+    response body that determines billing: S200 and S206 are billable successes; everything else is
+    free. These are a success taxonomy rather than an error registry and are documented per product
+    under overview/costs/.'
+  source: https://docs.experianaperture.io/address-validation/experian-address-validation/overview/costs/
