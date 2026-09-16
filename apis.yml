@@ -29,121 +29,29 @@ tags:
 - Email Validation
 - Phone Validation
 - Data Enrichment
+- Financial-Services
+- Risk Management
+tags_raw:
+- Company
+- Credit Bureau
+- Credit Reporting
+- Identity Verification
+- Fraud Prevention
+- Data Quality
+- Address Validation
+- Email Validation
+- Phone Validation
+- Data Enrichment
 - Financial Services
 - Risk Management
 apis:
-- aid: experian:aperture
-  name: Experian Aperture Data Quality API
-  description: 'The consolidated Experian Data Quality REST API — 41 operations across
-    34 paths covering address search/validate/format/layouts, email validation, phone
-    validation, demographic enrichment, identity append, reverse phone append and the
-    bulk batch surface for address, email and phone. Published as OpenAPI 3.0.4 at
-    api.experianaperture.io/docs/openapi.json.'
-  humanURL: https://docs.experianaperture.io/
-  baseURL: https://api.experianaperture.io
-  tags:
-  - Data Quality
-  - Address Validation
-  - Email Validation
-  - Phone Validation
-  - Data Enrichment
-  properties:
-  - type: OpenAPI
-    url: openapi/experian-aperture-openapi.json
-  - type: Documentation
-    url: https://docs.experianaperture.io/
-  - type: APIReference
-    url: https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/
-  - type: Console
-    url: https://api.experianaperture.io/docs
-- aid: experian:address-validation
-  name: Experian Address Validation API
-  description: Real-time international address capture and validation — autocomplete,
-    typedown, single-line, lookup and validate search types across 245+ countries,
-    with custom layouts, prompt sets, dataset discovery and what3words reverse geocoding.
-  humanURL: https://docs.experianaperture.io/address-validation/experian-address-validation/
-  baseURL: https://api.experianaperture.io
-  tags:
-  - Address Validation
-  - Geocoding
-  properties:
-  - type: OpenAPI
-    url: openapi/experian-addressvalidation-openapi.json
-  - type: Documentation
-    url: https://docs.experianaperture.io/address-validation/experian-address-validation/
-- aid: experian:email-validation
-  name: Experian Email Validation API
-  description: Real-time email address verification returning a confidence classification
-    (verified, unknown, undeliverable, illegitimate) with optional metadata about the
-    mailbox and domain.
-  humanURL: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
-  baseURL: https://api.experianaperture.io
-  tags:
-  - Email Validation
-  properties:
-  - type: OpenAPI
-    url: openapi/experian-emailvalidationv2-openapi.json
-  - type: Documentation
-    url: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
-- aid: experian:phone-validation
-  name: Experian Phone Validation API
-  description: Real-time phone number validation and line-type identification across
-    global numbering plans, returning formatted numbers, carrier and connectivity signals.
-  humanURL: https://docs.experianaperture.io/phone-validation/experian-phone-validation
-  baseURL: https://api.experianaperture.io
-  tags:
-  - Phone Validation
-  properties:
-  - type: OpenAPI
-    url: openapi/experian-phonevalidation-openapi.json
-  - type: Documentation
-    url: https://docs.experianaperture.io/phone-validation/experian-phone-validation
-- aid: experian:enrichment
-  name: Experian Enrichment API
-  description: Appends demographic, geodemographic, location-insight and property attributes
-    to a validated address or identity key, including Mosaic segmentation and Global
-    Location Insight geocoding.
-  humanURL: https://docs.experianaperture.io/data-resources/global-datasets/
-  baseURL: https://api.experianaperture.io
-  tags:
-  - Data Enrichment
-  - Demographics
-  properties:
-  - type: OpenAPI
-    url: openapi/experian-enrichment-openapi.json
-- aid: experian:identity-append
-  name: Experian Identity Append API
-  description: Returns additional contact and identity attributes for a known individual
-    or household, including reverse phone append lookups.
-  humanURL: https://docs.experianaperture.io/identity-append/experian-identity-append/
-  baseURL: https://api.experianaperture.io
-  tags:
-  - Identity Verification
-  - Data Enrichment
-  properties:
-  - type: OpenAPI
-    url: openapi/experian-identityappend-openapi.json
-- aid: experian:bulk-validation
-  name: Experian Bulk Validation API
-  description: Asynchronous batch surface for address, email and phone validation —
-    create a batch, start it, poll status and retrieve results, with up to 10,000 records
-    per address batch.
-  humanURL: https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
-  baseURL: https://api.experianaperture.io
-  tags:
-  - Batch Processing
-  - Data Quality
-  properties:
-  - type: OpenAPI
-    url: openapi/experian-bulkaddress-openapi.json
-  - type: Documentation
-    url: https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
 - aid: experian:address-validate-soap
   name: Experian Address Validate (Pro OnDemand SOAP)
-  description: The legacy Experian QAS Pro OnDemand SOAP service, still published and
-    documented by Experian Data Quality. Eleven RPCs (DoSearch, DoRefine, DoGetAddress,
-    DoCanSearch, DoGetLayouts, DoGetPromptSet, DoGetData, DoGetDataMapDetail, DoGetExampleAddresses,
-    DoGetLicenseInfo, DoGetSystemInfo) over SOAP 1.1/1.2.
+  description: >-
+    The legacy Experian QAS Pro OnDemand SOAP service, still published and documented by Experian Data
+    Quality. Eleven RPCs (DoSearch, DoRefine, DoGetAddress, DoCanSearch, DoGetLayouts, DoGetPromptSet,
+    DoGetData, DoGetDataMapDetail, DoGetExampleAddresses, DoGetLicenseInfo, DoGetSystemInfo) over SOAP
+    1.1/1.2.
   humanURL: https://docs.experianaperture.io/address-validation/address-validate-soap/
   baseURL: https://ws.ondemand.qas.com/ProOnDemand/V3/ProOnDemandService.asmx
   tags:
@@ -155,14 +63,15 @@ apis:
   - type: Documentation
     url: https://docs.experianaperture.io/address-validation/address-validate-soap/
   - type: APIReference
-    url: https://docs.experianaperture.io/address-validation/address-validate-soap/api-reference/api-specification/
+    url: >-
+      https://docs.experianaperture.io/address-validation/address-validate-soap/api-reference/api-specification/
 - aid: experian:global-developer-platform
   name: Experian Global Developer Platform
-  description: 'The region-partitioned Experian API gateway behind developer.experian.com,
-    fronting credit, business information, KYC/KYB, decisioning and verification products.
-    Each region runs its own OAuth2/OIDC issuer and production/sandbox host pair: us-api,
-    uk-api, eu-api, in-api, api.experian.com.au and api.experian.com.sg. Product API
-    reference is gated behind a Developer Portal account; no public OpenAPI is published.'
+  description: >-
+    The region-partitioned Experian API gateway behind developer.experian.com, fronting credit, business
+    information, KYC/KYB, decisioning and verification products. Each region runs its own OAuth2/OIDC
+    issuer and production/sandbox host pair: us-api, uk-api, eu-api, in-api, api.experian.com.au and api.experian.com.sg.
+    Product API reference is gated behind a Developer Portal account; no public OpenAPI is published.
   humanURL: https://developer.experian.com/products
   baseURL: https://us-api.experian.com
   tags:
@@ -176,6 +85,243 @@ apis:
     url: https://developer.experian.com/products
   - type: GettingStarted
     url: https://developer.experian.com/tutorials/quick-start-guide
+- aid: experian:experian-address-validation-api
+  name: Experian Address Validation API
+  description: The Address Validation API from Experian — 13 operation(s) for address validation.
+  humanURL: https://docs.experianaperture.io/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Address Validation
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-address-validation-api-openapi.yml
+  - type: Documentation
+    url: https://docs.experianaperture.io/
+  - type: APIReference
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/
+  - type: Console
+    url: https://api.experianaperture.io/docs
+  - type: Documentation
+    url: https://docs.experianaperture.io/address-validation/experian-address-validation/
+  - type: Documentation
+    url: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
+  - type: Documentation
+    url: https://docs.experianaperture.io/phone-validation/experian-phone-validation
+  - type: Documentation
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
+- aid: experian:experian-bulk-address-api
+  name: Experian Bulk Address API
+  description: The Bulk Address API from Experian — 5 operation(s) for bulk address.
+  humanURL: https://docs.experianaperture.io/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Bulk Address
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-bulk-address-api-openapi.yml
+  - type: Documentation
+    url: https://docs.experianaperture.io/
+  - type: APIReference
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/
+  - type: Console
+    url: https://api.experianaperture.io/docs
+  - type: Documentation
+    url: https://docs.experianaperture.io/address-validation/experian-address-validation/
+  - type: Documentation
+    url: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
+  - type: Documentation
+    url: https://docs.experianaperture.io/phone-validation/experian-phone-validation
+  - type: Documentation
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
+- aid: experian:experian-bulk-email-api
+  name: Experian Bulk Email API
+  description: The Bulk Email API from Experian — 5 operation(s) for bulk email.
+  humanURL: https://docs.experianaperture.io/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Bulk Email
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-bulk-email-api-openapi.yml
+  - type: Documentation
+    url: https://docs.experianaperture.io/
+  - type: APIReference
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/
+  - type: Console
+    url: https://api.experianaperture.io/docs
+  - type: Documentation
+    url: https://docs.experianaperture.io/address-validation/experian-address-validation/
+  - type: Documentation
+    url: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
+  - type: Documentation
+    url: https://docs.experianaperture.io/phone-validation/experian-phone-validation
+  - type: Documentation
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
+- aid: experian:experian-bulk-phone-api
+  name: Experian Bulk Phone API
+  description: The Bulk Phone API from Experian — 5 operation(s) for bulk phone.
+  humanURL: https://docs.experianaperture.io/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Bulk Phone
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-bulk-phone-api-openapi.yml
+  - type: Documentation
+    url: https://docs.experianaperture.io/
+  - type: APIReference
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/
+  - type: Console
+    url: https://api.experianaperture.io/docs
+  - type: Documentation
+    url: https://docs.experianaperture.io/address-validation/experian-address-validation/
+  - type: Documentation
+    url: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
+  - type: Documentation
+    url: https://docs.experianaperture.io/phone-validation/experian-phone-validation
+  - type: Documentation
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
+- aid: experian:experian-email-validation-api
+  name: Experian Email Validation API
+  description: The Email Validation API from Experian — 2 operation(s) for email validation.
+  humanURL: https://docs.experianaperture.io/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Email Validation
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-email-validation-api-openapi.yml
+  - type: Documentation
+    url: https://docs.experianaperture.io/
+  - type: APIReference
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/
+  - type: Console
+    url: https://api.experianaperture.io/docs
+  - type: Documentation
+    url: https://docs.experianaperture.io/address-validation/experian-address-validation/
+  - type: Documentation
+    url: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
+  - type: Documentation
+    url: https://docs.experianaperture.io/phone-validation/experian-phone-validation
+  - type: Documentation
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
+- aid: experian:experian-enrichment-api
+  name: Experian Enrichment API
+  description: The Enrichment API from Experian — 1 operation(s) for enrichment.
+  humanURL: https://docs.experianaperture.io/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Enrichment
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-enrichment-api-openapi.yml
+  - type: Documentation
+    url: https://docs.experianaperture.io/
+  - type: APIReference
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/
+  - type: Console
+    url: https://api.experianaperture.io/docs
+  - type: Documentation
+    url: https://docs.experianaperture.io/address-validation/experian-address-validation/
+  - type: Documentation
+    url: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
+  - type: Documentation
+    url: https://docs.experianaperture.io/phone-validation/experian-phone-validation
+  - type: Documentation
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
+- aid: experian:experian-identity-append-usa-only-api
+  name: Experian Identity Append (USA only) API
+  description: >-
+    The Identity Append (USA only) API from Experian — 1 operation(s) for identity append (usa only).
+  humanURL: https://docs.experianaperture.io/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Identity Append (USA only)
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-identity-append-usa-only-api-openapi.yml
+  - type: Documentation
+    url: https://docs.experianaperture.io/
+  - type: APIReference
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/
+  - type: Console
+    url: https://api.experianaperture.io/docs
+  - type: Documentation
+    url: https://docs.experianaperture.io/address-validation/experian-address-validation/
+  - type: Documentation
+    url: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
+  - type: Documentation
+    url: https://docs.experianaperture.io/phone-validation/experian-phone-validation
+  - type: Documentation
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
+- aid: experian:experian-phone-validation-api
+  name: Experian Phone Validation API
+  description: The Phone Validation API from Experian — 1 operation(s) for phone validation.
+  humanURL: https://docs.experianaperture.io/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Phone Validation
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-phone-validation-api-openapi.yml
+  - type: Documentation
+    url: https://docs.experianaperture.io/
+  - type: APIReference
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/
+  - type: Console
+    url: https://api.experianaperture.io/docs
+  - type: Documentation
+    url: https://docs.experianaperture.io/address-validation/experian-address-validation/
+  - type: Documentation
+    url: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
+  - type: Documentation
+    url: https://docs.experianaperture.io/phone-validation/experian-phone-validation
+  - type: Documentation
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
+- aid: experian:experian-reverse-phone-append-usa-only-api
+  name: Experian Reverse Phone Append (USA only) API
+  description: >-
+    The Reverse Phone Append (USA only) API from Experian — 1 operation(s) for reverse phone append (usa
+    only).
+  humanURL: https://docs.experianaperture.io/
+  baseURL: https://api.experianaperture.io
+  tags:
+  - Reverse Phone Append (USA only)
+  properties:
+  - type: OpenAPI
+    url: openapi/experian-reverse-phone-append-usa-only-api-openapi.yml
+  - type: Documentation
+    url: https://docs.experianaperture.io/
+  - type: APIReference
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/
+  - type: Console
+    url: https://api.experianaperture.io/docs
+  - type: Documentation
+    url: https://docs.experianaperture.io/address-validation/experian-address-validation/
+  - type: Documentation
+    url: https://docs.experianaperture.io/email-validation/experian-email-validation-v2
+  - type: Documentation
+    url: https://docs.experianaperture.io/phone-validation/experian-phone-validation
+  - type: Documentation
+    url: >-
+      https://docs.experianaperture.io/address-validation/experian-address-validation/bulk-api-reference/api-specification/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
