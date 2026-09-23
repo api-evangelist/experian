@@ -1,0 +1,268 @@
+openapi: 3.2.0
+info:
+  title: Aperture REST Reverse Phone Append (USA only) API
+  version: v2
+servers:
+- url: https://api.experianaperture.io/
+tags:
+- name: Reverse Phone Append (USA only)
+paths:
+  /phone/append/v1:
+    post:
+      tags:
+      - Reverse Phone Append (USA only)
+      summary: Submits a phone number to get the reverse phone append
+      parameters:
+      - name: Reference-Id
+        in: header
+        description: Optional identifier that will be returned in the response to help you track the request.
+        schema:
+          maxLength: 256
+          minLength: 0
+          pattern: ^[\w\-\/\:\.\,\(\) ]+$
+          type: string
+      - name: Timeout-Seconds
+        in: header
+        description: 'Maximum time you are prepared to wait for a response, expressed in seconds. Acceptable values: 2-15. If a timeout occurs, an HTTP status code of 408 - Request Timeout will be returned.'
+        schema:
+          maximum: 15
+          minimum: 2
+          type: integer
+          format: int32
+      - name: Add-Metadata
+        in: header
+        description: Specify whether the response should return all fields and values, in addition to the main core information.
+        schema:
+          type: boolean
+          default: true
+      requestBody:
+        description: The request body.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RpaV1Request'
+            example:
+              number: '1234567890'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RpaV1Response'
+              example:
+                result:
+                  number: '1234567890'
+                  confidence: Verified
+                  first_name: JOHN
+                  middle_name: JR
+                  last_name: DOE
+                  address:
+                    address_line1: 12 AVE
+                    address_line2: APT 123
+                    city: NEW YORK
+                    state: NY
+                    zip5: '12345'
+                    zip4: '1234'
+                    confidence: Verified
+                metadata:
+                  phone_detail:
+                    input_phone_type: Mobile
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '406':
+          description: Not Acceptable
+        '408':
+          description: Request Timeout
+        '415':
+          description: Unsupported Media Type
+        '429':
+          description: Too Many Requests
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+      security:
+      - OAuth2: []
+      - Auth-Token: []
+      operationId: postPhoneAppendV1
+      x-operation-id-source: derived
+components:
+  schemas:
+    RpaV1Response:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/RpaV1Result'
+        metadata:
+          $ref: '#/components/schemas/RpaV1Metadata'
+      additionalProperties: false
+      description: Reverse Phone Append response.
+    RpaV1PhoneDetail:
+      type: object
+      properties:
+        input_phone_type:
+          $ref: '#/components/schemas/RpaV1PhoneType'
+      additionalProperties: false
+      description: Reverse Phone Append Phone details.
+    RpaV1Address:
+      type: object
+      properties:
+        address_line1:
+          type:
+          - string
+          - 'null'
+          description: The first line of the address.
+          example: NO 12345
+        address_line2:
+          type:
+          - string
+          - 'null'
+          description: The second line of the address.
+          example: APT 6789
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city.
+          example: TINLEY PARK
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state.
+          example: IL
+        zip5:
+          type:
+          - string
+          - 'null'
+          description: The Zip5 of the address.
+          example: '12345'
+        zip4:
+          type:
+          - string
+          - 'null'
+          description: The Zip4 of the address.
+          example: '6789'
+        confidence:
+          $ref: '#/components/schemas/RpaV1AddressConfidence'
+      additionalProperties: false
+      description: Reverse Phone Append Address.
+    RpaV1Result:
+      type: object
+      properties:
+        number:
+          type:
+          - string
+          - 'null'
+          description: The phone number.
+          example: '1234567890'
+        confidence:
+          $ref: '#/components/schemas/RpaV1PhoneConfidence'
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name.
+          example: JOE
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name.
+          example: JR
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name.
+          example: DOE
+        address:
+          $ref: '#/components/schemas/RpaV1Address'
+      additionalProperties: false
+      description: Reverse Phone Append result.
+    RpaV1PhoneConfidence:
+      enum:
+      - Verified
+      - Unverified
+      type: string
+    RpaV1AddressConfidence:
+      enum:
+      - Verified
+      - Unverified
+      type: string
+    RpaV1Request:
+      required:
+      - number
+      type: object
+      properties:
+        number:
+          minLength: 1
+          pattern: ^\d{10}$
+          type: string
+          description: 10-digit unformatted phone number.  This value cannot contain non-numeric characters such as parentheses, dashes, or spaces
+          example: '1234567890'
+      additionalProperties: false
+      description: Reverse Phone Append request.
+    RpaV1PhoneType:
+      enum:
+      - Landline
+      - Mobile
+      - Other
+      type: string
+    RpaV1Metadata:
+      type: object
+      properties:
+        phone_detail:
+          $ref: '#/components/schemas/RpaV1PhoneDetail'
+      additionalProperties: false
+    ResponseError:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A link to documentation that provides more details about the error you’ve encountered.
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title of the error.
+          example: Bad Request
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A description of the error.
+          example: The request body was malformed.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: The endpoint that returned the error.
+      additionalProperties: false
+      description: Error model containing the error details.
+  securitySchemes:
+    OAuth2:
+      type: http
+      description: "Token URL: https://sso.experianaperture.io/oauth2/aust0wkxjeKyT3HRO4x7/v1/token \n\n Flow: clientCredentials"
+      scheme: Bearer
+      bearerFormat: JWT
+    Auth-Token:
+      type: apiKey
+      description: Your unique key, called a token, that is required to submit an API request.
+      name: Auth-Token
+      in: header
+    x-app-key:
+      type: apiKey
+      description: Alternative Auth Token header.
+      name: x-app-key
+      in: header

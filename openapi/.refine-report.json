@@ -1,0 +1,56 @@
+{
+  "provider": "experian",
+  "sources": [
+    "_original/experian-aperture-openapi.json"
+  ],
+  "outputs": [
+    "experian-address-validation-api-openapi.yml",
+    "experian-bulk-address-api-openapi.yml",
+    "experian-bulk-email-api-openapi.yml",
+    "experian-bulk-phone-api-openapi.yml",
+    "experian-email-validation-api-openapi.yml",
+    "experian-enrichment-api-openapi.yml",
+    "experian-identity-append-usa-only-api-openapi.yml",
+    "experian-phone-validation-api-openapi.yml",
+    "experian-reverse-phone-append-usa-only-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "10 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "experian-aperture-openapi.json: upgraded openapi 3.0.4 -> OpenAPI 3.2.0",
+    "experian-aperture-openapi.json: declared missing tag: Address Validation",
+    "experian-aperture-openapi.json: declared missing tag: Bulk Address",
+    "experian-aperture-openapi.json: declared missing tag: Bulk Email",
+    "experian-aperture-openapi.json: declared missing tag: Bulk Phone",
+    "experian-aperture-openapi.json: declared missing tag: Email Validation",
+    "experian-aperture-openapi.json: declared missing tag: Enrichment",
+    "experian-aperture-openapi.json: declared missing tag: Identity Append (USA only)",
+    "experian-aperture-openapi.json: declared missing tag: Phone Validation",
+    "experian-aperture-openapi.json: declared missing tag: Reverse Phone Append (USA only)",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/experian-reversephoneappend-openapi.json: archived document superseded by a larger archived document",
+    "_original/experian-phonevalidation-openapi.json: archived document superseded by a larger archived document",
+    "_original/experian-identityappend-openapi.json: archived document superseded by a larger archived document",
+    "_original/experian-enrichment-openapi.json: archived document superseded by a larger archived document",
+    "_original/experian-emailvalidationv2-openapi.json: archived document superseded by a larger archived document",
+    "_original/experian-emailvalidation-openapi.json: archived document superseded by a larger archived document",
+    "_original/experian-bulkphone-openapi.json: archived document superseded by a larger archived document",
+    "_original/experian-bulkemail-openapi.json: archived document superseded by a larger archived document",
+    "_original/experian-bulkaddress-openapi.json: archived document superseded by a larger archived document",
+    "_original/experian-addressvalidation-openapi.json: archived document superseded by a larger archived document",
+    "experian-address-validation-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "experian-bulk-address-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "experian-bulk-email-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "experian-bulk-phone-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "experian-email-validation-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "experian-enrichment-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "experian-identity-append-usa-only-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "experian-phone-validation-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "experian-reverse-phone-append-usa-only-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

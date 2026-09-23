@@ -1,0 +1,915 @@
+openapi: 3.2.0
+info:
+  title: Aperture REST Bulk Email API
+  version: v2
+servers:
+- url: https://api.experianaperture.io/
+tags:
+- name: Bulk Email
+paths:
+  /email/bulk/v1/batches:
+    get:
+      tags:
+      - Bulk Email
+      summary: Gets all batches
+      parameters:
+      - name: Reference-Id
+        in: header
+        description: Optional identifier that will be returned in the response to help you track the request.
+        schema:
+          maxLength: 256
+          minLength: 0
+          pattern: ^[\w\-\/\:\.\,\(\) ]+$
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkEmailV1GetBatchesResponse'
+              example:
+                result:
+                  batches:
+                  - batch_id: 00000000-0000-0000-0000-000000000000
+                    status: processing
+                    records: 100
+                    records_processed: 50
+                    date_submitted: '2025-09-10T01:02:03.004005Z'
+                  - batch_id: 00000000-0000-0000-0000-000000000000
+                    status: completed
+                    records: 100
+                    records_processed: 100
+                    date_submitted: '2025-09-10T01:02:03.004005Z'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '406':
+          description: Not Acceptable
+        '408':
+          description: Request Timeout
+        '429':
+          description: Too Many Requests
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+      security:
+      - OAuth2: []
+      - Auth-Token: []
+      operationId: getEmailBulkV1Batches
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Bulk Email
+      summary: Submits a batch of email to be validated
+      parameters:
+      - name: Reference-Id
+        in: header
+        description: Optional identifier that will be returned in the response to help you track the request.
+        schema:
+          maxLength: 256
+          minLength: 0
+          pattern: ^[\w\-\/\:\.\,\(\) ]+$
+          type: string
+      requestBody:
+        description: The request body.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkEmailV1CreateBatchRequest'
+            examples:
+              Default:
+                value:
+                  emails:
+                  - email: test1@hotmail.cm
+                  - email: test2@hotmail.com
+                  - email: xxx
+              With Max Processing Time:
+                value:
+                  defaults:
+                    max_processing_time: PT25M
+                  emails:
+                  - email: test1@hotmail.cm
+                  - email: test2@hotmail.com
+                  - email: xxx
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkEmailV1CreateBatchResponse'
+              example:
+                result:
+                  batch_id: 00000000-0000-0000-0000-000000000000
+                  status: submitted
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '406':
+          description: Not Acceptable
+        '408':
+          description: Request Timeout
+        '415':
+          description: Unsupported Media Type
+        '429':
+          description: Too Many Requests
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+      security:
+      - OAuth2: []
+      - Auth-Token: []
+      operationId: postEmailBulkV1Batches
+      x-operation-id-source: derived
+  /email/bulk/v1/batches/{batch_id}/start:
+    post:
+      tags:
+      - Bulk Email
+      summary: Start processing a batch of email to be validated
+      parameters:
+      - name: Reference-Id
+        in: header
+        description: Optional identifier that will be returned in the response to help you track the request.
+        schema:
+          maxLength: 256
+          minLength: 0
+          pattern: ^[\w\-\/\:\.\,\(\) ]+$
+          type: string
+      - name: batch_id
+        in: path
+        description: Batch ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkEmailV1StartBatchResponse'
+              example:
+                result:
+                  batch_id: 00000000-0000-0000-0000-000000000000
+                  status: processing
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '406':
+          description: Not Acceptable
+        '408':
+          description: Request Timeout
+        '429':
+          description: Too Many Requests
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+      security:
+      - OAuth2: []
+      - Auth-Token: []
+      operationId: postEmailBulkV1BatchesByBatchIdStart
+      x-operation-id-source: derived
+  /email/bulk/v1/batches/{batch_id}:
+    get:
+      tags:
+      - Bulk Email
+      summary: Gets the status of a batch of email to be validated
+      parameters:
+      - name: Reference-Id
+        in: header
+        description: Optional identifier that will be returned in the response to help you track the request.
+        schema:
+          maxLength: 256
+          minLength: 0
+          pattern: ^[\w\-\/\:\.\,\(\) ]+$
+          type: string
+      - name: batch_id
+        in: path
+        description: Batch ID.
+        required: true
+        schema:
+          type: string
+      - name: Add-Metadata
+        in: header
+        description: Specify whether the response should return all fields and values, in addition to the main core information.
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkEmailV1GetBatchStatusResponse'
+              examples:
+                Incomplete:
+                  value:
+                    result:
+                      batch_id: 00000000-0000-0000-0000-000000000000
+                      status: processing
+                      records: 3
+                      records_processed: 0
+                      date_submitted: '2025-09-10T01:02:03.004005Z'
+                Stopped:
+                  value:
+                    result:
+                      batch_id: 00000000-0000-0000-0000-000000000000
+                      status: stopped
+                      reason: max_processing_time_reached
+                      records: 3
+                      records_processed: 2
+                      date_submitted: '2025-09-10T01:02:03.004005Z'
+                      date_ended: '2025-09-10T01:02:03.004005Z'
+                Completed:
+                  value:
+                    result:
+                      batch_id: 00000000-0000-0000-0000-000000000000
+                      status: completed
+                      records: 3
+                      records_processed: 3
+                      date_submitted: '2025-09-10T01:02:03.004005Z'
+                      date_ended: '2025-09-10T01:02:03.004005Z'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '406':
+          description: Not Acceptable
+        '408':
+          description: Request Timeout
+        '429':
+          description: Too Many Requests
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+      security:
+      - OAuth2: []
+      - Auth-Token: []
+      operationId: getEmailBulkV1BatchesByBatchId
+      x-operation-id-source: derived
+  /email/bulk/v1/batches/{batch_id}/results:
+    get:
+      tags:
+      - Bulk Email
+      summary: Gets the validation result of a batch of email
+      parameters:
+      - name: Reference-Id
+        in: header
+        description: Optional identifier that will be returned in the response to help you track the request.
+        schema:
+          maxLength: 256
+          minLength: 0
+          pattern: ^[\w\-\/\:\.\,\(\) ]+$
+          type: string
+      - name: batch_id
+        in: path
+        description: Batch ID.
+        required: true
+        schema:
+          type: string
+      - name: Add-Metadata
+        in: header
+        description: Specify whether the response should return all fields and values, in addition to the main core information.
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkEmailV1GetBatchResultsResponse'
+              examples:
+                Incomplete:
+                  value:
+                    result:
+                      batch_id: 00000000-0000-0000-0000-000000000000
+                      credits_charged: 0
+                      status: processing
+                      statistics: []
+                      emails: []
+                Stopped:
+                  value:
+                    result:
+                      batch_id: 00000000-0000-0000-0000-000000000000
+                      credits_charged: 1
+                      status: stopped
+                      reason: max_processing_time_reached
+                      statistics:
+                      - name: verified
+                        value: 1
+                      - name: unknown
+                        value: 2
+                      emails:
+                      - email: test2@hotmail.com
+                        confidence: verified
+                        verbose_output: verified
+                        metadata: {}
+                      - email: test1@hotmail.cm
+                        confidence: unknown
+                        verbose_output: unknown
+                        metadata:
+                          domain_detail:
+                            type: consumer
+                      - email: xxx
+                        confidence: unknown
+                        verbose_output: unknown
+                        metadata:
+                          domain_detail:
+                            type: consumer
+                Completed:
+                  value:
+                    result:
+                      batch_id: 00000000-0000-0000-0000-000000000000
+                      credits_charged: 3
+                      status: completed
+                      statistics:
+                      - name: unreachable
+                        value: 1
+                      - name: verified
+                        value: 1
+                      - name: undeliverable
+                        value: 1
+                      emails:
+                      - email: test1@hotmail.cm
+                        confidence: unreachable
+                        verbose_output: unreachable
+                        did_you_mean:
+                        - test1@hotmail.com
+                        metadata: {}
+                      - email: test2@hotmail.com
+                        confidence: verified
+                        verbose_output: verified
+                        metadata:
+                          domain_detail:
+                            type: consumer
+                      - email: xxx
+                        confidence: undeliverable
+                        verbose_output: syntaxFailure
+                        metadata: {}
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '406':
+          description: Not Acceptable
+        '408':
+          description: Request Timeout
+        '429':
+          description: Too Many Requests
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+      security:
+      - OAuth2: []
+      - Auth-Token: []
+      operationId: getEmailBulkV1BatchesByBatchIdResults
+      x-operation-id-source: derived
+  /email/bulk/v1/batches/{batch_id}/stop:
+    post:
+      tags:
+      - Bulk Email
+      summary: Stop processing a batch of email to be validated
+      parameters:
+      - name: Reference-Id
+        in: header
+        description: Optional identifier that will be returned in the response to help you track the request.
+        schema:
+          maxLength: 256
+          minLength: 0
+          pattern: ^[\w\-\/\:\.\,\(\) ]+$
+          type: string
+      - name: batch_id
+        in: path
+        description: Batch ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkEmailV1StopBatchResponse'
+              example:
+                result:
+                  batch_id: 00000000-0000-0000-0000-000000000000
+                  status: stopped
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '406':
+          description: Not Acceptable
+        '408':
+          description: Request Timeout
+        '429':
+          description: Too Many Requests
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+      security:
+      - OAuth2: []
+      - Auth-Token: []
+      operationId: postEmailBulkV1BatchesByBatchIdStop
+      x-operation-id-source: derived
+components:
+  schemas:
+    BulkEmailV1CreateBatchResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+      additionalProperties: false
+      description: Bulk Email V1 Create Batch result.
+    BulkEmailV1GetBatchResultsResponseEmail:
+      type: object
+      properties:
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address that is the subject of the validation.
+          example: support@experian.com
+        confidence:
+          type:
+          - string
+          - 'null'
+          description: The outcome (confidence level) of the validation.
+          example: verified
+        verbose_output:
+          type:
+          - string
+          - 'null'
+          description: Additional information on the confidence level.
+          example: verified
+        did_you_mean:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: A list of more likely email addresses. Suggestions include fixes to syntax errors in the provided email address, typos in domains etc.
+        metadata:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchResultsResponseEmailMetadata'
+      additionalProperties: false
+      description: Bulk Email V1 Get Results response.
+    BulkEmailV1StopBatchResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+      additionalProperties: false
+      description: Bulk Email V1 Stop Batch result.
+    BulkEmailV1CreateBatchRequestEmail:
+      type: object
+      properties:
+        email:
+          maxLength: 1000
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: The email address that is the subject of the validation.
+          example: support@experian.com
+      additionalProperties: false
+      description: Bulk Email V1 email component.
+    BulkEmailV1CreateBatchResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkEmailV1CreateBatchResult'
+      additionalProperties: false
+      description: Bulk Email V1 Create Batch response.
+    BulkEmailV1GetBatchResultsResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        credits_charged:
+          type: integer
+          description: The number of credits charged for this Batch.
+          format: int32
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+        reason:
+          type:
+          - string
+          - 'null'
+          description: The reason of the current Batch status.
+        statistics:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BulkEmailV1GetBatchResultsResponseStatistic'
+          description: The statistics of the email confidence level.
+        emails:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BulkEmailV1GetBatchResultsResponseEmail'
+          description: The Emails validation results.
+      additionalProperties: false
+      description: Bulk Email V1 Get Batch Results result.
+    BulkEmailV1GetBatchesResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchesResult'
+      additionalProperties: false
+      description: Bulk Email V1 Get Batches response.
+    BulkEmailV1CreateBatchRequestOptions:
+      type: object
+      properties:
+        batch_reference_id:
+          maxLength: 256
+          minLength: 0
+          pattern: ^[\w\-\/\:\.\,\(\) ]+$
+          type:
+          - string
+          - 'null'
+          description: Optional identifier that will be returned in the response to help you track the batch.
+        max_processing_time:
+          maxLength: 10
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: 'Optional maximum processing time of the batch.
+
+            If the batch is still processing after this time, it will be stopped.
+
+            The value should be in ISO 8601 duration format (e.g., "PT30M" for 30 minutes).
+
+            Maximum allowed value is "PT24H" (24 hours). Minimum allowed value is "PT1M" (1 minute).'
+      additionalProperties: false
+      description: The default options that applied to the batch.
+    BulkEmailV1GetBatchesBatch:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+        reason:
+          type:
+          - string
+          - 'null'
+          description: The reason of the current Batch status.
+        records:
+          type: integer
+          description: The number of emails have been submitted.
+          format: int32
+        records_processed:
+          type: integer
+          description: The number of emails have been processed.
+          format: int32
+        date_submitted:
+          type: string
+          description: The date time when the Batch is created in ISO-8601 format.
+          format: date-time
+        date_started:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is started in ISO-8601 format.
+          format: date-time
+        date_ended:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is ended in ISO-8601 format.
+          format: date-time
+      additionalProperties: false
+      description: Bulk Email V1 Get Batches Batch Info.
+    BulkEmailV1GetBatchStatusResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchStatusResult'
+        metadata:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchStatusMetadata'
+      additionalProperties: false
+      description: Bulk Email V1 Get Batch Status response.
+    BulkEmailV1GetBatchResultsResponseStatistic:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Confidence.
+          example: verified
+        value:
+          type: integer
+          description: Count.
+          format: int32
+          example: 10
+      additionalProperties: false
+      description: Bulk Email V1 Get Results response statistic.
+    BulkEmailV1GetBatchResultsResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchResultsResult'
+      additionalProperties: false
+      description: Bulk Email V1 Get Results response.
+    BulkEmailV1GetBatchResultsResponseEmailMetadataDomainDetail:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'Type field value:
+
+            consumer - returned for "free" domains
+
+            business - returned for "business" domains
+
+            Omit the field "type" when we are unable to provide a value'
+          example: 'consumer '
+      additionalProperties: false
+      description: Details about the domain.
+    BulkEmailV1StartBatchResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkEmailV1StartBatchResult'
+      additionalProperties: false
+      description: Bulk Email V1 Start Batch response.
+    ResponseError:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A link to documentation that provides more details about the error you’ve encountered.
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title of the error.
+          example: Bad Request
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A description of the error.
+          example: The request body was malformed.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: The endpoint that returned the error.
+      additionalProperties: false
+      description: Error model containing the error details.
+    BulkEmailV1StopBatchResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkEmailV1StopBatchResult'
+      additionalProperties: false
+      description: Bulk Email V1 Stop Batch response.
+    BulkEmailV1GetBatchStatusBatchConfig:
+      type: object
+      properties:
+        max_processing_time:
+          type:
+          - string
+          - 'null'
+          description: Optional maximum processing time of the batch.
+      additionalProperties: false
+      description: The submitted default options.
+    BulkEmailV1GetBatchStatusMetadata:
+      type: object
+      properties:
+        batch_config:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchStatusBatchConfig'
+      additionalProperties: false
+      description: Bulk Email V1 Get Batch Status metadata.
+    BulkEmailV1CreateBatchRequest:
+      required:
+      - emails
+      type: object
+      properties:
+        defaults:
+          $ref: '#/components/schemas/BulkEmailV1CreateBatchRequestOptions'
+        emails:
+          maxItems: 10000
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkEmailV1CreateBatchRequestEmail'
+          description: List of input components.
+      additionalProperties: false
+      description: Bulk Email V1 Create Batch request.
+    BulkEmailV1GetBatchResultsResponseEmailMetadata:
+      type: object
+      properties:
+        domain_detail:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchResultsResponseEmailMetadataDomainDetail'
+      additionalProperties: false
+      description: Metadata fields and values that can be returned, in addition to the main core information.
+    BulkEmailV1GetBatchesResult:
+      type: object
+      properties:
+        batches:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BulkEmailV1GetBatchesBatch'
+          description: Batches.
+      additionalProperties: false
+      description: Bulk Email V1 Get Batches result.
+    BulkEmailV1GetBatchStatusResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+        reason:
+          type:
+          - string
+          - 'null'
+          description: The reason of the current Batch status.
+        records:
+          type:
+          - integer
+          - 'null'
+          description: The number of email have been submitted.
+          format: int32
+        records_processed:
+          type:
+          - integer
+          - 'null'
+          description: The number of email have been processed.
+          format: int32
+        date_submitted:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is created in ISO-8601 format.
+          format: date-time
+        date_started:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is started in ISO-8601 format.
+          format: date-time
+        date_ended:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is ended in ISO-8601 format.
+          format: date-time
+      additionalProperties: false
+      description: Bulk Email V1 Get Batch Status result.
+    BulkEmailV1StartBatchResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+      additionalProperties: false
+      description: Bulk Email V1 Start Batch result.
+  securitySchemes:
+    OAuth2:
+      type: http
+      description: "Token URL: https://sso.experianaperture.io/oauth2/aust0wkxjeKyT3HRO4x7/v1/token \n\n Flow: clientCredentials"
+      scheme: Bearer
+      bearerFormat: JWT
+    Auth-Token:
+      type: apiKey
+      description: Your unique key, called a token, that is required to submit an API request.
+      name: Auth-Token
+      in: header
+    x-app-key:
+      type: apiKey
+      description: Alternative Auth Token header.
+      name: x-app-key
+      in: header
