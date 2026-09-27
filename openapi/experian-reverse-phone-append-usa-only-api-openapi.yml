@@ -94,24 +94,12 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    RpaV1Response:
+    RpaV1Metadata:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/RpaV1Result'
-        metadata:
-          $ref: '#/components/schemas/RpaV1Metadata'
+        phone_detail:
+          $ref: '#/components/schemas/RpaV1PhoneDetail'
       additionalProperties: false
-      description: Reverse Phone Append response.
-    RpaV1PhoneDetail:
-      type: object
-      properties:
-        input_phone_type:
-          $ref: '#/components/schemas/RpaV1PhoneType'
-      additionalProperties: false
-      description: Reverse Phone Append Phone details.
     RpaV1Address:
       type: object
       properties:
@@ -155,6 +143,39 @@ components:
           $ref: '#/components/schemas/RpaV1AddressConfidence'
       additionalProperties: false
       description: Reverse Phone Append Address.
+    ResponseError:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A link to documentation that provides more details about the error you’ve encountered.
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title of the error.
+          example: Bad Request
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A description of the error.
+          example: The request body was malformed.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: The endpoint that returned the error.
+      additionalProperties: false
+      description: Error model containing the error details.
+    RpaV1PhoneType:
+      enum:
+      - Landline
+      - Mobile
+      - Other
+      type: string
     RpaV1Result:
       type: object
       properties:
@@ -193,11 +214,29 @@ components:
       - Verified
       - Unverified
       type: string
+    RpaV1Response:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/RpaV1Result'
+        metadata:
+          $ref: '#/components/schemas/RpaV1Metadata'
+      additionalProperties: false
+      description: Reverse Phone Append response.
     RpaV1AddressConfidence:
       enum:
       - Verified
       - Unverified
       type: string
+    RpaV1PhoneDetail:
+      type: object
+      properties:
+        input_phone_type:
+          $ref: '#/components/schemas/RpaV1PhoneType'
+      additionalProperties: false
+      description: Reverse Phone Append Phone details.
     RpaV1Request:
       required:
       - number
@@ -211,45 +250,6 @@ components:
           example: '1234567890'
       additionalProperties: false
       description: Reverse Phone Append request.
-    RpaV1PhoneType:
-      enum:
-      - Landline
-      - Mobile
-      - Other
-      type: string
-    RpaV1Metadata:
-      type: object
-      properties:
-        phone_detail:
-          $ref: '#/components/schemas/RpaV1PhoneDetail'
-      additionalProperties: false
-    ResponseError:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A link to documentation that provides more details about the error you’ve encountered.
-        title:
-          type:
-          - string
-          - 'null'
-          description: The title of the error.
-          example: Bad Request
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A description of the error.
-          example: The request body was malformed.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: The endpoint that returned the error.
-      additionalProperties: false
-      description: Error model containing the error details.
   securitySchemes:
     OAuth2:
       type: http

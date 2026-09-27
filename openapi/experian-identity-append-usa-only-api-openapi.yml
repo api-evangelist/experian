@@ -302,285 +302,44 @@ components:
           description: The endpoint that returned the error.
       additionalProperties: false
       description: Error model containing the error details.
-    IdentityAppendResult:
+    IdentityAppendEmailDetailDomain:
       type: object
       properties:
-        email:
+        date_first_seen:
           type:
           - string
           - 'null'
-          description: The email of the individual.
-          example: John.A.Smith@example.com
-        contacts:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/IdentityAppendContactResponse'
-        risk:
-          $ref: '#/components/schemas/EmailRiskResult'
-        phones:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: The matched phone number(s) of the individual.
-          example: '[ "123-456-7890", "098-765-4321"]'
-      additionalProperties: false
-      description: Details about the result, such as email, contact, or risk score.
-    IdentityAppendAddressDetail:
-      type: object
-      properties:
-        first_name_match:
-          type:
-          - string
-          - 'null'
-          description: Checks to see if the first name matches first names previously associated with that email.
-          example: match
-        last_name_match:
-          type:
-          - string
-          - 'null'
-          description: Checks to see if the last name matches last names previously associated with that email.
-          example: no_match
-        address_line_1_match:
-          type:
-          - string
-          - 'null'
-          description: Checks to see if the address line matches the address line previously associated with that email.
-          example: no_data
-        town_match:
-          type:
-          - string
-          - 'null'
-          description: Checks to see if the town matches the town data previously associated with that email.
-          example: no_data
-        postal_code_match:
-          type:
-          - string
-          - 'null'
-          description: Checks to see if the postal code matches the postal code data previously associated with that email.
-          example: no_data
-        deliverability:
-          type:
-          - string
-          - 'null'
-          description: Checks if the address is deliverable.
-          example: undeliverable
-        deliverability_detail:
-          type:
-          - string
-          - 'null'
-          description: Deliverable sub status.
-          example: missing_primary
-        address_type:
-          $ref: '#/components/schemas/IdentityAppendAddressDetailAddressType'
-      additionalProperties: false
-      description: The Address Detail metadata.
-    IdentityAppendAddressDetailAddressType:
-      type: object
-      properties:
-        code:
-          type:
-          - string
-          - 'null'
-          description: Indicates the address type.
-          example: S
-        description:
-          type:
-          - string
-          - 'null'
-          description: Indicates the description of the code.
-          example: Street
-      additionalProperties: false
-      description: The Address Detail metadata's address type information.
-    IdentityAppendMetadata:
-      type: object
-      properties:
-        email_detail:
-          $ref: '#/components/schemas/IdentityAppendEmailDetail'
-        address_detail:
-          $ref: '#/components/schemas/IdentityAppendAddressDetail'
-        ip_detail:
-          $ref: '#/components/schemas/IdentityAppendIpDetail'
-        phone_detail:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/IdentityAppendPhoneDetail'
-      additionalProperties: false
-      description: The metadata model.
-    IdentityAppendIpDetail:
-      type: object
-      properties:
-        routing_type:
-          type:
-          - string
-          - 'null'
-          description: Indicates the IP Routing Type (IPRT), which specifies how the connection is routed through the Internet and can be used to determine how close the user is to the public IP address.
-          example: fixed
-        organization:
-          type:
-          - string
-          - 'null'
-          description: The registering organization, which can include many types of entities, including corporate, government, or educational entities, and ISPs managing the allocation and use of network blocks.
-          example: experian
-        proxy_type:
-          type:
-          - string
-          - 'null'
-          description: The network or protocol utilized by the server to proxy the user connection is identified.
-          example: tor
-        hosting_facility:
-          type:
-          - boolean
-          - 'null'
-          description: A value of "true" indicates that the IP address is associated with a hosting facility; otherwise the value is "false".
-          example: 'true'
-        latitude:
-          type:
-          - number
-          - 'null'
-          description: The latitude of the identified location.
-          format: double
-          example: '38.89768'
-        longitude:
-          type:
-          - number
-          - 'null'
-          description: The longitude of the identified location.
-          format: double
-          example: '-77.03651'
-      additionalProperties: false
-      description: The Ip Address Detail metadata.
-    IdentityAppendInputOptions:
-      type: object
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          description: The name of the option.
-          example: dnc_preference
-        value:
-          type:
-          - string
-          - 'null'
-          description: The value of the option.
-          example: flag | exclude | only
-      additionalProperties: false
-      description: The identity append request options.
-    IdentityAppendPhoneDetail:
-      type: object
-      properties:
-        phone_type:
-          type:
-          - string
-          - 'null'
-          description: The type of phone based on its classification of intended purpose, i.e. mobile, landline, pager or unknown.
-          example: mobile
-        number:
-          type:
-          - string
-          - 'null'
-          description: The phone number of the individual.
-          example: 123-456-7890
-        dnc:
-          type:
-          - boolean
-          - 'null'
-          description: A value of "true" indicates that the phone number appears on the Do Not Call list; otherwise the value is "false"
-          example: 'true'
-        dnc_date_revised:
-          type:
-          - string
-          - 'null'
-          description: The last date the phone number appeared on the Do Not Call list.
-          example: '2023-08-31'
-        rank:
+          description: The date the domain first appeared in the records. The value "now" will be returned if the domain is new.
+          example: now
+        longevity:
           type:
           - integer
           - 'null'
-          description: The rank of the phone number most likely in use by the individual.
+          description: A score relating to when the domain was first discovered. From 0 (not discovered) to 3 (Discovered over a year ago).
           format: int32
-          example: '0'
+          example: '3'
+        velocity:
+          type:
+          - integer
+          - 'null'
+          description: A score reflecting the activity of the domain over the last 6 months, from 0 (no activity) to 10 (most active).
+          format: int32
+          example: '10'
+        popularity:
+          type:
+          - integer
+          - 'null'
+          description: A score assessing the domain's visibility over the last 12 months based on the number of sources that have received the address, ranging from 0 (no sources) to 10 (most sources).
+          format: int32
+          example: '10'
+        domain_type:
+          type:
+          - string
+          - 'null'
+          description: The type of domain.
+          example: freeisp
       additionalProperties: false
-      description: The Phone Detail metadata.
-    IdentityAppendContactResponse:
-      type: object
-      properties:
-        first_name:
-          type:
-          - string
-          - 'null'
-          description: The first name of the individual.
-          example: John
-        last_name:
-          type:
-          - string
-          - 'null'
-          description: The last name of the individual.
-          example: Smith
-        address_line_1:
-          type:
-          - string
-          - 'null'
-          description: The first line of the individual’s address.
-          example: 1 Main Street
-        town:
-          type:
-          - string
-          - 'null'
-          description: The town, city or suburb of the individual’s address.
-          example: Phoenix
-        region:
-          type:
-          - string
-          - 'null'
-          description: The state or province abbreviation of the individual’s address.
-          example: AZ
-        postal_code:
-          type:
-          - string
-          - 'null'
-          description: The postal code of the individual’s address.
-          example: '94133'
-        country_iso_3:
-          type:
-          - string
-          - 'null'
-          description: The country iso 3 of the individual’s address.
-          example: USA
-      additionalProperties: false
-      description: The individuals contact information matched to the email or phone supplied.
-    IdentityAppendRequest:
-      required:
-      - attributes
-      - components
-      type: object
-      properties:
-        components:
-          $ref: '#/components/schemas/IdentityAppendInputComponents'
-        options:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/IdentityAppendInputOptions'
-          description: The identity append request options.
-        attributes:
-          maxItems: 1
-          minItems: 1
-          type: array
-          items:
-            type: string
-          description: Type of the request.
-          example:
-          - email
-      additionalProperties: false
-      description: "The request model.\n\nFor more information on what elements are mandatory or optional, please visit the Technical Documentation site for\n<a href=\"https://docs.experianaperture.io/identity-append/experian-identity-append/api-reference/email-append/\">Email Append</a>, \n<a href=\"https://docs.experianaperture.io/identity-append/experian-identity-append/api-reference/reverse-email-append/\">Reverse Email Append</a>, \n<a href=\"https://docs.experianaperture.io/identity-append/experian-identity-append/api-reference/phone-append/\">Phone Append</a>\nand \n<a href=\"https://docs.experianaperture.io/identity-append/experian-identity-append/api-reference/risk-score/\">Risk Score</a>."
+      description: The Email Detail metadata Domain info.
     IdentityAppendEmailDetail:
       type: object
       properties:
@@ -639,6 +398,53 @@ components:
           example: Valid email address.
       additionalProperties: false
       description: Additional fields details that can be returned alongside the Identity Append result.
+    IdentityAppendContactResponse:
+      type: object
+      properties:
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name of the individual.
+          example: John
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name of the individual.
+          example: Smith
+        address_line_1:
+          type:
+          - string
+          - 'null'
+          description: The first line of the individual’s address.
+          example: 1 Main Street
+        town:
+          type:
+          - string
+          - 'null'
+          description: The town, city or suburb of the individual’s address.
+          example: Phoenix
+        region:
+          type:
+          - string
+          - 'null'
+          description: The state or province abbreviation of the individual’s address.
+          example: AZ
+        postal_code:
+          type:
+          - string
+          - 'null'
+          description: The postal code of the individual’s address.
+          example: '94133'
+        country_iso_3:
+          type:
+          - string
+          - 'null'
+          description: The country iso 3 of the individual’s address.
+          example: USA
+      additionalProperties: false
+      description: The individuals contact information matched to the email or phone supplied.
     IdentityAppendInputComponents:
       type: object
       properties:
@@ -774,55 +580,195 @@ components:
           - python-requests/2.27.1
       additionalProperties: false
       description: The identity input component.
-    IdentityAppendEmailDetailDomain:
+    IdentityAppendAddressDetail:
       type: object
       properties:
-        date_first_seen:
+        first_name_match:
           type:
           - string
           - 'null'
-          description: The date the domain first appeared in the records. The value "now" will be returned if the domain is new.
-          example: now
-        longevity:
-          type:
-          - integer
-          - 'null'
-          description: A score relating to when the domain was first discovered. From 0 (not discovered) to 3 (Discovered over a year ago).
-          format: int32
-          example: '3'
-        velocity:
-          type:
-          - integer
-          - 'null'
-          description: A score reflecting the activity of the domain over the last 6 months, from 0 (no activity) to 10 (most active).
-          format: int32
-          example: '10'
-        popularity:
-          type:
-          - integer
-          - 'null'
-          description: A score assessing the domain's visibility over the last 12 months based on the number of sources that have received the address, ranging from 0 (no sources) to 10 (most sources).
-          format: int32
-          example: '10'
-        domain_type:
+          description: Checks to see if the first name matches first names previously associated with that email.
+          example: match
+        last_name_match:
           type:
           - string
           - 'null'
-          description: The type of domain.
-          example: freeisp
+          description: Checks to see if the last name matches last names previously associated with that email.
+          example: no_match
+        address_line_1_match:
+          type:
+          - string
+          - 'null'
+          description: Checks to see if the address line matches the address line previously associated with that email.
+          example: no_data
+        town_match:
+          type:
+          - string
+          - 'null'
+          description: Checks to see if the town matches the town data previously associated with that email.
+          example: no_data
+        postal_code_match:
+          type:
+          - string
+          - 'null'
+          description: Checks to see if the postal code matches the postal code data previously associated with that email.
+          example: no_data
+        deliverability:
+          type:
+          - string
+          - 'null'
+          description: Checks if the address is deliverable.
+          example: undeliverable
+        deliverability_detail:
+          type:
+          - string
+          - 'null'
+          description: Deliverable sub status.
+          example: missing_primary
+        address_type:
+          $ref: '#/components/schemas/IdentityAppendAddressDetailAddressType'
       additionalProperties: false
-      description: The Email Detail metadata Domain info.
-    IdentityAppendResponse:
+      description: The Address Detail metadata.
+    IdentityAppendAddressDetailAddressType:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/IdentityAppendResult'
-        metadata:
-          $ref: '#/components/schemas/IdentityAppendMetadata'
+        code:
+          type:
+          - string
+          - 'null'
+          description: Indicates the address type.
+          example: S
+        description:
+          type:
+          - string
+          - 'null'
+          description: Indicates the description of the code.
+          example: Street
       additionalProperties: false
-      description: The response model.
+      description: The Address Detail metadata's address type information.
+    IdentityAppendRequest:
+      required:
+      - attributes
+      - components
+      type: object
+      properties:
+        components:
+          $ref: '#/components/schemas/IdentityAppendInputComponents'
+        options:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IdentityAppendInputOptions'
+          description: The identity append request options.
+        attributes:
+          maxItems: 1
+          minItems: 1
+          type: array
+          items:
+            type: string
+          description: Type of the request.
+          example:
+          - email
+      additionalProperties: false
+      description: "The request model.\n\nFor more information on what elements are mandatory or optional, please visit the Technical Documentation site for\n<a href=\"https://docs.experianaperture.io/identity-append/experian-identity-append/api-reference/email-append/\">Email Append</a>, \n<a href=\"https://docs.experianaperture.io/identity-append/experian-identity-append/api-reference/reverse-email-append/\">Reverse Email Append</a>, \n<a href=\"https://docs.experianaperture.io/identity-append/experian-identity-append/api-reference/phone-append/\">Phone Append</a>\nand \n<a href=\"https://docs.experianaperture.io/identity-append/experian-identity-append/api-reference/risk-score/\">Risk Score</a>."
+    IdentityAppendPhoneDetail:
+      type: object
+      properties:
+        phone_type:
+          type:
+          - string
+          - 'null'
+          description: The type of phone based on its classification of intended purpose, i.e. mobile, landline, pager or unknown.
+          example: mobile
+        number:
+          type:
+          - string
+          - 'null'
+          description: The phone number of the individual.
+          example: 123-456-7890
+        dnc:
+          type:
+          - boolean
+          - 'null'
+          description: A value of "true" indicates that the phone number appears on the Do Not Call list; otherwise the value is "false"
+          example: 'true'
+        dnc_date_revised:
+          type:
+          - string
+          - 'null'
+          description: The last date the phone number appeared on the Do Not Call list.
+          example: '2023-08-31'
+        rank:
+          type:
+          - integer
+          - 'null'
+          description: The rank of the phone number most likely in use by the individual.
+          format: int32
+          example: '0'
+      additionalProperties: false
+      description: The Phone Detail metadata.
+    IdentityAppendMetadata:
+      type: object
+      properties:
+        email_detail:
+          $ref: '#/components/schemas/IdentityAppendEmailDetail'
+        address_detail:
+          $ref: '#/components/schemas/IdentityAppendAddressDetail'
+        ip_detail:
+          $ref: '#/components/schemas/IdentityAppendIpDetail'
+        phone_detail:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IdentityAppendPhoneDetail'
+      additionalProperties: false
+      description: The metadata model.
+    IdentityAppendResult:
+      type: object
+      properties:
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email of the individual.
+          example: John.A.Smith@example.com
+        contacts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IdentityAppendContactResponse'
+        risk:
+          $ref: '#/components/schemas/EmailRiskResult'
+        phones:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The matched phone number(s) of the individual.
+          example: '[ "123-456-7890", "098-765-4321"]'
+      additionalProperties: false
+      description: Details about the result, such as email, contact, or risk score.
+    IdentityAppendInputOptions:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the option.
+          example: dnc_preference
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the option.
+          example: flag | exclude | only
+      additionalProperties: false
+      description: The identity append request options.
     EmailRiskResult:
       type: object
       properties:
@@ -848,6 +794,60 @@ components:
           format: int32
       additionalProperties: false
       description: The risk of a fraudulent profile.
+    IdentityAppendIpDetail:
+      type: object
+      properties:
+        routing_type:
+          type:
+          - string
+          - 'null'
+          description: Indicates the IP Routing Type (IPRT), which specifies how the connection is routed through the Internet and can be used to determine how close the user is to the public IP address.
+          example: fixed
+        organization:
+          type:
+          - string
+          - 'null'
+          description: The registering organization, which can include many types of entities, including corporate, government, or educational entities, and ISPs managing the allocation and use of network blocks.
+          example: experian
+        proxy_type:
+          type:
+          - string
+          - 'null'
+          description: The network or protocol utilized by the server to proxy the user connection is identified.
+          example: tor
+        hosting_facility:
+          type:
+          - boolean
+          - 'null'
+          description: A value of "true" indicates that the IP address is associated with a hosting facility; otherwise the value is "false".
+          example: 'true'
+        latitude:
+          type:
+          - number
+          - 'null'
+          description: The latitude of the identified location.
+          format: double
+          example: '38.89768'
+        longitude:
+          type:
+          - number
+          - 'null'
+          description: The longitude of the identified location.
+          format: double
+          example: '-77.03651'
+      additionalProperties: false
+      description: The Ip Address Detail metadata.
+    IdentityAppendResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/IdentityAppendResult'
+        metadata:
+          $ref: '#/components/schemas/IdentityAppendMetadata'
+      additionalProperties: false
+      description: The response model.
   securitySchemes:
     OAuth2:
       type: http

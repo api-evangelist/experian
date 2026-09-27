@@ -2310,164 +2310,125 @@ components:
             wrapped: true
       additionalProperties: false
       description: Enrichment attributes that can be returned, based on the Premium Location Insight dataset.
-    PremiumLocationInsightGeocodesBuildingXy:
+    EnrichmentV2DatasetGbrHealth:
       type: object
       properties:
-        x_coordinate:
+        authority_code:
           type:
-          - number
+          - string
           - 'null'
-          description: The Geocode 'X' coordinate for the centre of the property.
-          format: double
-          example: 152718.84
-        y_coordinate:
+          description: NHS Authority Code.
+          example: Q36
+        authority_code_2011:
           type:
-          - number
+          - string
           - 'null'
-          description: The Geocode 'Y' coordinate for the centre of the property.
-          format: double
-          example: 529726.56
+          description: NHS Authority Code 2011.
+          example: E18000007
+        authority_name:
+          type:
+          - string
+          - 'null'
+          description: NHS Authority Name.
+          example: London
+        pclh_code:
+          type:
+          - string
+          - 'null'
+          description: Primary Care/Local Health Code.
+          example: 5LE
+        pclh_code_2011:
+          type:
+          - string
+          - 'null'
+          description: Primary Care/Local Health Code 2011.
+          example: E16000059
+        pclh_name:
+          type:
+          - string
+          - 'null'
+          description: Primary Care/Local Health Name.
+          example: Southwark
+        ward_code:
+          type:
+          - string
+          - 'null'
+          description: Local Authority Ward Code.
+          example: E05011095
+        ward_code_2011:
+          type:
+          - string
+          - 'null'
+          description: Local Authority Ward Code 2011.
+          example: E05011095
+        ward_name:
+          type:
+          - string
+          - 'null'
+          description: Local Authority Ward Name.
+          example: Borough & Bankside
+        ccg_code:
+          type:
+          - string
+          - 'null'
+          description: CCG Current Area Code.
+          example: E38000244
+        ccg_name:
+          type:
+          - string
+          - 'null'
+          description: CCG Current Area Name.
+          example: NHS South East London CCG
+        doh_code:
+          type:
+          - string
+          - 'null'
+          description: CCG Former/DH Area Code.
+          example: 72Q
       additionalProperties: false
-      description: Building XY coordinate for the specified address.
-    EnrichmentV2Metadata:
-      type: object
-      properties:
-        code:
-          type:
-          - string
-          - 'null'
-          description: Response-level metadata code.
-          example: S200
-        message:
-          type:
-          - string
-          - 'null'
-          description: Response-level metadata message.
-          example: Success
-        detail:
-          type:
-          - string
-          - 'null'
-          description: Response-level metadata detail.
-          example: All requested attribute(s) retrieved.
-        datasets:
-          $ref: '#/components/schemas/EnrichmentV2MetadataDatasets'
-      additionalProperties: false
-      description: The metadata model.
-    EnrichmentV2Response:
-      type: object
-      properties:
-        reference_id:
-          type:
-          - string
-          - 'null'
-          description: If you chose to submit a "Reference-Id" in the response body, the value will be returned with the response.
-        transaction_id:
-          type:
-          - string
-          - 'null'
-          description: Unique Experian-assigned transaction identifier.
-          example: ab123ab1-abc1-1234-abcd-ab1a123a1a12
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/EnrichmentV2Result'
-        metadata:
-          $ref: '#/components/schemas/EnrichmentV2Metadata'
-      additionalProperties: false
-      description: The response model.
-      xml:
-        name: response
-    EnrichmentV2AttributesGbrGovernment:
-      enum:
-      - eer_code
-      - eer_code_pre_2011
-      - eer_name
-      - gor_code
-      - gor_code_pre_2011
-      - gor_name
-      - lea_code
-      - lea_name
-      - la_code
-      - la_code_pre_2011
-      - la_name
-      - ward_code
-      - ward_code_pre_2011
-      - ward_name
-      - cens_out_area
-      type: string
-      description: The dataset named GBR Government and its associated attributes.
-    EnrichmentV2AttributesUsaRegionalGeocodes:
+      description: Enrichment attributes that can be returned, based on the GBR Health dataset.
+    EnrichmentV2AttributesUkLocationComplete:
       enum:
       - latitude
       - longitude
       - match_level
-      - census_tract
-      - census_block
-      - core_based_statistical_area
-      - congressional_district_code
-      - county_code
+      - udprn
+      - uprn
+      - x_coordinate
+      - y_coordinate
       type: string
-      description: The dataset named USA Regional Geocodes its associated attributes.
-    PremiumLocationInsightGeocodesAccess:
+      description: The dataset named UK Location Complete its associated attributes.
+    EnrichmentV2DatasetWhat3Words:
       type: object
       properties:
         latitude:
           type:
           - number
           - 'null'
-          description: The latitude of access geocode.
+          description: The latitude.
           format: double
-          example: 52.9413
+          example: 51.75117
         longitude:
           type:
           - number
           - 'null'
-          description: The longitude of access geocode.
+          description: The longitude.
           format: double
-          example: 1.16312
+          example: -1.24623
+        name:
+          type:
+          - string
+          - 'null'
+          description: The what3words location.
+          example: pretty.needed.chill
+        description:
+          type:
+          - string
+          - 'null'
+          description: The nearest place
+          example: near Oxford, Oxfordshire
       additionalProperties: false
-      description: Access geocode for the specified address.
-    EnrichmentV2AttributesPremiumLocationInsight:
-      enum:
-      - geocodes
-      - geocodes_building_xy
-      - geocodes_access
-      - time
-      type: string
-      description: "The dataset named Premium Location Insight and its associated attributes.\n\n (The time attribute is excluded in Premium Location Insight Lite.) </br>"
-    EnrichmentV2AttributesGeocode:
-      enum:
-      - latitude
-      - longitude
-      - match_level
-      type: string
-      description: The dataset named Geocodes and its associated attributes.
-    EnrichmentV2Result:
-      type: object
-      properties:
-        geocodes:
-          $ref: '#/components/schemas/EnrichmentV2DatasetGeocodes'
-        usa_regional_geocodes:
-          $ref: '#/components/schemas/EnrichmentV2DatasetUsaRegionalGeocodes'
-        aus_regional_geocodes:
-          $ref: '#/components/schemas/EnrichmentV2DatasetAusRegionalGeocodes'
-        nzl_regional_geocodes:
-          $ref: '#/components/schemas/EnrichmentV2DatasetNzlRegionalGeocodes'
-        uk_location_complete:
-          $ref: '#/components/schemas/EnrichmentV2DatasetUkLocationComplete'
-        uk_location_essential:
-          $ref: '#/components/schemas/EnrichmentV2DatasetUkLocationEssential'
-        gbr_government:
-          $ref: '#/components/schemas/EnrichmentV2DatasetGbrGovernment'
-        gbr_health:
-          $ref: '#/components/schemas/EnrichmentV2DatasetGbrHealth'
-        premium_location_insight:
-          $ref: '#/components/schemas/EnrichmentV2DatasetPremiumLocationInsight'
-        what3words:
-          $ref: '#/components/schemas/EnrichmentV2DatasetWhat3Words'
-      additionalProperties: false
-      description: Details about the result. Includes the enriched data.
+      description: Enrichment attributes that can be returned, based on the what3words dataset.
     PremiumLocationInsightTimeTransition:
       type: object
       properties:
@@ -2503,6 +2464,379 @@ components:
           example: '2023-04-27T22:00:00Z'
       additionalProperties: false
       description: Daylight savings time (DST) transitions information returned based on a specified address.
+    ResponseError:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A link to documentation that provides more details about the error you’ve encountered.
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title of the error.
+          example: Bad Request
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A description of the error.
+          example: The request body was malformed.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: The endpoint that returned the error.
+      additionalProperties: false
+      description: Error model containing the error details.
+    EnrichmentV2UkLocationEssentialMetadata:
+      type: object
+      properties:
+        latitude:
+          $ref: '#/components/schemas/DatasetMetadata'
+        longitude:
+          $ref: '#/components/schemas/DatasetMetadata'
+        match_level:
+          $ref: '#/components/schemas/DatasetMetadata'
+        udprn:
+          $ref: '#/components/schemas/DatasetMetadata'
+        uprn:
+          $ref: '#/components/schemas/DatasetMetadata'
+        x_coordinate:
+          $ref: '#/components/schemas/DatasetMetadata'
+        y_coordinate:
+          $ref: '#/components/schemas/DatasetMetadata'
+      additionalProperties: false
+      description: Attribute-level metadata for the UK Location Essential dataset.
+    EnrichmentV2PremiumLocationInsightMetadata:
+      type: object
+      properties:
+        geocodes:
+          $ref: '#/components/schemas/DatasetMetadata'
+        geocodes_building_xy:
+          $ref: '#/components/schemas/DatasetMetadata'
+        geocodes_access:
+          $ref: '#/components/schemas/DatasetMetadata'
+        time:
+          $ref: '#/components/schemas/DatasetMetadata'
+      additionalProperties: false
+      description: "Attribute-level metadata for the Premium Location Insight dataset.\n\n (The time attribute is excluded in Premium Location Insight Lite.) </br>"
+    EnrichmentV2GbrHealthMetadata:
+      type: object
+      properties:
+        authority_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        authority_code_2011:
+          $ref: '#/components/schemas/DatasetMetadata'
+        authority_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        pclh_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        pclh_code_2011:
+          $ref: '#/components/schemas/DatasetMetadata'
+        pclh_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        ward_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        ward_code_2011:
+          $ref: '#/components/schemas/DatasetMetadata'
+        ward_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        ccg_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        ccg_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        doh_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+      additionalProperties: false
+      description: Attribute-level metadata for the GBR Health dataset.
+    EnrichmentV2UkLocationCompleteMetadata:
+      type: object
+      properties:
+        latitude:
+          $ref: '#/components/schemas/DatasetMetadata'
+        longitude:
+          $ref: '#/components/schemas/DatasetMetadata'
+        match_level:
+          $ref: '#/components/schemas/DatasetMetadata'
+        udprn:
+          $ref: '#/components/schemas/DatasetMetadata'
+        uprn:
+          $ref: '#/components/schemas/DatasetMetadata'
+        x_coordinate:
+          $ref: '#/components/schemas/DatasetMetadata'
+        y_coordinate:
+          $ref: '#/components/schemas/DatasetMetadata'
+      additionalProperties: false
+      description: Attribute-level metadata for the UK Location Complete dataset.
+    EnrichmentV2GbrGovernmentMetadata:
+      type: object
+      properties:
+        eer_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        eer_code_pre_2011:
+          $ref: '#/components/schemas/DatasetMetadata'
+        eer_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        gor_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        gor_code_pre_2011:
+          $ref: '#/components/schemas/DatasetMetadata'
+        gor_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        lea_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        lea_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        la_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        la_code_pre_2011:
+          $ref: '#/components/schemas/DatasetMetadata'
+        la_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        ward_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        ward_code_pre_2011:
+          $ref: '#/components/schemas/DatasetMetadata'
+        ward_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        cens_out_area:
+          $ref: '#/components/schemas/DatasetMetadata'
+      additionalProperties: false
+      description: Attribute-level metadata for the GBR Government dataset.
+    EnrichmentV2Result:
+      type: object
+      properties:
+        geocodes:
+          $ref: '#/components/schemas/EnrichmentV2DatasetGeocodes'
+        usa_regional_geocodes:
+          $ref: '#/components/schemas/EnrichmentV2DatasetUsaRegionalGeocodes'
+        aus_regional_geocodes:
+          $ref: '#/components/schemas/EnrichmentV2DatasetAusRegionalGeocodes'
+        nzl_regional_geocodes:
+          $ref: '#/components/schemas/EnrichmentV2DatasetNzlRegionalGeocodes'
+        uk_location_complete:
+          $ref: '#/components/schemas/EnrichmentV2DatasetUkLocationComplete'
+        uk_location_essential:
+          $ref: '#/components/schemas/EnrichmentV2DatasetUkLocationEssential'
+        gbr_government:
+          $ref: '#/components/schemas/EnrichmentV2DatasetGbrGovernment'
+        gbr_health:
+          $ref: '#/components/schemas/EnrichmentV2DatasetGbrHealth'
+        premium_location_insight:
+          $ref: '#/components/schemas/EnrichmentV2DatasetPremiumLocationInsight'
+        what3words:
+          $ref: '#/components/schemas/EnrichmentV2DatasetWhat3Words'
+      additionalProperties: false
+      description: Details about the result. Includes the enriched data.
+    EnrichmentV2AttributesNzlRegionalGeocodes:
+      enum:
+      - front_of_property_nztm_x_coordinate
+      - front_of_property_nztm_y_coordinate
+      - centroid_of_property_nztm_x_coordinate
+      - centroid_of_property_nztm_y_coordinate
+      - linz_parcel_id
+      - property_purpose_type
+      - addressable
+      - mesh_block_code
+      - territorial_authority_code
+      - territorial_authority_name
+      - regional_council_code
+      - regional_council_name
+      - general_electorate_code
+      - general_electorate_name
+      - maori_electorate_code
+      - maori_electorate_name
+      - front_of_property_latitude
+      - front_of_property_longitude
+      - centroid_of_property_latitude
+      - centroid_of_property_longitude
+      - match_level
+      type: string
+      description: The dataset named NZL Regional Geocodes its associated attributes.
+    EnrichmentV2Metadata:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          description: Response-level metadata code.
+          example: S200
+        message:
+          type:
+          - string
+          - 'null'
+          description: Response-level metadata message.
+          example: Success
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Response-level metadata detail.
+          example: All requested attribute(s) retrieved.
+        datasets:
+          $ref: '#/components/schemas/EnrichmentV2MetadataDatasets'
+      additionalProperties: false
+      description: The metadata model.
+    DatasetMetadata:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          description: Attribute-level metadata code.
+          example: S200
+        message:
+          type:
+          - string
+          - 'null'
+          description: Attribute-level metadata message.
+          example: Match
+        value:
+          type:
+          - string
+          - 'null'
+          description: The attribute's value that was returned by the API.
+      additionalProperties: false
+      description: The attribute's metadata.
+    EnrichmentV2AttributesWhat3Words:
+      enum:
+      - latitude
+      - longitude
+      - name
+      - description
+      type: string
+      description: The dataset named what3words and its associated attributes.
+    EnrichmentV2AttributesGbrHealth:
+      enum:
+      - authority_code
+      - authority_code_2011
+      - authority_name
+      - pclh_code
+      - pclh_code_2011
+      - pclh_name
+      - ward_code
+      - ward_code_2011
+      - ward_name
+      - ccg_code
+      - ccg_name
+      - doh_code
+      type: string
+      description: The dataset named GBR Health and its associated attributes.
+    EnrichmentV2GeocodesMetadata:
+      type: object
+      properties:
+        latitude:
+          $ref: '#/components/schemas/DatasetMetadata'
+        longitude:
+          $ref: '#/components/schemas/DatasetMetadata'
+        match_level:
+          $ref: '#/components/schemas/DatasetMetadata'
+      additionalProperties: false
+      description: Attribute-level metadata for the Geocodes dataset.
+    PremiumLocationInsightReferenceTime:
+      type: object
+      properties:
+        tag:
+          type:
+          - string
+          - 'null'
+          description: Time zone applicable based on current timestamp.
+          example: EET
+        standard_offset:
+          type:
+          - string
+          - 'null'
+          description: Standard offset returned based on current timestamp.
+          example: 02:00:00
+        daylight_savings:
+          type:
+          - string
+          - 'null'
+          description: Daylight savings returned based on current timestamp.
+          example: 00:00:00
+        sunrise:
+          type:
+          - string
+          - 'null'
+          description: Sunrise time at the given time zone based on current timestamp.
+          example: '2023-04-07T03:38:08.767292+00:00'
+        sunset:
+          type:
+          - string
+          - 'null'
+          description: Sunset time at the given time zone based on current timestamp.
+          example: '2023-04-07T16:16:40.8507771+00:00'
+      additionalProperties: false
+      description: Time zone information returned based on current timestamp.
+    EnrichmentV2DatasetUkLocationEssential:
+      type: object
+      properties:
+        latitude:
+          type:
+          - number
+          - 'null'
+          description: The latitude.
+          format: double
+          example: 51.50112
+        longitude:
+          type:
+          - number
+          - 'null'
+          description: The longitude.
+          format: double
+          example: -0.1041234
+        match_level:
+          type:
+          - string
+          - 'null'
+          description: Specifies the accuracy of the coordinates for the specified address.
+          example: Building
+        udprn:
+          type:
+          - string
+          - 'null'
+          description: The UDPRN.
+          example: '55244256'
+        uprn:
+          type:
+          - string
+          - 'null'
+          description: The UPRN.
+          example: 010091977422
+        x_coordinate:
+          type:
+          - number
+          - 'null'
+          description: The x coordinate.
+          format: double
+          example: 531677.94
+        y_coordinate:
+          type:
+          - number
+          - 'null'
+          description: The y coordinate.
+          format: double
+          example: 179757.6
+      additionalProperties: false
+      description: Enrichment attributes that can be returned, based on the UK Location Essential dataset.
+    EnrichmentV2What3WordsMetadata:
+      type: object
+      properties:
+        latitude:
+          $ref: '#/components/schemas/DatasetMetadata'
+        longitude:
+          $ref: '#/components/schemas/DatasetMetadata'
+        name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        description:
+          $ref: '#/components/schemas/DatasetMetadata'
+      additionalProperties: false
+      description: Attribute-level metadata for the what3words dataset.
     EnrichmentV2UsaRegionalGeocodesMetadata:
       type: object
       properties:
@@ -2524,18 +2858,92 @@ components:
           $ref: '#/components/schemas/DatasetMetadata'
       additionalProperties: false
       description: Attribute-level metadata for the USA Regional Geocodes dataset.
-    EnrichmentV2DatasetKeys:
-      required:
-      - global_address_key
+    EnrichmentV2MetadataDatasets:
       type: object
       properties:
-        global_address_key:
-          minLength: 1
-          type: string
-          description: A unique Experian identifier.
-          example: aWQ9fDEgQXVkcmV5IFphcHAgRHJpdmV8SHVkc29ufEplcnNleSBDaXR5LCBOSiAwNzMwNX5mb3JtYXRJZD0xMjM0NX5RTD05fmdlbz0w
+        geocodes:
+          $ref: '#/components/schemas/EnrichmentV2GeocodesMetadata'
+        usa_regional_geocodes:
+          $ref: '#/components/schemas/EnrichmentV2UsaRegionalGeocodesMetadata'
+        aus_regional_geocodes:
+          $ref: '#/components/schemas/EnrichmentV2AusRegionalGeocodesMetadata'
+        nzl_regional_geocodes:
+          $ref: '#/components/schemas/EnrichmentV2NzlRegionalGeocodesMetadata'
+        uk_location_complete:
+          $ref: '#/components/schemas/EnrichmentV2UkLocationCompleteMetadata'
+        uk_location_essential:
+          $ref: '#/components/schemas/EnrichmentV2UkLocationEssentialMetadata'
+        gbr_government:
+          $ref: '#/components/schemas/EnrichmentV2GbrGovernmentMetadata'
+        gbr_health:
+          $ref: '#/components/schemas/EnrichmentV2GbrHealthMetadata'
+        premium_location_insight:
+          $ref: '#/components/schemas/EnrichmentV2PremiumLocationInsightMetadata'
+        what3words:
+          $ref: '#/components/schemas/EnrichmentV2What3WordsMetadata'
       additionalProperties: false
-      description: Keys you can use to search datasets.
+      description: The dataset name and related attributes.
+    EnrichmentV2DatasetUsaRegionalGeocodes:
+      type: object
+      properties:
+        latitude:
+          type:
+          - number
+          - 'null'
+          description: The latitude.
+          format: double
+          example: 33.693283
+        longitude:
+          type:
+          - number
+          - 'null'
+          description: The longitude.
+          format: double
+          example: -117.87428
+        match_level:
+          type:
+          - string
+          - 'null'
+          description: Specifies the accuracy of the coordinates for the specified address.
+          example: Street
+        census_tract:
+          type:
+          - string
+          - 'null'
+          description: Geographical region defined by US Census Bureau for the purpose of taking a census (6 digits).
+          example: '050210'
+        census_block:
+          type:
+          - string
+          - 'null'
+          description: Smallest geographical unit used by US Census Bureau for the purpose of taking a census; sub-division of a tract (4 digits).
+          example: '2025'
+        core_based_statistical_area:
+          type:
+          - string
+          - 'null'
+          description: 'Geographical area maintained by US Office of Management and Budget (OMB) which consists of one or more counties anchored by an urban center.
+
+            CBSAs are categorized as Metropolitan (at least one urbanized area of 50,000+ inhabitants) or Micropolitan (at least one urban cluster of between 10,000 and 50,000 inhabitants);
+
+            these are also referred to as MSAs (5 digits).'
+          example: '12060'
+        congressional_district_code:
+          type:
+          - string
+          - 'null'
+          description: 'US Federal Information Processing Standards (FIPS) codes to identify US electoral divisions (7 digits). The first two digits represent the state,
+
+            the second two digits represent the congressional district, and the final three digits designate the number of the Congress.'
+          example: '1307116'
+        county_code:
+          type:
+          - string
+          - 'null'
+          description: County code within a US state or possession (3 digits).
+          example: '135'
+      additionalProperties: false
+      description: Enrichment attributes that can be returned, based on the USA Regional Geocodes dataset.
     EnrichmentV2DatasetAusRegionalGeocodes:
       type: object
       properties:
@@ -2947,145 +3355,426 @@ components:
           example: G
       additionalProperties: false
       description: Enrichment attributes that can be returned, based on the AUS Regional Geocodes dataset.
-    EnrichmentV2DatasetNzlRegionalGeocodes:
+    EnrichmentV2Request:
+      required:
+      - attributes
+      - keys
       type: object
       properties:
-        front_of_property_nztm_x_coordinate:
+        country_iso:
+          maxLength: 3
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: The 3-letter ISO country code.
+        keys:
+          $ref: '#/components/schemas/EnrichmentV2DatasetKeys'
+        attributes:
+          $ref: '#/components/schemas/EnrichmentV2DatasetAttributes'
+      additionalProperties: false
+      description: The request model.
+      xml:
+        name: request
+    EnrichmentV2DatasetUkLocationComplete:
+      type: object
+      properties:
+        latitude:
           type:
           - number
           - 'null'
-          description: The Geocode 'X' coordinate for the front of the building.
+          description: The latitude.
           format: double
-          example: 1757352.8
-        front_of_property_nztm_y_coordinate:
+          example: 51.50112
+        longitude:
           type:
           - number
           - 'null'
-          description: The Geocode 'Y' coordinate for the front of the building.
+          description: The longitude.
           format: double
-          example: 5920390.5
-        centroid_of_property_nztm_x_coordinate:
-          type:
-          - number
-          - 'null'
-          description: The Geocode 'X' coordinate for the centre of the property.
-          format: double
-          example: 1757328.4
-        centroid_of_property_nztm_y_coordinate:
-          type:
-          - number
-          - 'null'
-          description: The Geocode 'Y' coordinate for the centre of the property.
-          format: double
-          example: 5920400
-        linz_parcel_id:
-          type:
-          - string
-          - 'null'
-          description: This is a unique identifier of the address record.
-          example: '5047052'
-        property_purpose_type:
-          type:
-          - string
-          - 'null'
-          description: 'The type of property, the possible values are: Business, Farm, Holiday Home, Residential or Empty section.'
-          example: Business
-        addressable:
-          type:
-          - string
-          - 'null'
-          description: This defines whether the address is deliverable or not. The possible values are "Y" or "N".
-          example: N
-        mesh_block_code:
-          type:
-          - string
-          - 'null'
-          description: The unique identifier assigned to each Mesh Block.
-          example: '434000'
-        territorial_authority_code:
-          type:
-          - string
-          - 'null'
-          description: The unique identifier assigned to the Territorial Authority.
-          example: '76'
-        territorial_authority_name:
-          type:
-          - string
-          - 'null'
-          description: The name assigned to the Territorial Authority.
-          example: Auckland
-        regional_council_code:
-          type:
-          - string
-          - 'null'
-          description: The unique identifier assigned to the Regional Council.
-          example: '2'
-        regional_council_name:
-          type:
-          - string
-          - 'null'
-          description: The name assigned to the Regional Council.
-          example: Auckland Region
-        general_electorate_code:
-          type:
-          - string
-          - 'null'
-          description: The unique identifier assigned to the General Electorate.
-          example: '001'
-        general_electorate_name:
-          type:
-          - string
-          - 'null'
-          description: The name assigned to the General Electorate.
-          example: Auckland Central
-        maori_electorate_code:
-          type:
-          - string
-          - 'null'
-          description: The unique identifier assigned to the Maori Electorate.
-          example: '3'
-        maori_electorate_name:
-          type:
-          - string
-          - 'null'
-          description: The name assigned to the Maori Electorate.
-          example: Tamaki Makaurau
-        front_of_property_latitude:
-          type:
-          - number
-          - 'null'
-          description: The latitude for the front of the building.
-          format: double
-          example: -36.849308
-        front_of_property_longitude:
-          type:
-          - number
-          - 'null'
-          description: The longitude for the front of the building.
-          format: double
-          example: 174.76492
-        centroid_of_property_latitude:
-          type:
-          - number
-          - 'null'
-          description: The latitude for the centre of the property.
-          format: double
-          example: -36.849228
-        centroid_of_property_longitude:
-          type:
-          - number
-          - 'null'
-          description: The longitude for the centre of the property.
-          format: double
-          example: 174.76465
+          example: -0.1041234
         match_level:
           type:
           - string
           - 'null'
           description: Specifies the accuracy of the coordinates for the specified address.
           example: Building
+        udprn:
+          type:
+          - string
+          - 'null'
+          description: Specifies the UDPRN for the specified address.
+          example: '55244256'
+        uprn:
+          type:
+          - string
+          - 'null'
+          description: Specifies the UPRN for the specified address.
+          example: 010091977422
+        x_coordinate:
+          type:
+          - number
+          - 'null'
+          description: The x coordinate.
+          format: double
+          example: 531677.94
+        y_coordinate:
+          type:
+          - number
+          - 'null'
+          description: The y coordinate.
+          format: double
+          example: 179757.6
       additionalProperties: false
-      description: Enrichment attributes that can be returned, based on the NZL Regional Geocodes dataset.
+      description: Enrichment attributes that can be returned, based on the UK Location Complete dataset.
+    PremiumLocationInsightGeocodesBuildingXy:
+      type: object
+      properties:
+        x_coordinate:
+          type:
+          - number
+          - 'null'
+          description: The Geocode 'X' coordinate for the centre of the property.
+          format: double
+          example: 152718.84
+        y_coordinate:
+          type:
+          - number
+          - 'null'
+          description: The Geocode 'Y' coordinate for the centre of the property.
+          format: double
+          example: 529726.56
+      additionalProperties: false
+      description: Building XY coordinate for the specified address.
+    EnrichmentV2DatasetAttributes:
+      type: object
+      properties:
+        geocodes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EnrichmentV2AttributesGeocode'
+          description: The dataset named Geocodes and its associated attributes.
+          xml:
+            name: geocodes
+            wrapped: true
+        usa_regional_geocodes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EnrichmentV2AttributesUsaRegionalGeocodes'
+          description: The dataset named USA Regional Geocodes and its associated attributes.
+          xml:
+            name: usa_regional_geocodes
+            wrapped: true
+        aus_regional_geocodes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EnrichmentV2AttributesAusRegionalGeocodes'
+          description: The dataset named AUS Regional Geocodes and its associated attributes.
+          xml:
+            name: aus_regional_geocodes
+            wrapped: true
+        nzl_regional_geocodes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EnrichmentV2AttributesNzlRegionalGeocodes'
+          description: The dataset named NZL Regional Geocodes and its associated attributes.
+          xml:
+            name: nzl_regional_geocodes
+            wrapped: true
+        uk_location_complete:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EnrichmentV2AttributesUkLocationComplete'
+          description: The dataset named UK Location Complete and its associated attributes.
+          xml:
+            name: uk_location_complete
+            wrapped: true
+        uk_location_essential:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EnrichmentV2AttributesUkLocationEssential'
+          description: The dataset named UK Location Essential and its associated attributes.
+          xml:
+            name: uk_location_essential
+            wrapped: true
+        gbr_government:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EnrichmentV2AttributesGbrGovernment'
+          description: The dataset named GBR Government and its associated attributes.
+          xml:
+            name: gbr_government
+            wrapped: true
+        gbr_health:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EnrichmentV2AttributesGbrHealth'
+          description: The dataset named GBR Health and its associated attributes.
+          xml:
+            name: gbr_health
+            wrapped: true
+        premium_location_insight:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EnrichmentV2AttributesPremiumLocationInsight'
+          description: The dataset named Premium Location Insight and its associated attributes.
+          xml:
+            name: premium_location_insight
+            wrapped: true
+        what3words:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EnrichmentV2AttributesWhat3Words'
+          description: The dataset named what3words and its associated attributes.
+          xml:
+            name: what3words
+            wrapped: true
+      additionalProperties: false
+      description: Datasets and their specific attributes.
+    EnrichmentV2AttributesGbrGovernment:
+      enum:
+      - eer_code
+      - eer_code_pre_2011
+      - eer_name
+      - gor_code
+      - gor_code_pre_2011
+      - gor_name
+      - lea_code
+      - lea_name
+      - la_code
+      - la_code_pre_2011
+      - la_name
+      - ward_code
+      - ward_code_pre_2011
+      - ward_name
+      - cens_out_area
+      type: string
+      description: The dataset named GBR Government and its associated attributes.
+    EnrichmentV2NzlRegionalGeocodesMetadata:
+      type: object
+      properties:
+        front_of_property_nztm_x_coordinate:
+          $ref: '#/components/schemas/DatasetMetadata'
+        front_of_property_nztm_y_coordinate:
+          $ref: '#/components/schemas/DatasetMetadata'
+        centroid_of_property_nztm_x_coordinate:
+          $ref: '#/components/schemas/DatasetMetadata'
+        centroid_of_property_nztm_y_coordinate:
+          $ref: '#/components/schemas/DatasetMetadata'
+        linz_parcel_id:
+          $ref: '#/components/schemas/DatasetMetadata'
+        property_purpose_type:
+          $ref: '#/components/schemas/DatasetMetadata'
+        addressable:
+          $ref: '#/components/schemas/DatasetMetadata'
+        mesh_block_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        territorial_authority_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        territorial_authority_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        regional_council_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        regional_council_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        general_electorate_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        general_electorate_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        maori_electorate_code:
+          $ref: '#/components/schemas/DatasetMetadata'
+        maori_electorate_name:
+          $ref: '#/components/schemas/DatasetMetadata'
+        front_of_property_latitude:
+          $ref: '#/components/schemas/DatasetMetadata'
+        front_of_property_longitude:
+          $ref: '#/components/schemas/DatasetMetadata'
+        centroid_of_property_latitude:
+          $ref: '#/components/schemas/DatasetMetadata'
+        centroid_of_property_longitude:
+          $ref: '#/components/schemas/DatasetMetadata'
+        match_level:
+          $ref: '#/components/schemas/DatasetMetadata'
+      additionalProperties: false
+      description: Attribute-level metadata for the NZL Regional Geocodes dataset.
+    EnrichmentV2DatasetGbrGovernment:
+      type: object
+      properties:
+        eer_code:
+          type:
+          - string
+          - 'null'
+          description: European Electoral Region Code.
+          example: E15000007
+        eer_code_pre_2011:
+          type:
+          - string
+          - 'null'
+          description: European Electoral Region Code Pre-2011.
+          example: '07'
+        eer_name:
+          type:
+          - string
+          - 'null'
+          description: European Electoral Region Name.
+          example: London
+        gor_code:
+          type:
+          - string
+          - 'null'
+          description: Government Office for Region Code.
+          example: E12000007
+        gor_code_pre_2011:
+          type:
+          - string
+          - 'null'
+          description: Government Office for Region Code Pre-2011.
+          example: H
+        gor_name:
+          type:
+          - string
+          - 'null'
+          description: Government Office for Region Name.
+          example: London
+        lea_code:
+          type:
+          - string
+          - 'null'
+          description: Local Education Authority Code.
+          example: '210'
+        lea_name:
+          type:
+          - string
+          - 'null'
+          description: Local Education Authority Name.
+          example: Southwark
+        la_code:
+          type:
+          - string
+          - 'null'
+          description: Local Authority Code.
+          example: E09000028
+        la_code_pre_2011:
+          type:
+          - string
+          - 'null'
+          description: Local Authority Code Pre-2011.
+          example: 00BE
+        la_name:
+          type:
+          - string
+          - 'null'
+          description: Local Authority Name.
+          example: Southwark
+        ward_code:
+          type:
+          - string
+          - 'null'
+          description: Local Authority Ward Code.
+          example: E05011095
+        ward_code_pre_2011:
+          type:
+          - string
+          - 'null'
+          description: Local Authority Ward Code Pre-2011.
+          example: 00AXGN
+        ward_name:
+          type:
+          - string
+          - 'null'
+          description: Local Authority Ward Name.
+          example: Borough & Bankside
+        cens_out_area:
+          type:
+          - string
+          - 'null'
+          description: Census Output Area.
+          example: E00019790
+      additionalProperties: false
+      description: Enrichment attributes that can be returned, based on the GBR Government dataset.
+    EnrichmentV2AttributesPremiumLocationInsight:
+      enum:
+      - geocodes
+      - geocodes_building_xy
+      - geocodes_access
+      - time
+      type: string
+      description: "The dataset named Premium Location Insight and its associated attributes.\n\n (The time attribute is excluded in Premium Location Insight Lite.) </br>"
+    EnrichmentV2DatasetKeys:
+      required:
+      - global_address_key
+      type: object
+      properties:
+        global_address_key:
+          minLength: 1
+          type: string
+          description: A unique Experian identifier.
+          example: aWQ9fDEgQXVkcmV5IFphcHAgRHJpdmV8SHVkc29ufEplcnNleSBDaXR5LCBOSiAwNzMwNX5mb3JtYXRJZD0xMjM0NX5RTD05fmdlbz0w
+      additionalProperties: false
+      description: Keys you can use to search datasets.
+    EnrichmentV2Response:
+      type: object
+      properties:
+        reference_id:
+          type:
+          - string
+          - 'null'
+          description: If you chose to submit a "Reference-Id" in the response body, the value will be returned with the response.
+        transaction_id:
+          type:
+          - string
+          - 'null'
+          description: Unique Experian-assigned transaction identifier.
+          example: ab123ab1-abc1-1234-abcd-ab1a123a1a12
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/EnrichmentV2Result'
+        metadata:
+          $ref: '#/components/schemas/EnrichmentV2Metadata'
+      additionalProperties: false
+      description: The response model.
+      xml:
+        name: response
+    PremiumLocationInsightGeocodesAccess:
+      type: object
+      properties:
+        latitude:
+          type:
+          - number
+          - 'null'
+          description: The latitude of access geocode.
+          format: double
+          example: 52.9413
+        longitude:
+          type:
+          - number
+          - 'null'
+          description: The longitude of access geocode.
+          format: double
+          example: 1.16312
+      additionalProperties: false
+      description: Access geocode for the specified address.
     EnrichmentV2AusRegionalGeocodesMetadata:
       type: object
       properties:
@@ -3227,7 +3916,7 @@ components:
           $ref: '#/components/schemas/DatasetMetadata'
       additionalProperties: false
       description: Attribute-level metadata for the AUS Regional Geocodes dataset.
-    EnrichmentV2DatasetWhat3Words:
+    EnrichmentV2DatasetGeocodes:
       type: object
       properties:
         latitude:
@@ -3236,28 +3925,22 @@ components:
           - 'null'
           description: The latitude.
           format: double
-          example: 51.75117
+          example: 52.9413
         longitude:
           type:
           - number
           - 'null'
           description: The longitude.
           format: double
-          example: -1.24623
-        name:
+          example: 1.16312
+        match_level:
           type:
           - string
           - 'null'
-          description: The what3words location.
-          example: pretty.needed.chill
-        description:
-          type:
-          - string
-          - 'null'
-          description: The nearest place
-          example: near Oxford, Oxfordshire
+          description: Specifies the accuracy of the coordinates for the specified address.
+          example: Premises
       additionalProperties: false
-      description: Enrichment attributes that can be returned, based on the what3words dataset.
+      description: Enrichment attributes that can be returned, based on the Geocodes dataset.
     EnrichmentV2AttributesUkLocationEssential:
       enum:
       - latitude
@@ -3269,326 +3952,6 @@ components:
       - y_coordinate
       type: string
       description: The dataset named UK Location Essential its associated attributes.
-    EnrichmentV2DatasetGbrHealth:
-      type: object
-      properties:
-        authority_code:
-          type:
-          - string
-          - 'null'
-          description: NHS Authority Code.
-          example: Q36
-        authority_code_2011:
-          type:
-          - string
-          - 'null'
-          description: NHS Authority Code 2011.
-          example: E18000007
-        authority_name:
-          type:
-          - string
-          - 'null'
-          description: NHS Authority Name.
-          example: London
-        pclh_code:
-          type:
-          - string
-          - 'null'
-          description: Primary Care/Local Health Code.
-          example: 5LE
-        pclh_code_2011:
-          type:
-          - string
-          - 'null'
-          description: Primary Care/Local Health Code 2011.
-          example: E16000059
-        pclh_name:
-          type:
-          - string
-          - 'null'
-          description: Primary Care/Local Health Name.
-          example: Southwark
-        ward_code:
-          type:
-          - string
-          - 'null'
-          description: Local Authority Ward Code.
-          example: E05011095
-        ward_code_2011:
-          type:
-          - string
-          - 'null'
-          description: Local Authority Ward Code 2011.
-          example: E05011095
-        ward_name:
-          type:
-          - string
-          - 'null'
-          description: Local Authority Ward Name.
-          example: Borough & Bankside
-        ccg_code:
-          type:
-          - string
-          - 'null'
-          description: CCG Current Area Code.
-          example: E38000244
-        ccg_name:
-          type:
-          - string
-          - 'null'
-          description: CCG Current Area Name.
-          example: NHS South East London CCG
-        doh_code:
-          type:
-          - string
-          - 'null'
-          description: CCG Former/DH Area Code.
-          example: 72Q
-      additionalProperties: false
-      description: Enrichment attributes that can be returned, based on the GBR Health dataset.
-    EnrichmentV2AttributesWhat3Words:
-      enum:
-      - latitude
-      - longitude
-      - name
-      - description
-      type: string
-      description: The dataset named what3words and its associated attributes.
-    EnrichmentV2UkLocationCompleteMetadata:
-      type: object
-      properties:
-        latitude:
-          $ref: '#/components/schemas/DatasetMetadata'
-        longitude:
-          $ref: '#/components/schemas/DatasetMetadata'
-        match_level:
-          $ref: '#/components/schemas/DatasetMetadata'
-        udprn:
-          $ref: '#/components/schemas/DatasetMetadata'
-        uprn:
-          $ref: '#/components/schemas/DatasetMetadata'
-        x_coordinate:
-          $ref: '#/components/schemas/DatasetMetadata'
-        y_coordinate:
-          $ref: '#/components/schemas/DatasetMetadata'
-      additionalProperties: false
-      description: Attribute-level metadata for the UK Location Complete dataset.
-    EnrichmentV2GbrGovernmentMetadata:
-      type: object
-      properties:
-        eer_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        eer_code_pre_2011:
-          $ref: '#/components/schemas/DatasetMetadata'
-        eer_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        gor_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        gor_code_pre_2011:
-          $ref: '#/components/schemas/DatasetMetadata'
-        gor_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        lea_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        lea_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        la_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        la_code_pre_2011:
-          $ref: '#/components/schemas/DatasetMetadata'
-        la_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        ward_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        ward_code_pre_2011:
-          $ref: '#/components/schemas/DatasetMetadata'
-        ward_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        cens_out_area:
-          $ref: '#/components/schemas/DatasetMetadata'
-      additionalProperties: false
-      description: Attribute-level metadata for the GBR Government dataset.
-    EnrichmentV2DatasetUsaRegionalGeocodes:
-      type: object
-      properties:
-        latitude:
-          type:
-          - number
-          - 'null'
-          description: The latitude.
-          format: double
-          example: 33.693283
-        longitude:
-          type:
-          - number
-          - 'null'
-          description: The longitude.
-          format: double
-          example: -117.87428
-        match_level:
-          type:
-          - string
-          - 'null'
-          description: Specifies the accuracy of the coordinates for the specified address.
-          example: Street
-        census_tract:
-          type:
-          - string
-          - 'null'
-          description: Geographical region defined by US Census Bureau for the purpose of taking a census (6 digits).
-          example: '050210'
-        census_block:
-          type:
-          - string
-          - 'null'
-          description: Smallest geographical unit used by US Census Bureau for the purpose of taking a census; sub-division of a tract (4 digits).
-          example: '2025'
-        core_based_statistical_area:
-          type:
-          - string
-          - 'null'
-          description: 'Geographical area maintained by US Office of Management and Budget (OMB) which consists of one or more counties anchored by an urban center.
-
-            CBSAs are categorized as Metropolitan (at least one urbanized area of 50,000+ inhabitants) or Micropolitan (at least one urban cluster of between 10,000 and 50,000 inhabitants);
-
-            these are also referred to as MSAs (5 digits).'
-          example: '12060'
-        congressional_district_code:
-          type:
-          - string
-          - 'null'
-          description: 'US Federal Information Processing Standards (FIPS) codes to identify US electoral divisions (7 digits). The first two digits represent the state,
-
-            the second two digits represent the congressional district, and the final three digits designate the number of the Congress.'
-          example: '1307116'
-        county_code:
-          type:
-          - string
-          - 'null'
-          description: County code within a US state or possession (3 digits).
-          example: '135'
-      additionalProperties: false
-      description: Enrichment attributes that can be returned, based on the USA Regional Geocodes dataset.
-    EnrichmentV2AttributesNzlRegionalGeocodes:
-      enum:
-      - front_of_property_nztm_x_coordinate
-      - front_of_property_nztm_y_coordinate
-      - centroid_of_property_nztm_x_coordinate
-      - centroid_of_property_nztm_y_coordinate
-      - linz_parcel_id
-      - property_purpose_type
-      - addressable
-      - mesh_block_code
-      - territorial_authority_code
-      - territorial_authority_name
-      - regional_council_code
-      - regional_council_name
-      - general_electorate_code
-      - general_electorate_name
-      - maori_electorate_code
-      - maori_electorate_name
-      - front_of_property_latitude
-      - front_of_property_longitude
-      - centroid_of_property_latitude
-      - centroid_of_property_longitude
-      - match_level
-      type: string
-      description: The dataset named NZL Regional Geocodes its associated attributes.
-    EnrichmentV2DatasetGbrGovernment:
-      type: object
-      properties:
-        eer_code:
-          type:
-          - string
-          - 'null'
-          description: European Electoral Region Code.
-          example: E15000007
-        eer_code_pre_2011:
-          type:
-          - string
-          - 'null'
-          description: European Electoral Region Code Pre-2011.
-          example: '07'
-        eer_name:
-          type:
-          - string
-          - 'null'
-          description: European Electoral Region Name.
-          example: London
-        gor_code:
-          type:
-          - string
-          - 'null'
-          description: Government Office for Region Code.
-          example: E12000007
-        gor_code_pre_2011:
-          type:
-          - string
-          - 'null'
-          description: Government Office for Region Code Pre-2011.
-          example: H
-        gor_name:
-          type:
-          - string
-          - 'null'
-          description: Government Office for Region Name.
-          example: London
-        lea_code:
-          type:
-          - string
-          - 'null'
-          description: Local Education Authority Code.
-          example: '210'
-        lea_name:
-          type:
-          - string
-          - 'null'
-          description: Local Education Authority Name.
-          example: Southwark
-        la_code:
-          type:
-          - string
-          - 'null'
-          description: Local Authority Code.
-          example: E09000028
-        la_code_pre_2011:
-          type:
-          - string
-          - 'null'
-          description: Local Authority Code Pre-2011.
-          example: 00BE
-        la_name:
-          type:
-          - string
-          - 'null'
-          description: Local Authority Name.
-          example: Southwark
-        ward_code:
-          type:
-          - string
-          - 'null'
-          description: Local Authority Ward Code.
-          example: E05011095
-        ward_code_pre_2011:
-          type:
-          - string
-          - 'null'
-          description: Local Authority Ward Code Pre-2011.
-          example: 00AXGN
-        ward_name:
-          type:
-          - string
-          - 'null'
-          description: Local Authority Ward Name.
-          example: Borough & Bankside
-        cens_out_area:
-          type:
-          - string
-          - 'null'
-          description: Census Output Area.
-          example: E00019790
-      additionalProperties: false
-      description: Enrichment attributes that can be returned, based on the GBR Government dataset.
     PremiumLocationInsightTime:
       type: object
       properties:
@@ -3630,170 +3993,25 @@ components:
             wrapped: true
       additionalProperties: false
       description: Time zone information returned based on a specified address.
-    EnrichmentV2GeocodesMetadata:
-      type: object
-      properties:
-        latitude:
-          $ref: '#/components/schemas/DatasetMetadata'
-        longitude:
-          $ref: '#/components/schemas/DatasetMetadata'
-        match_level:
-          $ref: '#/components/schemas/DatasetMetadata'
-      additionalProperties: false
-      description: Attribute-level metadata for the Geocodes dataset.
-    EnrichmentV2DatasetGeocodes:
-      type: object
-      properties:
-        latitude:
-          type:
-          - number
-          - 'null'
-          description: The latitude.
-          format: double
-          example: 52.9413
-        longitude:
-          type:
-          - number
-          - 'null'
-          description: The longitude.
-          format: double
-          example: 1.16312
-        match_level:
-          type:
-          - string
-          - 'null'
-          description: Specifies the accuracy of the coordinates for the specified address.
-          example: Premises
-      additionalProperties: false
-      description: Enrichment attributes that can be returned, based on the Geocodes dataset.
-    ResponseError:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A link to documentation that provides more details about the error you’ve encountered.
-        title:
-          type:
-          - string
-          - 'null'
-          description: The title of the error.
-          example: Bad Request
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A description of the error.
-          example: The request body was malformed.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: The endpoint that returned the error.
-      additionalProperties: false
-      description: Error model containing the error details.
-    EnrichmentV2Request:
-      required:
-      - attributes
-      - keys
-      type: object
-      properties:
-        country_iso:
-          maxLength: 3
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: The 3-letter ISO country code.
-        keys:
-          $ref: '#/components/schemas/EnrichmentV2DatasetKeys'
-        attributes:
-          $ref: '#/components/schemas/EnrichmentV2DatasetAttributes'
-      additionalProperties: false
-      description: The request model.
-      xml:
-        name: request
-    EnrichmentV2GbrHealthMetadata:
-      type: object
-      properties:
-        authority_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        authority_code_2011:
-          $ref: '#/components/schemas/DatasetMetadata'
-        authority_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        pclh_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        pclh_code_2011:
-          $ref: '#/components/schemas/DatasetMetadata'
-        pclh_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        ward_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        ward_code_2011:
-          $ref: '#/components/schemas/DatasetMetadata'
-        ward_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        ccg_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        ccg_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        doh_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-      additionalProperties: false
-      description: Attribute-level metadata for the GBR Health dataset.
-    EnrichmentV2AttributesGbrHealth:
+    EnrichmentV2AttributesUsaRegionalGeocodes:
       enum:
-      - authority_code
-      - authority_code_2011
-      - authority_name
-      - pclh_code
-      - pclh_code_2011
-      - pclh_name
-      - ward_code
-      - ward_code_2011
-      - ward_name
-      - ccg_code
-      - ccg_name
-      - doh_code
+      - latitude
+      - longitude
+      - match_level
+      - census_tract
+      - census_block
+      - core_based_statistical_area
+      - congressional_district_code
+      - county_code
       type: string
-      description: The dataset named GBR Health and its associated attributes.
-    DatasetMetadata:
-      type: object
-      properties:
-        code:
-          type:
-          - string
-          - 'null'
-          description: Attribute-level metadata code.
-          example: S200
-        message:
-          type:
-          - string
-          - 'null'
-          description: Attribute-level metadata message.
-          example: Match
-        value:
-          type:
-          - string
-          - 'null'
-          description: The attribute's value that was returned by the API.
-      additionalProperties: false
-      description: The attribute's metadata.
-    EnrichmentV2PremiumLocationInsightMetadata:
-      type: object
-      properties:
-        geocodes:
-          $ref: '#/components/schemas/DatasetMetadata'
-        geocodes_building_xy:
-          $ref: '#/components/schemas/DatasetMetadata'
-        geocodes_access:
-          $ref: '#/components/schemas/DatasetMetadata'
-        time:
-          $ref: '#/components/schemas/DatasetMetadata'
-      additionalProperties: false
-      description: "Attribute-level metadata for the Premium Location Insight dataset.\n\n (The time attribute is excluded in Premium Location Insight Lite.) </br>"
+      description: The dataset named USA Regional Geocodes its associated attributes.
+    EnrichmentV2AttributesGeocode:
+      enum:
+      - latitude
+      - longitude
+      - match_level
+      type: string
+      description: The dataset named Geocodes and its associated attributes.
     PremiumLocationInsightGeocodes:
       type: object
       properties:
@@ -3819,230 +4037,6 @@ components:
           example: Building
       additionalProperties: false
       description: Geocode attributes for the specified address.
-    EnrichmentV2MetadataDatasets:
-      type: object
-      properties:
-        geocodes:
-          $ref: '#/components/schemas/EnrichmentV2GeocodesMetadata'
-        usa_regional_geocodes:
-          $ref: '#/components/schemas/EnrichmentV2UsaRegionalGeocodesMetadata'
-        aus_regional_geocodes:
-          $ref: '#/components/schemas/EnrichmentV2AusRegionalGeocodesMetadata'
-        nzl_regional_geocodes:
-          $ref: '#/components/schemas/EnrichmentV2NzlRegionalGeocodesMetadata'
-        uk_location_complete:
-          $ref: '#/components/schemas/EnrichmentV2UkLocationCompleteMetadata'
-        uk_location_essential:
-          $ref: '#/components/schemas/EnrichmentV2UkLocationEssentialMetadata'
-        gbr_government:
-          $ref: '#/components/schemas/EnrichmentV2GbrGovernmentMetadata'
-        gbr_health:
-          $ref: '#/components/schemas/EnrichmentV2GbrHealthMetadata'
-        premium_location_insight:
-          $ref: '#/components/schemas/EnrichmentV2PremiumLocationInsightMetadata'
-        what3words:
-          $ref: '#/components/schemas/EnrichmentV2What3WordsMetadata'
-      additionalProperties: false
-      description: The dataset name and related attributes.
-    EnrichmentV2What3WordsMetadata:
-      type: object
-      properties:
-        latitude:
-          $ref: '#/components/schemas/DatasetMetadata'
-        longitude:
-          $ref: '#/components/schemas/DatasetMetadata'
-        name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        description:
-          $ref: '#/components/schemas/DatasetMetadata'
-      additionalProperties: false
-      description: Attribute-level metadata for the what3words dataset.
-    EnrichmentV2AttributesUkLocationComplete:
-      enum:
-      - latitude
-      - longitude
-      - match_level
-      - udprn
-      - uprn
-      - x_coordinate
-      - y_coordinate
-      type: string
-      description: The dataset named UK Location Complete its associated attributes.
-    EnrichmentV2DatasetAttributes:
-      type: object
-      properties:
-        geocodes:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EnrichmentV2AttributesGeocode'
-          description: The dataset named Geocodes and its associated attributes.
-          xml:
-            name: geocodes
-            wrapped: true
-        usa_regional_geocodes:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EnrichmentV2AttributesUsaRegionalGeocodes'
-          description: The dataset named USA Regional Geocodes and its associated attributes.
-          xml:
-            name: usa_regional_geocodes
-            wrapped: true
-        aus_regional_geocodes:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EnrichmentV2AttributesAusRegionalGeocodes'
-          description: The dataset named AUS Regional Geocodes and its associated attributes.
-          xml:
-            name: aus_regional_geocodes
-            wrapped: true
-        nzl_regional_geocodes:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EnrichmentV2AttributesNzlRegionalGeocodes'
-          description: The dataset named NZL Regional Geocodes and its associated attributes.
-          xml:
-            name: nzl_regional_geocodes
-            wrapped: true
-        uk_location_complete:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EnrichmentV2AttributesUkLocationComplete'
-          description: The dataset named UK Location Complete and its associated attributes.
-          xml:
-            name: uk_location_complete
-            wrapped: true
-        uk_location_essential:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EnrichmentV2AttributesUkLocationEssential'
-          description: The dataset named UK Location Essential and its associated attributes.
-          xml:
-            name: uk_location_essential
-            wrapped: true
-        gbr_government:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EnrichmentV2AttributesGbrGovernment'
-          description: The dataset named GBR Government and its associated attributes.
-          xml:
-            name: gbr_government
-            wrapped: true
-        gbr_health:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EnrichmentV2AttributesGbrHealth'
-          description: The dataset named GBR Health and its associated attributes.
-          xml:
-            name: gbr_health
-            wrapped: true
-        premium_location_insight:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EnrichmentV2AttributesPremiumLocationInsight'
-          description: The dataset named Premium Location Insight and its associated attributes.
-          xml:
-            name: premium_location_insight
-            wrapped: true
-        what3words:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EnrichmentV2AttributesWhat3Words'
-          description: The dataset named what3words and its associated attributes.
-          xml:
-            name: what3words
-            wrapped: true
-      additionalProperties: false
-      description: Datasets and their specific attributes.
-    EnrichmentV2UkLocationEssentialMetadata:
-      type: object
-      properties:
-        latitude:
-          $ref: '#/components/schemas/DatasetMetadata'
-        longitude:
-          $ref: '#/components/schemas/DatasetMetadata'
-        match_level:
-          $ref: '#/components/schemas/DatasetMetadata'
-        udprn:
-          $ref: '#/components/schemas/DatasetMetadata'
-        uprn:
-          $ref: '#/components/schemas/DatasetMetadata'
-        x_coordinate:
-          $ref: '#/components/schemas/DatasetMetadata'
-        y_coordinate:
-          $ref: '#/components/schemas/DatasetMetadata'
-      additionalProperties: false
-      description: Attribute-level metadata for the UK Location Essential dataset.
-    EnrichmentV2DatasetUkLocationComplete:
-      type: object
-      properties:
-        latitude:
-          type:
-          - number
-          - 'null'
-          description: The latitude.
-          format: double
-          example: 51.50112
-        longitude:
-          type:
-          - number
-          - 'null'
-          description: The longitude.
-          format: double
-          example: -0.1041234
-        match_level:
-          type:
-          - string
-          - 'null'
-          description: Specifies the accuracy of the coordinates for the specified address.
-          example: Building
-        udprn:
-          type:
-          - string
-          - 'null'
-          description: Specifies the UDPRN for the specified address.
-          example: '55244256'
-        uprn:
-          type:
-          - string
-          - 'null'
-          description: Specifies the UPRN for the specified address.
-          example: 010091977422
-        x_coordinate:
-          type:
-          - number
-          - 'null'
-          description: The x coordinate.
-          format: double
-          example: 531677.94
-        y_coordinate:
-          type:
-          - number
-          - 'null'
-          description: The y coordinate.
-          format: double
-          example: 179757.6
-      additionalProperties: false
-      description: Enrichment attributes that can be returned, based on the UK Location Complete dataset.
     EnrichmentV2AttributesAusRegionalGeocodes:
       enum:
       - latitude
@@ -4115,139 +4109,145 @@ components:
       - locality_class_code
       type: string
       description: The dataset named AUS Regional Geocodes its associated attributes.
-    PremiumLocationInsightReferenceTime:
+    EnrichmentV2DatasetNzlRegionalGeocodes:
       type: object
       properties:
-        tag:
-          type:
-          - string
-          - 'null'
-          description: Time zone applicable based on current timestamp.
-          example: EET
-        standard_offset:
-          type:
-          - string
-          - 'null'
-          description: Standard offset returned based on current timestamp.
-          example: 02:00:00
-        daylight_savings:
-          type:
-          - string
-          - 'null'
-          description: Daylight savings returned based on current timestamp.
-          example: 00:00:00
-        sunrise:
-          type:
-          - string
-          - 'null'
-          description: Sunrise time at the given time zone based on current timestamp.
-          example: '2023-04-07T03:38:08.767292+00:00'
-        sunset:
-          type:
-          - string
-          - 'null'
-          description: Sunset time at the given time zone based on current timestamp.
-          example: '2023-04-07T16:16:40.8507771+00:00'
-      additionalProperties: false
-      description: Time zone information returned based on current timestamp.
-    EnrichmentV2DatasetUkLocationEssential:
-      type: object
-      properties:
-        latitude:
+        front_of_property_nztm_x_coordinate:
           type:
           - number
           - 'null'
-          description: The latitude.
+          description: The Geocode 'X' coordinate for the front of the building.
           format: double
-          example: 51.50112
-        longitude:
+          example: 1757352.8
+        front_of_property_nztm_y_coordinate:
           type:
           - number
           - 'null'
-          description: The longitude.
+          description: The Geocode 'Y' coordinate for the front of the building.
           format: double
-          example: -0.1041234
+          example: 5920390.5
+        centroid_of_property_nztm_x_coordinate:
+          type:
+          - number
+          - 'null'
+          description: The Geocode 'X' coordinate for the centre of the property.
+          format: double
+          example: 1757328.4
+        centroid_of_property_nztm_y_coordinate:
+          type:
+          - number
+          - 'null'
+          description: The Geocode 'Y' coordinate for the centre of the property.
+          format: double
+          example: 5920400
+        linz_parcel_id:
+          type:
+          - string
+          - 'null'
+          description: This is a unique identifier of the address record.
+          example: '5047052'
+        property_purpose_type:
+          type:
+          - string
+          - 'null'
+          description: 'The type of property, the possible values are: Business, Farm, Holiday Home, Residential or Empty section.'
+          example: Business
+        addressable:
+          type:
+          - string
+          - 'null'
+          description: This defines whether the address is deliverable or not. The possible values are "Y" or "N".
+          example: N
+        mesh_block_code:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier assigned to each Mesh Block.
+          example: '434000'
+        territorial_authority_code:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier assigned to the Territorial Authority.
+          example: '76'
+        territorial_authority_name:
+          type:
+          - string
+          - 'null'
+          description: The name assigned to the Territorial Authority.
+          example: Auckland
+        regional_council_code:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier assigned to the Regional Council.
+          example: '2'
+        regional_council_name:
+          type:
+          - string
+          - 'null'
+          description: The name assigned to the Regional Council.
+          example: Auckland Region
+        general_electorate_code:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier assigned to the General Electorate.
+          example: '001'
+        general_electorate_name:
+          type:
+          - string
+          - 'null'
+          description: The name assigned to the General Electorate.
+          example: Auckland Central
+        maori_electorate_code:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier assigned to the Maori Electorate.
+          example: '3'
+        maori_electorate_name:
+          type:
+          - string
+          - 'null'
+          description: The name assigned to the Maori Electorate.
+          example: Tamaki Makaurau
+        front_of_property_latitude:
+          type:
+          - number
+          - 'null'
+          description: The latitude for the front of the building.
+          format: double
+          example: -36.849308
+        front_of_property_longitude:
+          type:
+          - number
+          - 'null'
+          description: The longitude for the front of the building.
+          format: double
+          example: 174.76492
+        centroid_of_property_latitude:
+          type:
+          - number
+          - 'null'
+          description: The latitude for the centre of the property.
+          format: double
+          example: -36.849228
+        centroid_of_property_longitude:
+          type:
+          - number
+          - 'null'
+          description: The longitude for the centre of the property.
+          format: double
+          example: 174.76465
         match_level:
           type:
           - string
           - 'null'
           description: Specifies the accuracy of the coordinates for the specified address.
           example: Building
-        udprn:
-          type:
-          - string
-          - 'null'
-          description: The UDPRN.
-          example: '55244256'
-        uprn:
-          type:
-          - string
-          - 'null'
-          description: The UPRN.
-          example: 010091977422
-        x_coordinate:
-          type:
-          - number
-          - 'null'
-          description: The x coordinate.
-          format: double
-          example: 531677.94
-        y_coordinate:
-          type:
-          - number
-          - 'null'
-          description: The y coordinate.
-          format: double
-          example: 179757.6
       additionalProperties: false
-      description: Enrichment attributes that can be returned, based on the UK Location Essential dataset.
-    EnrichmentV2NzlRegionalGeocodesMetadata:
-      type: object
-      properties:
-        front_of_property_nztm_x_coordinate:
-          $ref: '#/components/schemas/DatasetMetadata'
-        front_of_property_nztm_y_coordinate:
-          $ref: '#/components/schemas/DatasetMetadata'
-        centroid_of_property_nztm_x_coordinate:
-          $ref: '#/components/schemas/DatasetMetadata'
-        centroid_of_property_nztm_y_coordinate:
-          $ref: '#/components/schemas/DatasetMetadata'
-        linz_parcel_id:
-          $ref: '#/components/schemas/DatasetMetadata'
-        property_purpose_type:
-          $ref: '#/components/schemas/DatasetMetadata'
-        addressable:
-          $ref: '#/components/schemas/DatasetMetadata'
-        mesh_block_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        territorial_authority_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        territorial_authority_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        regional_council_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        regional_council_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        general_electorate_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        general_electorate_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        maori_electorate_code:
-          $ref: '#/components/schemas/DatasetMetadata'
-        maori_electorate_name:
-          $ref: '#/components/schemas/DatasetMetadata'
-        front_of_property_latitude:
-          $ref: '#/components/schemas/DatasetMetadata'
-        front_of_property_longitude:
-          $ref: '#/components/schemas/DatasetMetadata'
-        centroid_of_property_latitude:
-          $ref: '#/components/schemas/DatasetMetadata'
-        centroid_of_property_longitude:
-          $ref: '#/components/schemas/DatasetMetadata'
-        match_level:
-          $ref: '#/components/schemas/DatasetMetadata'
-      additionalProperties: false
-      description: Attribute-level metadata for the NZL Regional Geocodes dataset.
+      description: Enrichment attributes that can be returned, based on the NZL Regional Geocodes dataset.
   securitySchemes:
     OAuth2:
       type: http

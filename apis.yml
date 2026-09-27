@@ -26,10 +26,10 @@ tags:
 - Fraud Prevention
 - Data Quality
 - Address Validation
-- Email Validation
+- Email Verification
 - Phone Validation
 - Data Enrichment
-- Financial-Services
+- Financial Services
 - Risk Management
 tags_raw:
 - Company
@@ -44,6 +44,7 @@ tags_raw:
 - Data Enrichment
 - Financial Services
 - Risk Management
+- Financial-Services
 apis:
 - aid: experian:address-validate-soap
   name: Experian Address Validate (Pro OnDemand SOAP)
@@ -195,6 +196,8 @@ apis:
   humanURL: https://docs.experianaperture.io/
   baseURL: https://api.experianaperture.io
   tags:
+  - Email Verification
+  tags_raw:
   - Email Validation
   properties:
   - type: OpenAPI
