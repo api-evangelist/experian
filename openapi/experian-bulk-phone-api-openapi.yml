@@ -487,154 +487,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ResponseError:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A link to documentation that provides more details about the error you’ve encountered.
-        title:
-          type:
-          - string
-          - 'null'
-          description: The title of the error.
-          example: Bad Request
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A description of the error.
-          example: The request body was malformed.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: The endpoint that returned the error.
-      additionalProperties: false
-      description: Error model containing the error details.
-    BulkPhoneV1GetBatchesBatch:
-      type: object
-      properties:
-        batch_id:
-          type:
-          - string
-          - 'null'
-          description: Batch ID.
-        batch_reference_id:
-          type:
-          - string
-          - 'null'
-          description: Optional reference identifier to track this batch.
-        status:
-          type:
-          - string
-          - 'null'
-          description: The current Batch status.
-        reason:
-          type:
-          - string
-          - 'null'
-          description: The reason of the current Batch status.
-        records:
-          type: integer
-          description: The number of phone numbers have been submitted.
-          format: int32
-        records_processed:
-          type: integer
-          description: The number of phone numbers have been processed.
-          format: int32
-        date_submitted:
-          type: string
-          description: The date time when the Batch is created in ISO-8601 format.
-          format: date-time
-        date_started:
-          type:
-          - string
-          - 'null'
-          description: The date time when the Batch is started in ISO-8601 format.
-          format: date-time
-        date_ended:
-          type:
-          - string
-          - 'null'
-          description: The date time when the Batch is ended in ISO-8601 format.
-          format: date-time
-      additionalProperties: false
-      description: Bulk Phone V1 Get Batches Batch Info.
-    BulkPhoneV1GetBatchResultsResult:
-      type: object
-      properties:
-        batch_id:
-          type:
-          - string
-          - 'null'
-          description: Batch ID.
-        batch_reference_id:
-          type:
-          - string
-          - 'null'
-          description: Optional reference identifier to track this batch.
-        credits_charged:
-          type: integer
-          description: The number of credits charged for this Batch.
-          format: int32
-        status:
-          type:
-          - string
-          - 'null'
-          description: The current Batch status.
-        reason:
-          type:
-          - string
-          - 'null'
-          description: The reason of the current Batch status.
-        statistics:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/BulkPhoneV1GetBatchResultsResponseStatistic'
-          description: The statistics of the phone numbers confidence level.
-        phones:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/BulkPhoneV1GetBatchResultsResponsePhone'
-          description: The phones validation results.
-      additionalProperties: false
-      description: Bulk Phone V1 Get Batch Results result.
-    BulkPhoneV1StopBatchResult:
-      type: object
-      properties:
-        batch_id:
-          type:
-          - string
-          - 'null'
-          description: Batch ID.
-        batch_reference_id:
-          type:
-          - string
-          - 'null'
-          description: Optional reference identifier to track this batch.
-        status:
-          type:
-          - string
-          - 'null'
-          description: The current Batch status.
-      additionalProperties: false
-      description: Bulk Phone V1 Stop Batch result.
-    BulkPhoneV1CreateBatchResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkPhoneV1CreateBatchResult'
-      additionalProperties: false
-      description: Bulk Phone V1 Create Batch response.
     BulkPhoneV1CreateBatchRequestOptions:
       type: object
       properties:
@@ -689,24 +541,18 @@ components:
             Maximum allowed value is "PT24H" (24 hours). Minimum allowed value is "PT1M" (1 minute).'
       additionalProperties: false
       description: The default options that applied to all the phone numbers.
-    BulkPhoneV1GetBatchesResponse:
+    BulkPhoneV1GetBatchesResult:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkPhoneV1GetBatchesResult'
+        batches:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BulkPhoneV1GetBatchesBatch'
+          description: Batches.
       additionalProperties: false
-      description: Bulk Phone V1 Get Batches response.
-    BulkPhoneV1StopBatchResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkPhoneV1StopBatchResult'
-      additionalProperties: false
-      description: Bulk Phone V1 Stop Batch response.
+      description: Bulk Phone V1 Get Batches result.
     BulkPhoneV1GetBatchStatusMetadata:
       type: object
       properties:
@@ -714,43 +560,30 @@ components:
           $ref: '#/components/schemas/BulkPhoneV1GetBatchStatusBatchConfig'
       additionalProperties: false
       description: Bulk Phone V1 Get Batch Status metadata.
-    BulkPhoneV1StartBatchResponse:
+    BulkPhoneV1CreateBatchRequestPhone:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkPhoneV1StartBatchResult'
-      additionalProperties: false
-      description: Bulk Phone V1 Start Batch response.
-    BulkPhoneV1GetBatchStatusBatchConfig:
-      type: object
-      properties:
-        output_format:
+        number:
+          maxLength: 1000
+          minLength: 0
           type:
           - string
           - 'null'
-          description: 'The desired format of the phone number: E164, PLUS_E164, NATIONAL, any 3-letter ISO country code.'
+          description: The phone number that is the subject of the validation.
+          example: '1234567890'
         country_iso:
+          maxLength: 50
+          minLength: 0
           type:
           - string
           - 'null'
-          description: The 3-letter ISO country code if the phone number that is subject to validation doesn't contain a phone country code.
-        get_ported_date:
-          type:
-          - boolean
-          - 'null'
-          description: A boolean indicator to attempt to retrieve the last ported date of the phone number.
-        supplementary_live_status:
-          $ref: '#/components/schemas/BulkPhoneV1GetBatchStatusBatchConfigSupplementaryLiveStatus'
-        max_processing_time:
-          type:
-          - string
-          - 'null'
-          description: Optional maximum processing time of the batch.
+          description: 'You can indicate the 3-letter ISO country code if the phone number that is subject to validation doesn''t contain a phone country code.
+
+            This will overwrite the country_iso in the default options.'
+          example: GBR
       additionalProperties: false
-      description: The submitted default options.
-    BulkPhoneV1CreateBatchResult:
+      description: Bulk Phone V1 phone component.
+    BulkPhoneV1StopBatchResult:
       type: object
       properties:
         batch_id:
@@ -769,7 +602,7 @@ components:
           - 'null'
           description: The current Batch status.
       additionalProperties: false
-      description: Bulk Phone V1 Create Batch result.
+      description: Bulk Phone V1 Stop Batch result.
     BulkPhoneV1GetBatchResultsResponse:
       type: object
       properties:
@@ -779,6 +612,68 @@ components:
           $ref: '#/components/schemas/BulkPhoneV1GetBatchResultsResult'
       additionalProperties: false
       description: Bulk Phone V1 Get Results response.
+    BulkPhoneV1GetBatchStatusResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkPhoneV1GetBatchStatusResult'
+        metadata:
+          $ref: '#/components/schemas/BulkPhoneV1GetBatchStatusMetadata'
+      additionalProperties: false
+      description: Bulk Phone V1 Get Batch Status response.
+    BulkPhoneV1GetBatchResultsResponseStatistic:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Confidence.
+          example: Verified
+        value:
+          type: integer
+          description: Count.
+          format: int32
+          example: 10
+      additionalProperties: false
+      description: Bulk Phone V1 Get Results response statistic.
+    BulkPhoneV1GetBatchStatusBatchConfigSupplementaryLiveStatus:
+      type: object
+      properties:
+        mobile:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: An indicator to attempt to get supplementary live status for Mobile Phone Number.
+        landline:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: An indicator to attempt to get supplementary live status for Landline Phone Number.
+      additionalProperties: false
+      description: Batch configuration supplementary live status.
+    BulkPhoneV1CreateBatchRequest:
+      required:
+      - phones
+      type: object
+      properties:
+        defaults:
+          $ref: '#/components/schemas/BulkPhoneV1CreateBatchRequestOptions'
+        phones:
+          maxItems: 10000
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkPhoneV1CreateBatchRequestPhone'
+          description: List of input components.
+      additionalProperties: false
+      description: Bulk Phone V1 Create Batch request.
     BulkPhoneV1GetBatchResultsResponsePhone:
       type: object
       properties:
@@ -834,180 +729,6 @@ components:
           $ref: '#/components/schemas/BulkPhoneV1GetBatchResultsResponsePhoneMetadata'
       additionalProperties: false
       description: Bulk Phone V1 Get Results response.
-    BulkPhoneV1StartBatchResult:
-      type: object
-      properties:
-        batch_id:
-          type:
-          - string
-          - 'null'
-          description: Batch ID.
-        batch_reference_id:
-          type:
-          - string
-          - 'null'
-          description: Optional reference identifier to track this batch.
-        status:
-          type:
-          - string
-          - 'null'
-          description: The current Batch status.
-      additionalProperties: false
-      description: Bulk Phone V1 Start Batch result.
-    BulkPhoneV1GetBatchStatusResult:
-      type: object
-      properties:
-        batch_id:
-          type:
-          - string
-          - 'null'
-          description: Batch ID.
-        batch_reference_id:
-          type:
-          - string
-          - 'null'
-          description: Optional reference identifier to track this batch.
-        status:
-          type:
-          - string
-          - 'null'
-          description: The current Batch status.
-        reason:
-          type:
-          - string
-          - 'null'
-          description: The reason of the current Batch status.
-        records:
-          type:
-          - integer
-          - 'null'
-          description: The number of phone numbers have been submitted.
-          format: int32
-        records_processed:
-          type:
-          - integer
-          - 'null'
-          description: The number of phone numbers have been processed.
-          format: int32
-        date_submitted:
-          type: string
-          description: The date time when the Batch is created in ISO-8601 format.
-          format: date-time
-        date_started:
-          type:
-          - string
-          - 'null'
-          description: The date time when the Batch is started in ISO-8601 format.
-          format: date-time
-        date_ended:
-          type:
-          - string
-          - 'null'
-          description: The date time when the Batch is ended in ISO-8601 format.
-          format: date-time
-      additionalProperties: false
-      description: Bulk Phone V1 Get Batch Status result.
-    CreateBatchSupplementaryLiveStatus:
-      type: object
-      properties:
-        mobile:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: An indicator to attempt to get supplementary live status for Mobile Phone Number.
-          example:
-          - USA
-        landline:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: An indicator to attempt to get supplementary live status for Landline Phone Number.
-          example:
-          - GBR
-      additionalProperties: false
-      description: The supplementary live status request model. Please note that this feature has additional charge if requested.
-    BulkPhoneV1CreateBatchRequest:
-      required:
-      - phones
-      type: object
-      properties:
-        defaults:
-          $ref: '#/components/schemas/BulkPhoneV1CreateBatchRequestOptions'
-        phones:
-          maxItems: 10000
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/BulkPhoneV1CreateBatchRequestPhone'
-          description: List of input components.
-      additionalProperties: false
-      description: Bulk Phone V1 Create Batch request.
-    BulkPhoneV1GetBatchResultsResponseStatistic:
-      type: object
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          description: Confidence.
-          example: Verified
-        value:
-          type: integer
-          description: Count.
-          format: int32
-          example: 10
-      additionalProperties: false
-      description: Bulk Phone V1 Get Results response statistic.
-    BulkPhoneV1GetBatchStatusResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkPhoneV1GetBatchStatusResult'
-        metadata:
-          $ref: '#/components/schemas/BulkPhoneV1GetBatchStatusMetadata'
-      additionalProperties: false
-      description: Bulk Phone V1 Get Batch Status response.
-    BulkPhoneV1CreateBatchRequestPhone:
-      type: object
-      properties:
-        number:
-          maxLength: 1000
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: The phone number that is the subject of the validation.
-          example: '1234567890'
-        country_iso:
-          maxLength: 50
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: 'You can indicate the 3-letter ISO country code if the phone number that is subject to validation doesn''t contain a phone country code.
-
-            This will overwrite the country_iso in the default options.'
-          example: GBR
-      additionalProperties: false
-      description: Bulk Phone V1 phone component.
-    BulkPhoneV1GetBatchesResult:
-      type: object
-      properties:
-        batches:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/BulkPhoneV1GetBatchesBatch'
-          description: Batches.
-      additionalProperties: false
-      description: Bulk Phone V1 Get Batches result.
     BulkPhoneV1GetBatchResultsResponsePhoneMetadata:
       type: object
       properties:
@@ -1103,7 +824,264 @@ components:
           example: 7087694383@vzwpix.com
       additionalProperties: false
       description: Metadata fields and values that can be returned, in addition to the main core information.
-    BulkPhoneV1GetBatchStatusBatchConfigSupplementaryLiveStatus:
+    BulkPhoneV1StartBatchResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkPhoneV1StartBatchResult'
+      additionalProperties: false
+      description: Bulk Phone V1 Start Batch response.
+    BulkPhoneV1GetBatchStatusResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+        reason:
+          type:
+          - string
+          - 'null'
+          description: The reason of the current Batch status.
+        records:
+          type:
+          - integer
+          - 'null'
+          description: The number of phone numbers have been submitted.
+          format: int32
+        records_processed:
+          type:
+          - integer
+          - 'null'
+          description: The number of phone numbers have been processed.
+          format: int32
+        date_submitted:
+          type: string
+          description: The date time when the Batch is created in ISO-8601 format.
+          format: date-time
+        date_started:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is started in ISO-8601 format.
+          format: date-time
+        date_ended:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is ended in ISO-8601 format.
+          format: date-time
+      additionalProperties: false
+      description: Bulk Phone V1 Get Batch Status result.
+    BulkPhoneV1CreateBatchResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkPhoneV1CreateBatchResult'
+      additionalProperties: false
+      description: Bulk Phone V1 Create Batch response.
+    BulkPhoneV1GetBatchResultsResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        credits_charged:
+          type: integer
+          description: The number of credits charged for this Batch.
+          format: int32
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+        reason:
+          type:
+          - string
+          - 'null'
+          description: The reason of the current Batch status.
+        statistics:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BulkPhoneV1GetBatchResultsResponseStatistic'
+          description: The statistics of the phone numbers confidence level.
+        phones:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BulkPhoneV1GetBatchResultsResponsePhone'
+          description: The phones validation results.
+      additionalProperties: false
+      description: Bulk Phone V1 Get Batch Results result.
+    BulkPhoneV1GetBatchesBatch:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+        reason:
+          type:
+          - string
+          - 'null'
+          description: The reason of the current Batch status.
+        records:
+          type: integer
+          description: The number of phone numbers have been submitted.
+          format: int32
+        records_processed:
+          type: integer
+          description: The number of phone numbers have been processed.
+          format: int32
+        date_submitted:
+          type: string
+          description: The date time when the Batch is created in ISO-8601 format.
+          format: date-time
+        date_started:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is started in ISO-8601 format.
+          format: date-time
+        date_ended:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is ended in ISO-8601 format.
+          format: date-time
+      additionalProperties: false
+      description: Bulk Phone V1 Get Batches Batch Info.
+    BulkPhoneV1GetBatchStatusBatchConfig:
+      type: object
+      properties:
+        output_format:
+          type:
+          - string
+          - 'null'
+          description: 'The desired format of the phone number: E164, PLUS_E164, NATIONAL, any 3-letter ISO country code.'
+        country_iso:
+          type:
+          - string
+          - 'null'
+          description: The 3-letter ISO country code if the phone number that is subject to validation doesn't contain a phone country code.
+        get_ported_date:
+          type:
+          - boolean
+          - 'null'
+          description: A boolean indicator to attempt to retrieve the last ported date of the phone number.
+        supplementary_live_status:
+          $ref: '#/components/schemas/BulkPhoneV1GetBatchStatusBatchConfigSupplementaryLiveStatus'
+        max_processing_time:
+          type:
+          - string
+          - 'null'
+          description: Optional maximum processing time of the batch.
+      additionalProperties: false
+      description: The submitted default options.
+    ResponseError:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A link to documentation that provides more details about the error you’ve encountered.
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title of the error.
+          example: Bad Request
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A description of the error.
+          example: The request body was malformed.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: The endpoint that returned the error.
+      additionalProperties: false
+      description: Error model containing the error details.
+    BulkPhoneV1CreateBatchResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+      additionalProperties: false
+      description: Bulk Phone V1 Create Batch result.
+    BulkPhoneV1StartBatchResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+      additionalProperties: false
+      description: Bulk Phone V1 Start Batch result.
+    CreateBatchSupplementaryLiveStatus:
       type: object
       properties:
         mobile:
@@ -1113,6 +1091,8 @@ components:
           items:
             type: string
           description: An indicator to attempt to get supplementary live status for Mobile Phone Number.
+          example:
+          - USA
         landline:
           type:
           - array
@@ -1120,8 +1100,28 @@ components:
           items:
             type: string
           description: An indicator to attempt to get supplementary live status for Landline Phone Number.
+          example:
+          - GBR
       additionalProperties: false
-      description: Batch configuration supplementary live status.
+      description: The supplementary live status request model. Please note that this feature has additional charge if requested.
+    BulkPhoneV1StopBatchResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkPhoneV1StopBatchResult'
+      additionalProperties: false
+      description: Bulk Phone V1 Stop Batch response.
+    BulkPhoneV1GetBatchesResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkPhoneV1GetBatchesResult'
+      additionalProperties: false
+      description: Bulk Phone V1 Get Batches response.
   securitySchemes:
     OAuth2:
       type: http

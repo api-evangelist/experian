@@ -275,71 +275,23 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ResponseError:
+    IdentityAppendAddressDetailAddressType:
       type: object
       properties:
-        type:
+        code:
           type:
           - string
           - 'null'
-          description: A link to documentation that provides more details about the error you’ve encountered.
-        title:
+          description: Indicates the address type.
+          example: S
+        description:
           type:
           - string
           - 'null'
-          description: The title of the error.
-          example: Bad Request
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A description of the error.
-          example: The request body was malformed.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: The endpoint that returned the error.
+          description: Indicates the description of the code.
+          example: Street
       additionalProperties: false
-      description: Error model containing the error details.
-    IdentityAppendEmailDetailDomain:
-      type: object
-      properties:
-        date_first_seen:
-          type:
-          - string
-          - 'null'
-          description: The date the domain first appeared in the records. The value "now" will be returned if the domain is new.
-          example: now
-        longevity:
-          type:
-          - integer
-          - 'null'
-          description: A score relating to when the domain was first discovered. From 0 (not discovered) to 3 (Discovered over a year ago).
-          format: int32
-          example: '3'
-        velocity:
-          type:
-          - integer
-          - 'null'
-          description: A score reflecting the activity of the domain over the last 6 months, from 0 (no activity) to 10 (most active).
-          format: int32
-          example: '10'
-        popularity:
-          type:
-          - integer
-          - 'null'
-          description: A score assessing the domain's visibility over the last 12 months based on the number of sources that have received the address, ranging from 0 (no sources) to 10 (most sources).
-          format: int32
-          example: '10'
-        domain_type:
-          type:
-          - string
-          - 'null'
-          description: The type of domain.
-          example: freeisp
-      additionalProperties: false
-      description: The Email Detail metadata Domain info.
+      description: The Address Detail metadata's address type information.
     IdentityAppendEmailDetail:
       type: object
       properties:
@@ -445,6 +397,72 @@ components:
           example: USA
       additionalProperties: false
       description: The individuals contact information matched to the email or phone supplied.
+    IdentityAppendInputOptions:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the option.
+          example: dnc_preference
+        value:
+          type:
+          - string
+          - 'null'
+          description: The value of the option.
+          example: flag | exclude | only
+      additionalProperties: false
+      description: The identity append request options.
+    IdentityAppendAddressDetail:
+      type: object
+      properties:
+        first_name_match:
+          type:
+          - string
+          - 'null'
+          description: Checks to see if the first name matches first names previously associated with that email.
+          example: match
+        last_name_match:
+          type:
+          - string
+          - 'null'
+          description: Checks to see if the last name matches last names previously associated with that email.
+          example: no_match
+        address_line_1_match:
+          type:
+          - string
+          - 'null'
+          description: Checks to see if the address line matches the address line previously associated with that email.
+          example: no_data
+        town_match:
+          type:
+          - string
+          - 'null'
+          description: Checks to see if the town matches the town data previously associated with that email.
+          example: no_data
+        postal_code_match:
+          type:
+          - string
+          - 'null'
+          description: Checks to see if the postal code matches the postal code data previously associated with that email.
+          example: no_data
+        deliverability:
+          type:
+          - string
+          - 'null'
+          description: Checks if the address is deliverable.
+          example: undeliverable
+        deliverability_detail:
+          type:
+          - string
+          - 'null'
+          description: Deliverable sub status.
+          example: missing_primary
+        address_type:
+          $ref: '#/components/schemas/IdentityAppendAddressDetailAddressType'
+      additionalProperties: false
+      description: The Address Detail metadata.
     IdentityAppendInputComponents:
       type: object
       properties:
@@ -580,72 +598,33 @@ components:
           - python-requests/2.27.1
       additionalProperties: false
       description: The identity input component.
-    IdentityAppendAddressDetail:
+    IdentityAppendResult:
       type: object
       properties:
-        first_name_match:
+        email:
           type:
           - string
           - 'null'
-          description: Checks to see if the first name matches first names previously associated with that email.
-          example: match
-        last_name_match:
+          description: The email of the individual.
+          example: John.A.Smith@example.com
+        contacts:
           type:
-          - string
+          - array
           - 'null'
-          description: Checks to see if the last name matches last names previously associated with that email.
-          example: no_match
-        address_line_1_match:
+          items:
+            $ref: '#/components/schemas/IdentityAppendContactResponse'
+        risk:
+          $ref: '#/components/schemas/EmailRiskResult'
+        phones:
           type:
-          - string
+          - array
           - 'null'
-          description: Checks to see if the address line matches the address line previously associated with that email.
-          example: no_data
-        town_match:
-          type:
-          - string
-          - 'null'
-          description: Checks to see if the town matches the town data previously associated with that email.
-          example: no_data
-        postal_code_match:
-          type:
-          - string
-          - 'null'
-          description: Checks to see if the postal code matches the postal code data previously associated with that email.
-          example: no_data
-        deliverability:
-          type:
-          - string
-          - 'null'
-          description: Checks if the address is deliverable.
-          example: undeliverable
-        deliverability_detail:
-          type:
-          - string
-          - 'null'
-          description: Deliverable sub status.
-          example: missing_primary
-        address_type:
-          $ref: '#/components/schemas/IdentityAppendAddressDetailAddressType'
+          items:
+            type: string
+          description: The matched phone number(s) of the individual.
+          example: '[ "123-456-7890", "098-765-4321"]'
       additionalProperties: false
-      description: The Address Detail metadata.
-    IdentityAppendAddressDetailAddressType:
-      type: object
-      properties:
-        code:
-          type:
-          - string
-          - 'null'
-          description: Indicates the address type.
-          example: S
-        description:
-          type:
-          - string
-          - 'null'
-          description: Indicates the description of the code.
-          example: Street
-      additionalProperties: false
-      description: The Address Detail metadata's address type information.
+      description: Details about the result, such as email, contact, or risk score.
     IdentityAppendRequest:
       required:
       - attributes
@@ -708,92 +687,44 @@ components:
           example: '0'
       additionalProperties: false
       description: The Phone Detail metadata.
-    IdentityAppendMetadata:
+    IdentityAppendResponse:
       type: object
       properties:
-        email_detail:
-          $ref: '#/components/schemas/IdentityAppendEmailDetail'
-        address_detail:
-          $ref: '#/components/schemas/IdentityAppendAddressDetail'
-        ip_detail:
-          $ref: '#/components/schemas/IdentityAppendIpDetail'
-        phone_detail:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/IdentityAppendPhoneDetail'
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/IdentityAppendResult'
+        metadata:
+          $ref: '#/components/schemas/IdentityAppendMetadata'
       additionalProperties: false
-      description: The metadata model.
-    IdentityAppendResult:
+      description: The response model.
+    ResponseError:
       type: object
       properties:
-        email:
+        type:
           type:
           - string
           - 'null'
-          description: The email of the individual.
-          example: John.A.Smith@example.com
-        contacts:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/IdentityAppendContactResponse'
-        risk:
-          $ref: '#/components/schemas/EmailRiskResult'
-        phones:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: The matched phone number(s) of the individual.
-          example: '[ "123-456-7890", "098-765-4321"]'
-      additionalProperties: false
-      description: Details about the result, such as email, contact, or risk score.
-    IdentityAppendInputOptions:
-      type: object
-      properties:
-        name:
+          description: A link to documentation that provides more details about the error you’ve encountered.
+        title:
           type:
           - string
           - 'null'
-          description: The name of the option.
-          example: dnc_preference
-        value:
+          description: The title of the error.
+          example: Bad Request
+        detail:
           type:
           - string
           - 'null'
-          description: The value of the option.
-          example: flag | exclude | only
+          description: A description of the error.
+          example: The request body was malformed.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: The endpoint that returned the error.
       additionalProperties: false
-      description: The identity append request options.
-    EmailRiskResult:
-      type: object
-      properties:
-        score:
-          type:
-          - integer
-          - 'null'
-          description: 'A score indicating the risk level. Low score: 0, High score: 100'
-          format: int32
-          example: '100'
-        tumbling_risk:
-          type:
-          - integer
-          - 'null'
-          description: A score indicating multiple variations of the same email address. 0 indicates no tumbling detected, while values of 1, 2 and 3 indicated a linear risk of tumbling detected.
-          format: int32
-          example: '3'
-        domain_risk:
-          type:
-          - integer
-          - 'null'
-          description: 'A score indicating the domain risk level, based on historical information and industry data. Low score: 0, High score: 10.'
-          format: int32
-      additionalProperties: false
-      description: The risk of a fraudulent profile.
+      description: Error model containing the error details.
     IdentityAppendIpDetail:
       type: object
       properties:
@@ -837,17 +768,86 @@ components:
           example: '-77.03651'
       additionalProperties: false
       description: The Ip Address Detail metadata.
-    IdentityAppendResponse:
+    IdentityAppendMetadata:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/IdentityAppendResult'
-        metadata:
-          $ref: '#/components/schemas/IdentityAppendMetadata'
+        email_detail:
+          $ref: '#/components/schemas/IdentityAppendEmailDetail'
+        address_detail:
+          $ref: '#/components/schemas/IdentityAppendAddressDetail'
+        ip_detail:
+          $ref: '#/components/schemas/IdentityAppendIpDetail'
+        phone_detail:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IdentityAppendPhoneDetail'
       additionalProperties: false
-      description: The response model.
+      description: The metadata model.
+    IdentityAppendEmailDetailDomain:
+      type: object
+      properties:
+        date_first_seen:
+          type:
+          - string
+          - 'null'
+          description: The date the domain first appeared in the records. The value "now" will be returned if the domain is new.
+          example: now
+        longevity:
+          type:
+          - integer
+          - 'null'
+          description: A score relating to when the domain was first discovered. From 0 (not discovered) to 3 (Discovered over a year ago).
+          format: int32
+          example: '3'
+        velocity:
+          type:
+          - integer
+          - 'null'
+          description: A score reflecting the activity of the domain over the last 6 months, from 0 (no activity) to 10 (most active).
+          format: int32
+          example: '10'
+        popularity:
+          type:
+          - integer
+          - 'null'
+          description: A score assessing the domain's visibility over the last 12 months based on the number of sources that have received the address, ranging from 0 (no sources) to 10 (most sources).
+          format: int32
+          example: '10'
+        domain_type:
+          type:
+          - string
+          - 'null'
+          description: The type of domain.
+          example: freeisp
+      additionalProperties: false
+      description: The Email Detail metadata Domain info.
+    EmailRiskResult:
+      type: object
+      properties:
+        score:
+          type:
+          - integer
+          - 'null'
+          description: 'A score indicating the risk level. Low score: 0, High score: 100'
+          format: int32
+          example: '100'
+        tumbling_risk:
+          type:
+          - integer
+          - 'null'
+          description: A score indicating multiple variations of the same email address. 0 indicates no tumbling detected, while values of 1, 2 and 3 indicated a linear risk of tumbling detected.
+          format: int32
+          example: '3'
+        domain_risk:
+          type:
+          - integer
+          - 'null'
+          description: 'A score indicating the domain risk level, based on historical information and industry data. Low score: 0, High score: 10.'
+          format: int32
+      additionalProperties: false
+      description: The risk of a fraudulent profile.
   securitySchemes:
     OAuth2:
       type: http

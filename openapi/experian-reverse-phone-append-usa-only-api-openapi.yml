@@ -94,12 +94,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    RpaV1Metadata:
+    RpaV1Request:
+      required:
+      - number
       type: object
       properties:
-        phone_detail:
-          $ref: '#/components/schemas/RpaV1PhoneDetail'
+        number:
+          minLength: 1
+          pattern: ^\d{10}$
+          type: string
+          description: 10-digit unformatted phone number.  This value cannot contain non-numeric characters such as parentheses, dashes, or spaces
+          example: '1234567890'
       additionalProperties: false
+      description: Reverse Phone Append request.
     RpaV1Address:
       type: object
       properties:
@@ -143,39 +150,23 @@ components:
           $ref: '#/components/schemas/RpaV1AddressConfidence'
       additionalProperties: false
       description: Reverse Phone Append Address.
-    ResponseError:
+    RpaV1Response:
       type: object
       properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A link to documentation that provides more details about the error you’ve encountered.
-        title:
-          type:
-          - string
-          - 'null'
-          description: The title of the error.
-          example: Bad Request
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A description of the error.
-          example: The request body was malformed.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: The endpoint that returned the error.
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/RpaV1Result'
+        metadata:
+          $ref: '#/components/schemas/RpaV1Metadata'
       additionalProperties: false
-      description: Error model containing the error details.
-    RpaV1PhoneType:
-      enum:
-      - Landline
-      - Mobile
-      - Other
-      type: string
+      description: Reverse Phone Append response.
+    RpaV1Metadata:
+      type: object
+      properties:
+        phone_detail:
+          $ref: '#/components/schemas/RpaV1PhoneDetail'
+      additionalProperties: false
     RpaV1Result:
       type: object
       properties:
@@ -209,27 +200,43 @@ components:
           $ref: '#/components/schemas/RpaV1Address'
       additionalProperties: false
       description: Reverse Phone Append result.
-    RpaV1PhoneConfidence:
-      enum:
-      - Verified
-      - Unverified
-      type: string
-    RpaV1Response:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/RpaV1Result'
-        metadata:
-          $ref: '#/components/schemas/RpaV1Metadata'
-      additionalProperties: false
-      description: Reverse Phone Append response.
     RpaV1AddressConfidence:
       enum:
       - Verified
       - Unverified
       type: string
+    RpaV1PhoneConfidence:
+      enum:
+      - Verified
+      - Unverified
+      type: string
+    ResponseError:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A link to documentation that provides more details about the error you’ve encountered.
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title of the error.
+          example: Bad Request
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A description of the error.
+          example: The request body was malformed.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: The endpoint that returned the error.
+      additionalProperties: false
+      description: Error model containing the error details.
     RpaV1PhoneDetail:
       type: object
       properties:
@@ -237,19 +244,12 @@ components:
           $ref: '#/components/schemas/RpaV1PhoneType'
       additionalProperties: false
       description: Reverse Phone Append Phone details.
-    RpaV1Request:
-      required:
-      - number
-      type: object
-      properties:
-        number:
-          minLength: 1
-          pattern: ^\d{10}$
-          type: string
-          description: 10-digit unformatted phone number.  This value cannot contain non-numeric characters such as parentheses, dashes, or spaces
-          example: '1234567890'
-      additionalProperties: false
-      description: Reverse Phone Append request.
+    RpaV1PhoneType:
+      enum:
+      - Landline
+      - Mobile
+      - Other
+      type: string
   securitySchemes:
     OAuth2:
       type: http

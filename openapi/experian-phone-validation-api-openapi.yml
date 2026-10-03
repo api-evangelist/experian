@@ -257,44 +257,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    PhoneValidationV2Confidence:
-      enum:
-      - Verified
-      - Absent
-      - Teleservice not provisioned
-      - Unverified
-      - No coverage
-      - Unknown
-      - Dead
-      type: string
-      description: The outcome (confidence level) of the validation.
-    ResponseError:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A link to documentation that provides more details about the error you’ve encountered.
-        title:
-          type:
-          - string
-          - 'null'
-          description: The title of the error.
-          example: Bad Request
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A description of the error.
-          example: The request body was malformed.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: The endpoint that returned the error.
-      additionalProperties: false
-      description: Error model containing the error details.
     PhoneValidationV2Metadata:
       type: object
       properties:
@@ -420,6 +382,31 @@ components:
           example: 7087694383@vzwpix.com
       additionalProperties: false
       description: Metadata fields and values that can be returned, in addition to the main core information.
+    PhoneValidationV2SupplementaryLiveStatus:
+      type: object
+      properties:
+        mobile:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: An indicator to attempt to get supplementary live status for Mobile Phone Number.
+          example:
+          - USA
+        landline:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: An indicator to attempt to get supplementary live status for Landline Phone Number.
+          example:
+          - GBR
+      additionalProperties: false
+      description: The supplementary live status request model. Please note that this feature has additional charge if requested.
+      xml:
+        name: supplementarylivestatusrequest
     PhoneValidationV2Result:
       type: object
       properties:
@@ -542,31 +529,44 @@ components:
       description: The request model.
       xml:
         name: request
-    PhoneValidationV2SupplementaryLiveStatus:
+    PhoneValidationV2Confidence:
+      enum:
+      - Verified
+      - Absent
+      - Teleservice not provisioned
+      - Unverified
+      - No coverage
+      - Unknown
+      - Dead
+      type: string
+      description: The outcome (confidence level) of the validation.
+    ResponseError:
       type: object
       properties:
-        mobile:
+        type:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            type: string
-          description: An indicator to attempt to get supplementary live status for Mobile Phone Number.
-          example:
-          - USA
-        landline:
+          description: A link to documentation that provides more details about the error you’ve encountered.
+        title:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            type: string
-          description: An indicator to attempt to get supplementary live status for Landline Phone Number.
-          example:
-          - GBR
+          description: The title of the error.
+          example: Bad Request
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A description of the error.
+          example: The request body was malformed.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: The endpoint that returned the error.
       additionalProperties: false
-      description: The supplementary live status request model. Please note that this feature has additional charge if requested.
-      xml:
-        name: supplementarylivestatusrequest
+      description: Error model containing the error details.
   securitySchemes:
     OAuth2:
       type: http
