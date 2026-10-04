@@ -336,6 +336,9 @@ x-enrichment:
   artifacts_added: 49
   pass: local-v3
 common:
+- type: CapabilityMap
+  url: capabilities/experian-capability-edges.yml
+  name: Experian Business Capability Map
 - type: DomainSecurity
   url: security/experian-domain-security.yml
 - type: Authentication
