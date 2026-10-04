@@ -451,6 +451,69 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    ResponseError:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A link to documentation that provides more details about the error you’ve encountered.
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title of the error.
+          example: Bad Request
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A description of the error.
+          example: The request body was malformed.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: The endpoint that returned the error.
+      additionalProperties: false
+      description: Error model containing the error details.
+    BulkEmailV1GetBatchesResult:
+      type: object
+      properties:
+        batches:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BulkEmailV1GetBatchesBatch'
+          description: Batches.
+      additionalProperties: false
+      description: Bulk Email V1 Get Batches result.
+    BulkEmailV1GetBatchStatusMetadata:
+      type: object
+      properties:
+        batch_config:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchStatusBatchConfig'
+      additionalProperties: false
+      description: Bulk Email V1 Get Batch Status metadata.
+    BulkEmailV1GetBatchResultsResponseEmailMetadataDomainDetail:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'Type field value:
+
+            consumer - returned for "free" domains
+
+            business - returned for "business" domains
+
+            Omit the field "type" when we are unable to provide a value'
+          example: 'consumer '
+      additionalProperties: false
+      description: Details about the domain.
     BulkEmailV1GetBatchResultsResult:
       type: object
       properties:
@@ -514,42 +577,6 @@ components:
           description: The current Batch status.
       additionalProperties: false
       description: Bulk Email V1 Start Batch result.
-    BulkEmailV1CreateBatchResult:
-      type: object
-      properties:
-        batch_id:
-          type:
-          - string
-          - 'null'
-          description: Batch ID.
-        batch_reference_id:
-          type:
-          - string
-          - 'null'
-          description: Optional reference identifier to track this batch.
-        status:
-          type:
-          - string
-          - 'null'
-          description: The current Batch status.
-      additionalProperties: false
-      description: Bulk Email V1 Create Batch result.
-    BulkEmailV1GetBatchResultsResponseStatistic:
-      type: object
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          description: Confidence.
-          example: verified
-        value:
-          type: integer
-          description: Count.
-          format: int32
-          example: 10
-      additionalProperties: false
-      description: Bulk Email V1 Get Results response statistic.
     BulkEmailV1GetBatchStatusResult:
       type: object
       properties:
@@ -605,48 +632,61 @@ components:
           format: date-time
       additionalProperties: false
       description: Bulk Email V1 Get Batch Status result.
-    BulkEmailV1GetBatchStatusMetadata:
+    BulkEmailV1GetBatchResultsResponseEmail:
       type: object
       properties:
-        batch_config:
-          $ref: '#/components/schemas/BulkEmailV1GetBatchStatusBatchConfig'
-      additionalProperties: false
-      description: Bulk Email V1 Get Batch Status metadata.
-    BulkEmailV1GetBatchResultsResponseEmailMetadataDomainDetail:
-      type: object
-      properties:
-        type:
+        email:
           type:
           - string
           - 'null'
-          description: 'Type field value:
-
-            consumer - returned for "free" domains
-
-            business - returned for "business" domains
-
-            Omit the field "type" when we are unable to provide a value'
-          example: 'consumer '
+          description: The email address that is the subject of the validation.
+          example: support@experian.com
+        confidence:
+          type:
+          - string
+          - 'null'
+          description: The outcome (confidence level) of the validation.
+          example: verified
+        verbose_output:
+          type:
+          - string
+          - 'null'
+          description: Additional information on the confidence level.
+          example: verified
+        did_you_mean:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: A list of more likely email addresses. Suggestions include fixes to syntax errors in the provided email address, typos in domains etc.
+        metadata:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchResultsResponseEmailMetadata'
       additionalProperties: false
-      description: Details about the domain.
-    BulkEmailV1GetBatchesResponse:
+      description: Bulk Email V1 Get Results response.
+    BulkEmailV1GetBatchResultsResponseEmailMetadata:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkEmailV1GetBatchesResult'
+        domain_detail:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchResultsResponseEmailMetadataDomainDetail'
       additionalProperties: false
-      description: Bulk Email V1 Get Batches response.
-    BulkEmailV1CreateBatchResponse:
+      description: Metadata fields and values that can be returned, in addition to the main core information.
+    BulkEmailV1GetBatchResultsResponseStatistic:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkEmailV1CreateBatchResult'
+        name:
+          type:
+          - string
+          - 'null'
+          description: Confidence.
+          example: verified
+        value:
+          type: integer
+          description: Count.
+          format: int32
+          example: 10
       additionalProperties: false
-      description: Bulk Email V1 Create Batch response.
+      description: Bulk Email V1 Get Results response statistic.
     BulkEmailV1StartBatchResponse:
       type: object
       properties:
@@ -656,6 +696,84 @@ components:
           $ref: '#/components/schemas/BulkEmailV1StartBatchResult'
       additionalProperties: false
       description: Bulk Email V1 Start Batch response.
+    BulkEmailV1StopBatchResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+      additionalProperties: false
+      description: Bulk Email V1 Stop Batch result.
+    BulkEmailV1CreateBatchRequestEmail:
+      type: object
+      properties:
+        email:
+          maxLength: 1000
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: The email address that is the subject of the validation.
+          example: support@experian.com
+      additionalProperties: false
+      description: Bulk Email V1 email component.
+    BulkEmailV1CreateBatchRequest:
+      required:
+      - emails
+      type: object
+      properties:
+        defaults:
+          $ref: '#/components/schemas/BulkEmailV1CreateBatchRequestOptions'
+        emails:
+          maxItems: 10000
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkEmailV1CreateBatchRequestEmail'
+          description: List of input components.
+      additionalProperties: false
+      description: Bulk Email V1 Create Batch request.
+    BulkEmailV1StopBatchResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkEmailV1StopBatchResult'
+      additionalProperties: false
+      description: Bulk Email V1 Stop Batch response.
+    BulkEmailV1GetBatchesResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchesResult'
+      additionalProperties: false
+      description: Bulk Email V1 Get Batches response.
+    BulkEmailV1GetBatchStatusResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchStatusResult'
+        metadata:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchStatusMetadata'
+      additionalProperties: false
+      description: Bulk Email V1 Get Batch Status response.
     BulkEmailV1GetBatchesBatch:
       type: object
       properties:
@@ -705,6 +823,54 @@ components:
           format: date-time
       additionalProperties: false
       description: Bulk Email V1 Get Batches Batch Info.
+    BulkEmailV1CreateBatchResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkEmailV1CreateBatchResult'
+      additionalProperties: false
+      description: Bulk Email V1 Create Batch response.
+    BulkEmailV1GetBatchStatusBatchConfig:
+      type: object
+      properties:
+        max_processing_time:
+          type:
+          - string
+          - 'null'
+          description: Optional maximum processing time of the batch.
+      additionalProperties: false
+      description: The submitted default options.
+    BulkEmailV1GetBatchResultsResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkEmailV1GetBatchResultsResult'
+      additionalProperties: false
+      description: Bulk Email V1 Get Results response.
+    BulkEmailV1CreateBatchResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+      additionalProperties: false
+      description: Bulk Email V1 Create Batch result.
     BulkEmailV1CreateBatchRequestOptions:
       type: object
       properties:
@@ -731,172 +897,6 @@ components:
             Maximum allowed value is "PT24H" (24 hours). Minimum allowed value is "PT1M" (1 minute).'
       additionalProperties: false
       description: The default options that applied to the batch.
-    BulkEmailV1StopBatchResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkEmailV1StopBatchResult'
-      additionalProperties: false
-      description: Bulk Email V1 Stop Batch response.
-    BulkEmailV1StopBatchResult:
-      type: object
-      properties:
-        batch_id:
-          type:
-          - string
-          - 'null'
-          description: Batch ID.
-        batch_reference_id:
-          type:
-          - string
-          - 'null'
-          description: Optional reference identifier to track this batch.
-        status:
-          type:
-          - string
-          - 'null'
-          description: The current Batch status.
-      additionalProperties: false
-      description: Bulk Email V1 Stop Batch result.
-    ResponseError:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A link to documentation that provides more details about the error you’ve encountered.
-        title:
-          type:
-          - string
-          - 'null'
-          description: The title of the error.
-          example: Bad Request
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A description of the error.
-          example: The request body was malformed.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: The endpoint that returned the error.
-      additionalProperties: false
-      description: Error model containing the error details.
-    BulkEmailV1GetBatchStatusBatchConfig:
-      type: object
-      properties:
-        max_processing_time:
-          type:
-          - string
-          - 'null'
-          description: Optional maximum processing time of the batch.
-      additionalProperties: false
-      description: The submitted default options.
-    BulkEmailV1GetBatchResultsResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkEmailV1GetBatchResultsResult'
-      additionalProperties: false
-      description: Bulk Email V1 Get Results response.
-    BulkEmailV1CreateBatchRequestEmail:
-      type: object
-      properties:
-        email:
-          maxLength: 1000
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: The email address that is the subject of the validation.
-          example: support@experian.com
-      additionalProperties: false
-      description: Bulk Email V1 email component.
-    BulkEmailV1GetBatchResultsResponseEmail:
-      type: object
-      properties:
-        email:
-          type:
-          - string
-          - 'null'
-          description: The email address that is the subject of the validation.
-          example: support@experian.com
-        confidence:
-          type:
-          - string
-          - 'null'
-          description: The outcome (confidence level) of the validation.
-          example: verified
-        verbose_output:
-          type:
-          - string
-          - 'null'
-          description: Additional information on the confidence level.
-          example: verified
-        did_you_mean:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: A list of more likely email addresses. Suggestions include fixes to syntax errors in the provided email address, typos in domains etc.
-        metadata:
-          $ref: '#/components/schemas/BulkEmailV1GetBatchResultsResponseEmailMetadata'
-      additionalProperties: false
-      description: Bulk Email V1 Get Results response.
-    BulkEmailV1GetBatchStatusResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkEmailV1GetBatchStatusResult'
-        metadata:
-          $ref: '#/components/schemas/BulkEmailV1GetBatchStatusMetadata'
-      additionalProperties: false
-      description: Bulk Email V1 Get Batch Status response.
-    BulkEmailV1GetBatchResultsResponseEmailMetadata:
-      type: object
-      properties:
-        domain_detail:
-          $ref: '#/components/schemas/BulkEmailV1GetBatchResultsResponseEmailMetadataDomainDetail'
-      additionalProperties: false
-      description: Metadata fields and values that can be returned, in addition to the main core information.
-    BulkEmailV1GetBatchesResult:
-      type: object
-      properties:
-        batches:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/BulkEmailV1GetBatchesBatch'
-          description: Batches.
-      additionalProperties: false
-      description: Bulk Email V1 Get Batches result.
-    BulkEmailV1CreateBatchRequest:
-      required:
-      - emails
-      type: object
-      properties:
-        defaults:
-          $ref: '#/components/schemas/BulkEmailV1CreateBatchRequestOptions'
-        emails:
-          maxItems: 10000
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/BulkEmailV1CreateBatchRequestEmail'
-          description: List of input components.
-      additionalProperties: false
-      description: Bulk Email V1 Create Batch request.
   securitySchemes:
     OAuth2:
       type: http

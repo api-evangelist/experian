@@ -257,23 +257,17 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    PhoneValidationV2Metadata:
-      type: object
-      properties:
-        code:
-          type:
-          - string
-          - 'null'
-          description: Ignore, currently not used.
-        message:
-          type:
-          - string
-          - 'null'
-          description: Ignore, currently not used.
-        phone_detail:
-          $ref: '#/components/schemas/PhoneValidationV2PhoneDetail'
-      additionalProperties: false
-      description: The metadata model.
+    PhoneValidationV2Confidence:
+      enum:
+      - Verified
+      - Absent
+      - Teleservice not provisioned
+      - Unverified
+      - No coverage
+      - Unknown
+      - Dead
+      type: string
+      description: The outcome (confidence level) of the validation.
     PhoneValidationV2PhoneDetail:
       type: object
       properties:
@@ -382,93 +376,50 @@ components:
           example: 7087694383@vzwpix.com
       additionalProperties: false
       description: Metadata fields and values that can be returned, in addition to the main core information.
-    PhoneValidationV2SupplementaryLiveStatus:
+    PhoneValidationV2Metadata:
       type: object
       properties:
-        mobile:
+        code:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            type: string
-          description: An indicator to attempt to get supplementary live status for Mobile Phone Number.
-          example:
-          - USA
-        landline:
+          description: Ignore, currently not used.
+        message:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            type: string
-          description: An indicator to attempt to get supplementary live status for Landline Phone Number.
-          example:
-          - GBR
+          description: Ignore, currently not used.
+        phone_detail:
+          $ref: '#/components/schemas/PhoneValidationV2PhoneDetail'
       additionalProperties: false
-      description: The supplementary live status request model. Please note that this feature has additional charge if requested.
-      xml:
-        name: supplementarylivestatusrequest
-    PhoneValidationV2Result:
+      description: The metadata model.
+    ResponseError:
       type: object
       properties:
-        number:
+        type:
           type:
           - string
           - 'null'
-          description: The phone number that is the subject of the validation.
-          example: '17087694383'
-        validated_phone_number:
+          description: A link to documentation that provides more details about the error you’ve encountered.
+        title:
           type:
           - string
           - 'null'
-          description: 'The validated phone number. Also includes the international country calling code. Note
-
-            that this field is returned even if the phone number has a confidence status of "Invalid".'
-          example: '17087694383'
-        formatted_phone_number:
+          description: The title of the error.
+          example: Bad Request
+        detail:
           type:
           - string
           - 'null'
-          description: The phone number in the format you specified in "output_format".
-          example: (708) 769-4383
-        phone_type:
+          description: A description of the error.
+          example: The request body was malformed.
+        instance:
           type:
           - string
           - 'null'
-          description: 'The type of phone number. Note: Landline is only supported in North America.'
-          example: Mobile
-        confidence:
-          $ref: '#/components/schemas/PhoneValidationV2Confidence'
-        ported_date:
-          type:
-          - string
-          - 'null'
-          description: "The date the phone number was last ported, returned only if the number has been moved to a different network. \nThis is an optional field and is included only when get_ported_date is set to true, which incurs an additional click."
-          example: '2012-06-27T09:32:09Z'
-        disposable_number:
-          type:
-          - string
-          - 'null'
-          description: 'Indicates whether the phone number is a disposable number based on lookup list of disposable numbers.
-
-            If the number can be found in the lookup list, the value returned will be "Yes". Otherwise, the value returned
-
-            will be "Unknown". This value would be returned if the get_disposable_number boolean is set to true.'
-          example: 'Yes'
+          description: The endpoint that returned the error.
       additionalProperties: false
-      description: Details about the result. Includes the validated data and its confidence level.
-    PhoneValidationV2Response:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/PhoneValidationV2Result'
-        metadata:
-          $ref: '#/components/schemas/PhoneValidationV2Metadata'
-      additionalProperties: false
-      description: The response model.
-      xml:
-        name: response
+      description: Error model containing the error details.
     PhoneValidationV2Request:
       required:
       - number
@@ -529,44 +480,93 @@ components:
       description: The request model.
       xml:
         name: request
-    PhoneValidationV2Confidence:
-      enum:
-      - Verified
-      - Absent
-      - Teleservice not provisioned
-      - Unverified
-      - No coverage
-      - Unknown
-      - Dead
-      type: string
-      description: The outcome (confidence level) of the validation.
-    ResponseError:
+    PhoneValidationV2SupplementaryLiveStatus:
       type: object
       properties:
-        type:
+        mobile:
           type:
-          - string
+          - array
           - 'null'
-          description: A link to documentation that provides more details about the error you’ve encountered.
-        title:
+          items:
+            type: string
+          description: An indicator to attempt to get supplementary live status for Mobile Phone Number.
+          example:
+          - USA
+        landline:
           type:
-          - string
+          - array
           - 'null'
-          description: The title of the error.
-          example: Bad Request
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A description of the error.
-          example: The request body was malformed.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: The endpoint that returned the error.
+          items:
+            type: string
+          description: An indicator to attempt to get supplementary live status for Landline Phone Number.
+          example:
+          - GBR
       additionalProperties: false
-      description: Error model containing the error details.
+      description: The supplementary live status request model. Please note that this feature has additional charge if requested.
+      xml:
+        name: supplementarylivestatusrequest
+    PhoneValidationV2Response:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/PhoneValidationV2Result'
+        metadata:
+          $ref: '#/components/schemas/PhoneValidationV2Metadata'
+      additionalProperties: false
+      description: The response model.
+      xml:
+        name: response
+    PhoneValidationV2Result:
+      type: object
+      properties:
+        number:
+          type:
+          - string
+          - 'null'
+          description: The phone number that is the subject of the validation.
+          example: '17087694383'
+        validated_phone_number:
+          type:
+          - string
+          - 'null'
+          description: 'The validated phone number. Also includes the international country calling code. Note
+
+            that this field is returned even if the phone number has a confidence status of "Invalid".'
+          example: '17087694383'
+        formatted_phone_number:
+          type:
+          - string
+          - 'null'
+          description: The phone number in the format you specified in "output_format".
+          example: (708) 769-4383
+        phone_type:
+          type:
+          - string
+          - 'null'
+          description: 'The type of phone number. Note: Landline is only supported in North America.'
+          example: Mobile
+        confidence:
+          $ref: '#/components/schemas/PhoneValidationV2Confidence'
+        ported_date:
+          type:
+          - string
+          - 'null'
+          description: "The date the phone number was last ported, returned only if the number has been moved to a different network. \nThis is an optional field and is included only when get_ported_date is set to true, which incurs an additional click."
+          example: '2012-06-27T09:32:09Z'
+        disposable_number:
+          type:
+          - string
+          - 'null'
+          description: 'Indicates whether the phone number is a disposable number based on lookup list of disposable numbers.
+
+            If the number can be found in the lookup list, the value returned will be "Yes". Otherwise, the value returned
+
+            will be "Unknown". This value would be returned if the get_disposable_number boolean is set to true.'
+          example: 'Yes'
+      additionalProperties: false
+      description: Details about the result. Includes the validated data and its confidence level.
   securitySchemes:
     OAuth2:
       type: http
