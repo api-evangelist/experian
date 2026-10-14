@@ -368,7 +368,7 @@ common:
 - type: PrivacyPolicy
   url: https://developer.experian.com/privacy-policy
 - type: Website
-  url: https://www.experianplc.com/
+  url: https://www.experian.com/
 - type: StatusPage
   url: https://status.edq.com/
 - type: Deprecation
