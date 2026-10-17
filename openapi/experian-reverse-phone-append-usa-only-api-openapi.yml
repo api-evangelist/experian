@@ -100,6 +100,71 @@ components:
       - Mobile
       - Other
       type: string
+    RpaV1Result:
+      type: object
+      properties:
+        number:
+          type:
+          - string
+          - 'null'
+          description: The phone number.
+          example: '1234567890'
+        confidence:
+          $ref: '#/components/schemas/RpaV1PhoneConfidence'
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: The first name.
+          example: JOE
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: The middle name.
+          example: JR
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: The last name.
+          example: DOE
+        address:
+          $ref: '#/components/schemas/RpaV1Address'
+      additionalProperties: false
+      description: Reverse Phone Append result.
+    ResponseError:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: A link to documentation that provides more details about the error you’ve encountered.
+        title:
+          type:
+          - string
+          - 'null'
+          description: The title of the error.
+          example: Bad Request
+        detail:
+          type:
+          - string
+          - 'null'
+          description: A description of the error.
+          example: The request body was malformed.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: The endpoint that returned the error.
+      additionalProperties: false
+      description: Error model containing the error details.
+    RpaV1PhoneConfidence:
+      enum:
+      - Verified
+      - Unverified
+      type: string
     RpaV1Address:
       type: object
       properties:
@@ -143,33 +208,17 @@ components:
           $ref: '#/components/schemas/RpaV1AddressConfidence'
       additionalProperties: false
       description: Reverse Phone Append Address.
-    ResponseError:
+    RpaV1AddressConfidence:
+      enum:
+      - Verified
+      - Unverified
+      type: string
+    RpaV1Metadata:
       type: object
       properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: A link to documentation that provides more details about the error you’ve encountered.
-        title:
-          type:
-          - string
-          - 'null'
-          description: The title of the error.
-          example: Bad Request
-        detail:
-          type:
-          - string
-          - 'null'
-          description: A description of the error.
-          example: The request body was malformed.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: The endpoint that returned the error.
+        phone_detail:
+          $ref: '#/components/schemas/RpaV1PhoneDetail'
       additionalProperties: false
-      description: Error model containing the error details.
     RpaV1Response:
       type: object
       properties:
@@ -181,11 +230,13 @@ components:
           $ref: '#/components/schemas/RpaV1Metadata'
       additionalProperties: false
       description: Reverse Phone Append response.
-    RpaV1PhoneConfidence:
-      enum:
-      - Verified
-      - Unverified
-      type: string
+    RpaV1PhoneDetail:
+      type: object
+      properties:
+        input_phone_type:
+          $ref: '#/components/schemas/RpaV1PhoneType'
+      additionalProperties: false
+      description: Reverse Phone Append Phone details.
     RpaV1Request:
       required:
       - number
@@ -199,57 +250,6 @@ components:
           example: '1234567890'
       additionalProperties: false
       description: Reverse Phone Append request.
-    RpaV1PhoneDetail:
-      type: object
-      properties:
-        input_phone_type:
-          $ref: '#/components/schemas/RpaV1PhoneType'
-      additionalProperties: false
-      description: Reverse Phone Append Phone details.
-    RpaV1Metadata:
-      type: object
-      properties:
-        phone_detail:
-          $ref: '#/components/schemas/RpaV1PhoneDetail'
-      additionalProperties: false
-    RpaV1Result:
-      type: object
-      properties:
-        number:
-          type:
-          - string
-          - 'null'
-          description: The phone number.
-          example: '1234567890'
-        confidence:
-          $ref: '#/components/schemas/RpaV1PhoneConfidence'
-        first_name:
-          type:
-          - string
-          - 'null'
-          description: The first name.
-          example: JOE
-        middle_name:
-          type:
-          - string
-          - 'null'
-          description: The middle name.
-          example: JR
-        last_name:
-          type:
-          - string
-          - 'null'
-          description: The last name.
-          example: DOE
-        address:
-          $ref: '#/components/schemas/RpaV1Address'
-      additionalProperties: false
-      description: Reverse Phone Append result.
-    RpaV1AddressConfidence:
-      enum:
-      - Verified
-      - Unverified
-      type: string
   securitySchemes:
     OAuth2:
       type: http

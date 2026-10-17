@@ -582,32 +582,93 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    BulkAddressV1GetBatchResultsResponseAddressMetadataAddressInfo:
+    BulkAddressV1GetBatchResultsResponseAddressComponentsBuilding:
       type: object
       properties:
-        sources:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: Source of address information.
-        number_of_households:
+        building_name:
           type:
           - string
           - 'null'
-          description: Number of households for records in GBR Not Yet Built, or multi-occupancy count of the owning delivery point for GBR Multiple Residence.
-          example: '1'
-        just_built_date:
+          description: The building name.
+          example: Sir John Peace Building
+        building_number:
           type:
           - string
           - 'null'
-          description: Construction date of the record, if it has been constructed in the last 6 months (GBR specific).
-          example: '20210605'
-        identifier:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataAddressInfoIdentifier'
+          description: The building number.
+          example: '549'
+        secondary_name:
+          type:
+          - string
+          - 'null'
+          description: The secondary building name.
+        secondary_number:
+          type:
+          - string
+          - 'null'
+          description: The secondary name of the building (if available).
+        allotment_number:
+          type:
+          - string
+          - 'null'
+          description: The allotment name where a person or property resides.
       additionalProperties: false
-      description: Address information.
+      description: The building component.
+    BulkAddressV1GetBatchStatusResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+        reason:
+          type:
+          - string
+          - 'null'
+          description: The reason of the current Batch status.
+        records:
+          type:
+          - integer
+          - 'null'
+          description: The number of address have been submitted.
+          format: int32
+        records_processed:
+          type:
+          - integer
+          - 'null'
+          description: The number of address have been processed.
+          format: int32
+        date_submitted:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is created in ISO-8601 format.
+          format: date-time
+        date_started:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is started in ISO-8601 format.
+          format: date-time
+        date_ended:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is ended in ISO-8601 format.
+          format: date-time
+      additionalProperties: false
+      description: Bulk Address V1 Get Batch Status result.
     ResponseError:
       type: object
       properties:
@@ -635,7 +696,16 @@ components:
           description: The endpoint that returned the error.
       additionalProperties: false
       description: Error model containing the error details.
-    BulkAddressV1CreateBatchResult:
+    BulkAddressV1GetBatchesResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchesResult'
+      additionalProperties: false
+      description: Bulk Address V1 Get Batches response.
+    BulkAddressV1GetBatchesBatch:
       type: object
       properties:
         batch_id:
@@ -653,28 +723,262 @@ components:
           - string
           - 'null'
           description: The current Batch status.
+        reason:
+          type:
+          - string
+          - 'null'
+          description: The reason of the current Batch status.
+        records:
+          type: integer
+          description: The number of addresses have been submitted.
+          format: int32
+        records_processed:
+          type: integer
+          description: The number of addresses have been processed.
+          format: int32
+        date_submitted:
+          type: string
+          description: The date time when the Batch is created in ISO-8601 format.
+          format: date-time
+        date_started:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is started in ISO-8601 format.
+          format: date-time
+        date_ended:
+          type:
+          - string
+          - 'null'
+          description: The date time when the Batch is ended in ISO-8601 format.
+          format: date-time
       additionalProperties: false
-      description: Bulk Address V1 Create Batch result.
-    BulkAddressV1GetBatchResultsResponseAddressComponentsOrganization:
+      description: Bulk Address V1 Get Batches Batch Info.
+    BulkAddressV1GetBatchResultsResponseAddress:
       type: object
       properties:
-        department_name:
+        address:
           type:
           - string
           - 'null'
-          description: The department name within an organization.
-        secondary_department_name:
+          description: The address that is the subject of the validation.
+          example: 555 Ellis St | Mountain View | CA | 94043
+        country_iso:
           type:
           - string
           - 'null'
-          description: The secondary department name within an organization.
-        company_name:
+          description: The country ISO of the validation.
+          example: DEU
+        datasets:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The datasets of the validation.
+          example:
+          - de-address-ed
+        confidence:
           type:
           - string
           - 'null'
-          description: The company name.
+          description: The outcome (confidence level) of the validation.
+          example: verified match
+        match_type:
+          type:
+          - string
+          - 'null'
+          description: Match type for verified address.
+          example: full_with_post_code
+        match_confidence:
+          type:
+          - string
+          - 'null'
+          description: Match confidence for verified address.
+          example: high
+        match_info:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMatchInfo'
+        addresses_formatted:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressAddressFormatted'
+          description: Addresses formatted details for verified address.
+        components:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponents'
+        metadata:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadata'
       additionalProperties: false
-      description: The organization component.
+      description: Bulk Address V1 Get Results response Address data
+    BulkAddressV1CreateBatchResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkAddressV1CreateBatchResult'
+      additionalProperties: false
+      description: Bulk Address V1 Create Batch response.
+    BulkAddressV1GetBatchResultsResponseAddressComponentsStreet:
+      type: object
+      properties:
+        full_name:
+          type:
+          - string
+          - 'null'
+          description: 'The combination of the other populated secondary street components: prefix, name, type, suffix.'
+          example: Summer St
+        name:
+          type:
+          - string
+          - 'null'
+          description: The street name only.
+          example: Summer
+        type:
+          type:
+          - string
+          - 'null'
+          description: The street type only.
+          example: St
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: The street prefix only.
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: The street suffix only.
+      additionalProperties: false
+      description: The street component.
+    BulkAddressV1GetBatchResultsResponseAddressMetadataAddressInfo:
+      type: object
+      properties:
+        sources:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Source of address information.
+        number_of_households:
+          type:
+          - string
+          - 'null'
+          description: Number of households for records in GBR Not Yet Built, or multi-occupancy count of the owning delivery point for GBR Multiple Residence.
+          example: '1'
+        just_built_date:
+          type:
+          - string
+          - 'null'
+          description: Construction date of the record, if it has been constructed in the last 6 months (GBR specific).
+          example: '20210605'
+        identifier:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataAddressInfoIdentifier'
+      additionalProperties: false
+      description: Address information.
+    BulkAddressV1GetBatchResultsResponseAddressAddressFormatted:
+      type: object
+      properties:
+        layout_name:
+          type:
+          - string
+          - 'null'
+          description: The layout name for address to map.
+          example: myLayout
+        address:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: The address formatted.
+          example:
+            CountryIso: DEU
+            CountryName: ''
+            PostalCode: '75245'
+            Locality: Neulingen
+            Street: Am Sickenbrünnle
+            Building: ''
+      additionalProperties: false
+      description: Bulk Address V1 Get Results response Address Formatted data
+    BulkAddressV1GetBatchResultsResponseAddressComponentsDeliveryService:
+      type: object
+      properties:
+        full_name:
+          type:
+          - string
+          - 'null'
+          description: The full name of the delivery service.
+        service_type:
+          type:
+          - string
+          - 'null'
+          description: The delivery service type.
+        service_number:
+          type:
+          - string
+          - 'null'
+          description: The delivery service number.
+        post_centre_name:
+          type:
+          - string
+          - 'null'
+          description: The delivery service post center name.
+      additionalProperties: false
+      description: The delivery service component.
+    BulkAddressV1CreateBatchRequestAddress:
+      type: object
+      properties:
+        address:
+          maxLength: 1000
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: The address to validate.
+          example: 1 main st, sydney
+        country_iso:
+          maxLength: 3
+          minLength: 3
+          type:
+          - string
+          - 'null'
+          description: 'You can indicate the 3-letter ISO country code if the address that is subject to validation doesn''t contain an address country code.
+
+            This will overwrite the country_iso in the default options.'
+          example: AUS
+        datasets:
+          minItems: 1
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The datasets to apply.
+          example:
+          - au-address-gnaf
+      additionalProperties: false
+      description: Bulk Address V1 address component.
+    BulkAddressV1GetBatchResultsResponseAddressMetadataRouteClassification:
+      type: object
+      properties:
+        carrier_route:
+          type:
+          - string
+          - 'null'
+          description: The carrier route value (applicable for USA addresses only).
+          example: C077
+        id:
+          type:
+          - string
+          - 'null'
+          description: The street identifier (applicable for AUS addresses only).
+          example: '38396'
+      additionalProperties: false
+      description: Address deliverability and type indicators.
     BulkAddressV1GetBatchResultsResponseResult:
       type: object
       properties:
@@ -718,13 +1022,173 @@ components:
           description: The Addresses validation results.
       additionalProperties: false
       description: Bulk Address V1 Get Batch Results result.
-    BulkAddressV1GetBatchStatusMetadata:
+    BulkAddressV1GetBatchResultsResponseAddressMetadataAddressClassification:
       type: object
       properties:
-        batch_config:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchStatusMetadataBatchConfig'
+        address_type:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataAddressClassificationAddressType'
+        delivery_type:
+          type:
+          - string
+          - 'null'
+          description: Type of mail delivery at the address. Either "business", "residential" or "mixed".
+          example: Business
+        is_deliverable:
+          type:
+          - string
+          - 'null'
+          description: Indicator if the address is deliverable - applicable to NZL addresses only.
+          example: Y
       additionalProperties: false
-      description: Bulk Address V1 Get Batch Status metadata.
+      description: Address deliverability and type indicators.
+    BulkAddressV1GetBatchResultsResponseAddressComponentsLocality:
+      type: object
+      properties:
+        region:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem'
+        sub_region:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem'
+        town:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem'
+        district:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem'
+        sub_district:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem'
+      additionalProperties: false
+      description: The locality component.
+    BulkAddressV1CreateBatchRequestOptions:
+      type: object
+      properties:
+        country_iso:
+          maxLength: 3
+          minLength: 3
+          type:
+          - string
+          - 'null'
+          description: The country ISO3 code of address.
+          example: USA
+        datasets:
+          minItems: 1
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The datasets for address validation.
+          example:
+          - us-address
+        batch_reference_id:
+          maxLength: 256
+          minLength: 0
+          pattern: ^[\w\-\/\:\.\,\(\) ]+$
+          type:
+          - string
+          - 'null'
+          description: Optional identifier that will be returned in the response to help you track the batch.
+        max_processing_time:
+          maxLength: 10
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: 'Optional maximum processing time of the batch.
+
+            If the batch is still processing after this time, it will be stopped.
+
+            The value should be in ISO 8601 duration format (e.g., "PT30M" for 30 minutes).
+
+            Maximum allowed value is "PT24H" (24 hours). Minimum allowed value is "PT1M" (1 minute).'
+      additionalProperties: false
+      description: The default options that applied to all the addresses.
+    BulkAddressV1GetBatchResultsResponseAddressComponents:
+      type: object
+      properties:
+        language:
+          type:
+          - string
+          - 'null'
+          description: Address language.
+          example: en-GB
+        country_name:
+          type:
+          - string
+          - 'null'
+          description: The name of the country where the address is located.
+          example: United Kingdom
+        country_iso_3:
+          type:
+          - string
+          - 'null'
+          description: The 3-letter ISO country code.
+          example: GBR
+        country_iso_2:
+          type:
+          - string
+          - 'null'
+          description: The 2-letter ISO country code.
+          example: GB
+        postal_code:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsPostalCode'
+        delivery_service:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsDeliveryService'
+        secondary_delivery_service:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsDeliveryService'
+        sub_building:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuilding'
+        building:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsBuilding'
+        organization:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsOrganization'
+        street:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsStreet'
+        secondary_street:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsStreet'
+        route_service:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsRouteService'
+        locality:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocality'
+        physical_locality:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocality'
+      additionalProperties: false
+      description: Bulk Address V1 Get Results response Address Components data
+    BulkAddressV1GetBatchResultsResponseAddressMetadata:
+      type: object
+      properties:
+        address_info:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataAddressInfo'
+        route_classification:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataRouteClassification'
+        barcode:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataBarcode'
+        address_classification:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataAddressClassification'
+        dpv:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataDpv'
+      additionalProperties: false
+      description: The address metadata.
+    BulkAddressV1GetBatchResultsResponseAddressComponentsPostalCode:
+      type: object
+      properties:
+        full_name:
+          type:
+          - string
+          - 'null'
+          description: The full name of the postal code.
+          example: 92626-7037
+        primary:
+          type:
+          - string
+          - 'null'
+          description: The primary name of the postal code.
+          example: '92626'
+        secondary:
+          type:
+          - string
+          - 'null'
+          description: The secondary name of the postal code.
+          example: '7037'
+      additionalProperties: false
+      description: The post code component.
     BulkAddressV1GetBatchResultsResponseStatistic:
       type: object
       properties:
@@ -741,43 +1205,18 @@ components:
           example: 10
       additionalProperties: false
       description: Bulk Address V1 Get Results response statistic.
-    BulkAddressV1GetBatchStatusMetadataBatchConfig:
+    BulkAddressV1GetBatchesResult:
       type: object
       properties:
-        country_iso:
-          type:
-          - string
-          - 'null'
-          description: Country ISO.
-        datasets:
+        batches:
           type:
           - array
           - 'null'
           items:
-            type: string
-          description: Datasets.
-        add_components:
-          type:
-          - boolean
-          - 'null'
-          description: Add components.
-        add_metadata:
-          type:
-          - boolean
-          - 'null'
-          description: Add metadata.
-        add_extra_match_info:
-          type:
-          - boolean
-          - 'null'
-          description: Add extra match info.
-        max_processing_time:
-          type:
-          - string
-          - 'null'
-          description: Optional maximum processing time of the batch.
+            $ref: '#/components/schemas/BulkAddressV1GetBatchesBatch'
+          description: Batches.
       additionalProperties: false
-      description: Bulk Address V1 Get Batch Status metadata's batch config.
+      description: Bulk Address V1 Get Batches result.
     BulkAddressV1GetBatchResultsResponseAddressMetadataDpv:
       type: object
       properties:
@@ -829,39 +1268,294 @@ components:
           example: Y
       additionalProperties: false
       description: Delivery Point Validation information for the address (USA only).
-    BulkAddressV1GetBatchResultsResponseAddressComponentsStreet:
+    BulkAddressV1GetBatchResultsResponseAddressComponentsRouteService:
       type: object
       properties:
         full_name:
           type:
           - string
           - 'null'
-          description: 'The combination of the other populated secondary street components: prefix, name, type, suffix.'
-          example: Summer St
+          description: The full name of the route service.
+        service_type:
+          type:
+          - string
+          - 'null'
+          description: The route service type.
+        service_number:
+          type:
+          - string
+          - 'null'
+          description: The route service number.
+        delivery_name:
+          type:
+          - string
+          - 'null'
+          description: The route service delivery name.
+        qualifier:
+          type:
+          - string
+          - 'null'
+          description: The route service qualifier.
+      additionalProperties: false
+      description: The route service component.
+    BulkAddressV1StopBatchResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkAddressV1StopBatchResult'
+      additionalProperties: false
+      description: Bulk Address V1 Stop Batch response.
+    BulkAddressV1GetBatchStatusMetadata:
+      type: object
+      properties:
+        batch_config:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchStatusMetadataBatchConfig'
+      additionalProperties: false
+      description: Bulk Address V1 Get Batch Status metadata.
+    BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuilding:
+      type: object
+      properties:
         name:
           type:
           - string
           - 'null'
-          description: The street name only.
-          example: Summer
-        type:
-          type:
-          - string
-          - 'null'
-          description: The street type only.
-          example: St
-        prefix:
-          type:
-          - string
-          - 'null'
-          description: The street prefix only.
-        suffix:
-          type:
-          - string
-          - 'null'
-          description: The street suffix only.
+          description: The name of a building or property.
+        entrance:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuildingItem'
+        floor:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuildingItem'
+        door:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuildingItem'
       additionalProperties: false
-      description: The street component.
+      description: The sub building component.
+    BulkAddressV1GetBatchStatusResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchStatusResult'
+        metadata:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchStatusMetadata'
+      additionalProperties: false
+      description: Bulk Address V1 Get Batch Status response.
+    BulkAddressV1GetBatchResultsResponseAddressComponentsOrganization:
+      type: object
+      properties:
+        department_name:
+          type:
+          - string
+          - 'null'
+          description: The department name within an organization.
+        secondary_department_name:
+          type:
+          - string
+          - 'null'
+          description: The secondary department name within an organization.
+        company_name:
+          type:
+          - string
+          - 'null'
+          description: The company name.
+      additionalProperties: false
+      description: The organization component.
+    BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the locality name
+        code:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the locality code
+        description:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the locality description
+      additionalProperties: false
+      description: A single place name, code and a description of its type.
+    BulkAddressV1GetBatchResultsResponseAddressMetadataAddressInfoIdentifier:
+      type: object
+      properties:
+        udprn:
+          type:
+          - string
+          - 'null'
+          description: Royal Mail's Unique Delivery Point Reference Number, an eight-digit code assigned to every delivery point in the Postcode Address File (PAF).
+          example: '12353232'
+        umrrn:
+          type:
+          - string
+          - 'null'
+          description: Royal Mail's Unique Multiple Residence Reference Number, an eight-digit code linked to UDPRNs in Royal Mail's Multiple Residence dataset.
+          example: '50101642'
+        dpid:
+          type:
+          - string
+          - 'null'
+          description: Australia Post's Delivery Point Identifier, an eight-digit number that uniquely identifies a physical location to which Australia Post delivers mail - applicable to AUS and NZL addresses.
+          example: '62147712'
+        gnafpid:
+          type:
+          - string
+          - 'null'
+          description: Geoscape Australia's Geocoded National Address File Persistent Identifier (G-NAF ID).
+          example: GAVIC424477161
+        hin:
+          type:
+          - string
+          - 'null'
+          description: Household Identification Number (applicable for AUS addresses).
+          example: '203060068'
+        paf_address_key:
+          type:
+          - string
+          - 'null'
+          description: PAF Address key (GBR specific).
+          example: 2304084100000000S
+      additionalProperties: false
+      description: The ID metadata of formatted address.
+    BulkAddressV1StartBatchResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+      additionalProperties: false
+      description: Bulk Address V1 Start Batch result.
+    BulkAddressV1StopBatchResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+      additionalProperties: false
+      description: Bulk Address V1 Stop Batch result.
+    BulkAddressV1GetBatchResultsResponseAddressMetadataAddressClassificationAddressType:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          description: The code of the address type (applicable to USA, AUS and NZL addresses).
+          example: S
+        description:
+          type:
+          - string
+          - 'null'
+          description: The description of the address type (applicable to USA, AUS and NZL addresses).
+          example: Street
+      additionalProperties: false
+      description: The address type.
+    BulkAddressV1StartBatchResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkAddressV1StartBatchResult'
+      additionalProperties: false
+      description: Bulk Address V1 Start Batch response.
+    BulkAddressV1GetBatchResultsResponseAddressMetadataBarcode:
+      type: object
+      properties:
+        delivery_point_barcode:
+          type:
+          - string
+          - 'null'
+          description: The delivery point barcode (applicable for USA addresses only).
+          example: 02139430177
+        check_digit:
+          type:
+          - string
+          - 'null'
+          description: The delivery point barcode's check digit (applicable for USA addresses only).
+          example: '3'
+        sort_plan_number:
+          type:
+          - string
+          - 'null'
+          description: The sort plan number barcode (applicable for AUS addresses only).
+          example: '022'
+      additionalProperties: false
+      description: Address barcode.
+    BulkAddressV1CreateBatchRequest:
+      required:
+      - addresses
+      type: object
+      properties:
+        defaults:
+          $ref: '#/components/schemas/BulkAddressV1CreateBatchRequestOptions'
+        addresses:
+          maxItems: 10000
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkAddressV1CreateBatchRequestAddress'
+          description: List of input components.
+      additionalProperties: false
+      description: Bulk Address V1 Create Batch request.
+    BulkAddressV1GetBatchResultsResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ResponseError'
+        result:
+          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseResult'
+      additionalProperties: false
+      description: Bulk Address V1 Get Results response.
+    BulkAddressV1CreateBatchResult:
+      type: object
+      properties:
+        batch_id:
+          type:
+          - string
+          - 'null'
+          description: Batch ID.
+        batch_reference_id:
+          type:
+          - string
+          - 'null'
+          description: Optional reference identifier to track this batch.
+        status:
+          type:
+          - string
+          - 'null'
+          description: The current Batch status.
+      additionalProperties: false
+      description: Bulk Address V1 Create Batch result.
     BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuildingItem:
       type: object
       properties:
@@ -885,22 +1579,6 @@ components:
           example: '6'
       additionalProperties: false
       description: An item of sub-building information, such as a floor or entrance number or name.
-    BulkAddressV1CreateBatchRequest:
-      required:
-      - addresses
-      type: object
-      properties:
-        defaults:
-          $ref: '#/components/schemas/BulkAddressV1CreateBatchRequestOptions'
-        addresses:
-          maxItems: 10000
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/BulkAddressV1CreateBatchRequestAddress'
-          description: List of input components.
-      additionalProperties: false
-      description: Bulk Address V1 Create Batch request.
     BulkAddressV1GetBatchResultsResponseAddressMatchInfo:
       type: object
       properties:
@@ -972,721 +1650,43 @@ components:
           description: SGP specific match codes info.
       additionalProperties: false
       description: Bulk Address V1 Get Results response Address Match Info data
-    BulkAddressV1GetBatchResultsResponseAddressMetadataAddressInfoIdentifier:
+    BulkAddressV1GetBatchStatusMetadataBatchConfig:
       type: object
       properties:
-        udprn:
-          type:
-          - string
-          - 'null'
-          description: Royal Mail's Unique Delivery Point Reference Number, an eight-digit code assigned to every delivery point in the Postcode Address File (PAF).
-          example: '12353232'
-        umrrn:
-          type:
-          - string
-          - 'null'
-          description: Royal Mail's Unique Multiple Residence Reference Number, an eight-digit code linked to UDPRNs in Royal Mail's Multiple Residence dataset.
-          example: '50101642'
-        dpid:
-          type:
-          - string
-          - 'null'
-          description: Australia Post's Delivery Point Identifier, an eight-digit number that uniquely identifies a physical location to which Australia Post delivers mail - applicable to AUS and NZL addresses.
-          example: '62147712'
-        gnafpid:
-          type:
-          - string
-          - 'null'
-          description: Geoscape Australia's Geocoded National Address File Persistent Identifier (G-NAF ID).
-          example: GAVIC424477161
-        hin:
-          type:
-          - string
-          - 'null'
-          description: Household Identification Number (applicable for AUS addresses).
-          example: '203060068'
-        paf_address_key:
-          type:
-          - string
-          - 'null'
-          description: PAF Address key (GBR specific).
-          example: 2304084100000000S
-      additionalProperties: false
-      description: The ID metadata of formatted address.
-    BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem:
-      type: object
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the locality name
-        code:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the locality code
-        description:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the locality description
-      additionalProperties: false
-      description: A single place name, code and a description of its type.
-    BulkAddressV1GetBatchResultsResponseAddressComponents:
-      type: object
-      properties:
-        language:
-          type:
-          - string
-          - 'null'
-          description: Address language.
-          example: en-GB
-        country_name:
-          type:
-          - string
-          - 'null'
-          description: The name of the country where the address is located.
-          example: United Kingdom
-        country_iso_3:
-          type:
-          - string
-          - 'null'
-          description: The 3-letter ISO country code.
-          example: GBR
-        country_iso_2:
-          type:
-          - string
-          - 'null'
-          description: The 2-letter ISO country code.
-          example: GB
-        postal_code:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsPostalCode'
-        delivery_service:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsDeliveryService'
-        secondary_delivery_service:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsDeliveryService'
-        sub_building:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuilding'
-        building:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsBuilding'
-        organization:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsOrganization'
-        street:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsStreet'
-        secondary_street:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsStreet'
-        route_service:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsRouteService'
-        locality:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocality'
-        physical_locality:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocality'
-      additionalProperties: false
-      description: Bulk Address V1 Get Results response Address Components data
-    BulkAddressV1GetBatchesBatch:
-      type: object
-      properties:
-        batch_id:
-          type:
-          - string
-          - 'null'
-          description: Batch ID.
-        batch_reference_id:
-          type:
-          - string
-          - 'null'
-          description: Optional reference identifier to track this batch.
-        status:
-          type:
-          - string
-          - 'null'
-          description: The current Batch status.
-        reason:
-          type:
-          - string
-          - 'null'
-          description: The reason of the current Batch status.
-        records:
-          type: integer
-          description: The number of addresses have been submitted.
-          format: int32
-        records_processed:
-          type: integer
-          description: The number of addresses have been processed.
-          format: int32
-        date_submitted:
-          type: string
-          description: The date time when the Batch is created in ISO-8601 format.
-          format: date-time
-        date_started:
-          type:
-          - string
-          - 'null'
-          description: The date time when the Batch is started in ISO-8601 format.
-          format: date-time
-        date_ended:
-          type:
-          - string
-          - 'null'
-          description: The date time when the Batch is ended in ISO-8601 format.
-          format: date-time
-      additionalProperties: false
-      description: Bulk Address V1 Get Batches Batch Info.
-    BulkAddressV1GetBatchResultsResponseAddressComponentsLocality:
-      type: object
-      properties:
-        region:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem'
-        sub_region:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem'
-        town:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem'
-        district:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem'
-        sub_district:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsLocalityItem'
-      additionalProperties: false
-      description: The locality component.
-    BulkAddressV1StartBatchResult:
-      type: object
-      properties:
-        batch_id:
-          type:
-          - string
-          - 'null'
-          description: Batch ID.
-        batch_reference_id:
-          type:
-          - string
-          - 'null'
-          description: Optional reference identifier to track this batch.
-        status:
-          type:
-          - string
-          - 'null'
-          description: The current Batch status.
-      additionalProperties: false
-      description: Bulk Address V1 Start Batch result.
-    BulkAddressV1GetBatchResultsResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseResult'
-      additionalProperties: false
-      description: Bulk Address V1 Get Results response.
-    BulkAddressV1CreateBatchRequestAddress:
-      type: object
-      properties:
-        address:
-          maxLength: 1000
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: The address to validate.
-          example: 1 main st, sydney
         country_iso:
-          maxLength: 3
-          minLength: 3
           type:
           - string
           - 'null'
-          description: 'You can indicate the 3-letter ISO country code if the address that is subject to validation doesn''t contain an address country code.
-
-            This will overwrite the country_iso in the default options.'
-          example: AUS
+          description: Country ISO.
         datasets:
-          minItems: 1
           type:
           - array
           - 'null'
           items:
             type: string
-          description: The datasets to apply.
-          example:
-          - au-address-gnaf
-      additionalProperties: false
-      description: Bulk Address V1 address component.
-    BulkAddressV1GetBatchResultsResponseAddressMetadata:
-      type: object
-      properties:
-        address_info:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataAddressInfo'
-        route_classification:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataRouteClassification'
-        barcode:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataBarcode'
-        address_classification:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataAddressClassification'
-        dpv:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataDpv'
-      additionalProperties: false
-      description: The address metadata.
-    BulkAddressV1StopBatchResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkAddressV1StopBatchResult'
-      additionalProperties: false
-      description: Bulk Address V1 Stop Batch response.
-    BulkAddressV1GetBatchResultsResponseAddressMetadataBarcode:
-      type: object
-      properties:
-        delivery_point_barcode:
+          description: Datasets.
+        add_components:
           type:
-          - string
+          - boolean
           - 'null'
-          description: The delivery point barcode (applicable for USA addresses only).
-          example: 02139430177
-        check_digit:
+          description: Add components.
+        add_metadata:
           type:
-          - string
+          - boolean
           - 'null'
-          description: The delivery point barcode's check digit (applicable for USA addresses only).
-          example: '3'
-        sort_plan_number:
+          description: Add metadata.
+        add_extra_match_info:
           type:
-          - string
+          - boolean
           - 'null'
-          description: The sort plan number barcode (applicable for AUS addresses only).
-          example: '022'
-      additionalProperties: false
-      description: Address barcode.
-    BulkAddressV1CreateBatchResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkAddressV1CreateBatchResult'
-      additionalProperties: false
-      description: Bulk Address V1 Create Batch response.
-    BulkAddressV1CreateBatchRequestOptions:
-      type: object
-      properties:
-        country_iso:
-          maxLength: 3
-          minLength: 3
-          type:
-          - string
-          - 'null'
-          description: The country ISO3 code of address.
-          example: USA
-        datasets:
-          minItems: 1
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: The datasets for address validation.
-          example:
-          - us-address
-        batch_reference_id:
-          maxLength: 256
-          minLength: 0
-          pattern: ^[\w\-\/\:\.\,\(\) ]+$
-          type:
-          - string
-          - 'null'
-          description: Optional identifier that will be returned in the response to help you track the batch.
+          description: Add extra match info.
         max_processing_time:
-          maxLength: 10
-          minLength: 0
           type:
           - string
           - 'null'
-          description: 'Optional maximum processing time of the batch.
-
-            If the batch is still processing after this time, it will be stopped.
-
-            The value should be in ISO 8601 duration format (e.g., "PT30M" for 30 minutes).
-
-            Maximum allowed value is "PT24H" (24 hours). Minimum allowed value is "PT1M" (1 minute).'
+          description: Optional maximum processing time of the batch.
       additionalProperties: false
-      description: The default options that applied to all the addresses.
-    BulkAddressV1GetBatchStatusResult:
-      type: object
-      properties:
-        batch_id:
-          type:
-          - string
-          - 'null'
-          description: Batch ID.
-        batch_reference_id:
-          type:
-          - string
-          - 'null'
-          description: Optional reference identifier to track this batch.
-        status:
-          type:
-          - string
-          - 'null'
-          description: The current Batch status.
-        reason:
-          type:
-          - string
-          - 'null'
-          description: The reason of the current Batch status.
-        records:
-          type:
-          - integer
-          - 'null'
-          description: The number of address have been submitted.
-          format: int32
-        records_processed:
-          type:
-          - integer
-          - 'null'
-          description: The number of address have been processed.
-          format: int32
-        date_submitted:
-          type:
-          - string
-          - 'null'
-          description: The date time when the Batch is created in ISO-8601 format.
-          format: date-time
-        date_started:
-          type:
-          - string
-          - 'null'
-          description: The date time when the Batch is started in ISO-8601 format.
-          format: date-time
-        date_ended:
-          type:
-          - string
-          - 'null'
-          description: The date time when the Batch is ended in ISO-8601 format.
-          format: date-time
-      additionalProperties: false
-      description: Bulk Address V1 Get Batch Status result.
-    BulkAddressV1GetBatchResultsResponseAddressComponentsBuilding:
-      type: object
-      properties:
-        building_name:
-          type:
-          - string
-          - 'null'
-          description: The building name.
-          example: Sir John Peace Building
-        building_number:
-          type:
-          - string
-          - 'null'
-          description: The building number.
-          example: '549'
-        secondary_name:
-          type:
-          - string
-          - 'null'
-          description: The secondary building name.
-        secondary_number:
-          type:
-          - string
-          - 'null'
-          description: The secondary name of the building (if available).
-        allotment_number:
-          type:
-          - string
-          - 'null'
-          description: The allotment name where a person or property resides.
-      additionalProperties: false
-      description: The building component.
-    BulkAddressV1GetBatchResultsResponseAddressMetadataRouteClassification:
-      type: object
-      properties:
-        carrier_route:
-          type:
-          - string
-          - 'null'
-          description: The carrier route value (applicable for USA addresses only).
-          example: C077
-        id:
-          type:
-          - string
-          - 'null'
-          description: The street identifier (applicable for AUS addresses only).
-          example: '38396'
-      additionalProperties: false
-      description: Address deliverability and type indicators.
-    BulkAddressV1StartBatchResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkAddressV1StartBatchResult'
-      additionalProperties: false
-      description: Bulk Address V1 Start Batch response.
-    BulkAddressV1GetBatchResultsResponseAddressComponentsDeliveryService:
-      type: object
-      properties:
-        full_name:
-          type:
-          - string
-          - 'null'
-          description: The full name of the delivery service.
-        service_type:
-          type:
-          - string
-          - 'null'
-          description: The delivery service type.
-        service_number:
-          type:
-          - string
-          - 'null'
-          description: The delivery service number.
-        post_centre_name:
-          type:
-          - string
-          - 'null'
-          description: The delivery service post center name.
-      additionalProperties: false
-      description: The delivery service component.
-    BulkAddressV1GetBatchResultsResponseAddress:
-      type: object
-      properties:
-        address:
-          type:
-          - string
-          - 'null'
-          description: The address that is the subject of the validation.
-          example: 555 Ellis St | Mountain View | CA | 94043
-        country_iso:
-          type:
-          - string
-          - 'null'
-          description: The country ISO of the validation.
-          example: DEU
-        datasets:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: The datasets of the validation.
-          example:
-          - de-address-ed
-        confidence:
-          type:
-          - string
-          - 'null'
-          description: The outcome (confidence level) of the validation.
-          example: verified match
-        match_type:
-          type:
-          - string
-          - 'null'
-          description: Match type for verified address.
-          example: full_with_post_code
-        match_confidence:
-          type:
-          - string
-          - 'null'
-          description: Match confidence for verified address.
-          example: high
-        match_info:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMatchInfo'
-        addresses_formatted:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressAddressFormatted'
-          description: Addresses formatted details for verified address.
-        components:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponents'
-        metadata:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadata'
-      additionalProperties: false
-      description: Bulk Address V1 Get Results response Address data
-    BulkAddressV1GetBatchStatusResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchStatusResult'
-        metadata:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchStatusMetadata'
-      additionalProperties: false
-      description: Bulk Address V1 Get Batch Status response.
-    BulkAddressV1GetBatchResultsResponseAddressMetadataAddressClassification:
-      type: object
-      properties:
-        address_type:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressMetadataAddressClassificationAddressType'
-        delivery_type:
-          type:
-          - string
-          - 'null'
-          description: Type of mail delivery at the address. Either "business", "residential" or "mixed".
-          example: Business
-        is_deliverable:
-          type:
-          - string
-          - 'null'
-          description: Indicator if the address is deliverable - applicable to NZL addresses only.
-          example: Y
-      additionalProperties: false
-      description: Address deliverability and type indicators.
-    BulkAddressV1GetBatchResultsResponseAddressComponentsRouteService:
-      type: object
-      properties:
-        full_name:
-          type:
-          - string
-          - 'null'
-          description: The full name of the route service.
-        service_type:
-          type:
-          - string
-          - 'null'
-          description: The route service type.
-        service_number:
-          type:
-          - string
-          - 'null'
-          description: The route service number.
-        delivery_name:
-          type:
-          - string
-          - 'null'
-          description: The route service delivery name.
-        qualifier:
-          type:
-          - string
-          - 'null'
-          description: The route service qualifier.
-      additionalProperties: false
-      description: The route service component.
-    BulkAddressV1GetBatchResultsResponseAddressAddressFormatted:
-      type: object
-      properties:
-        layout_name:
-          type:
-          - string
-          - 'null'
-          description: The layout name for address to map.
-          example: myLayout
-        address:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: string
-          description: The address formatted.
-          example:
-            CountryIso: DEU
-            CountryName: ''
-            PostalCode: '75245'
-            Locality: Neulingen
-            Street: Am Sickenbrünnle
-            Building: ''
-      additionalProperties: false
-      description: Bulk Address V1 Get Results response Address Formatted data
-    BulkAddressV1GetBatchesResult:
-      type: object
-      properties:
-        batches:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/BulkAddressV1GetBatchesBatch'
-          description: Batches.
-      additionalProperties: false
-      description: Bulk Address V1 Get Batches result.
-    BulkAddressV1StopBatchResult:
-      type: object
-      properties:
-        batch_id:
-          type:
-          - string
-          - 'null'
-          description: Batch ID.
-        batch_reference_id:
-          type:
-          - string
-          - 'null'
-          description: Optional reference identifier to track this batch.
-        status:
-          type:
-          - string
-          - 'null'
-          description: The current Batch status.
-      additionalProperties: false
-      description: Bulk Address V1 Stop Batch result.
-    BulkAddressV1GetBatchResultsResponseAddressMetadataAddressClassificationAddressType:
-      type: object
-      properties:
-        code:
-          type:
-          - string
-          - 'null'
-          description: The code of the address type (applicable to USA, AUS and NZL addresses).
-          example: S
-        description:
-          type:
-          - string
-          - 'null'
-          description: The description of the address type (applicable to USA, AUS and NZL addresses).
-          example: Street
-      additionalProperties: false
-      description: The address type.
-    BulkAddressV1GetBatchResultsResponseAddressComponentsPostalCode:
-      type: object
-      properties:
-        full_name:
-          type:
-          - string
-          - 'null'
-          description: The full name of the postal code.
-          example: 92626-7037
-        primary:
-          type:
-          - string
-          - 'null'
-          description: The primary name of the postal code.
-          example: '92626'
-        secondary:
-          type:
-          - string
-          - 'null'
-          description: The secondary name of the postal code.
-          example: '7037'
-      additionalProperties: false
-      description: The post code component.
-    BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuilding:
-      type: object
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          description: The name of a building or property.
-        entrance:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuildingItem'
-        floor:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuildingItem'
-        door:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchResultsResponseAddressComponentsSubBuildingItem'
-      additionalProperties: false
-      description: The sub building component.
-    BulkAddressV1GetBatchesResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ResponseError'
-        result:
-          $ref: '#/components/schemas/BulkAddressV1GetBatchesResult'
-      additionalProperties: false
-      description: Bulk Address V1 Get Batches response.
+      description: Bulk Address V1 Get Batch Status metadata's batch config.
   securitySchemes:
     OAuth2:
       type: http
