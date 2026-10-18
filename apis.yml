@@ -224,6 +224,8 @@ apis:
   humanURL: https://docs.experianaperture.io/
   baseURL: https://api.experianaperture.io
   tags:
+  - Data Enrichment
+  tags_raw:
   - Enrichment
   properties:
   - type: OpenAPI
