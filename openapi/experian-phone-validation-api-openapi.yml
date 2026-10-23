@@ -583,3 +583,9 @@ components:
       description: Alternative Auth Token header.
       name: x-app-key
       in: header
+x-provenance:
+  method: harvested
+  publisher: Experian
+  source: https://api.experianaperture.io/docs/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
