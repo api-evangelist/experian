@@ -64,41 +64,139 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Experian plc is a global information services company and one of the three major consumer credit
-bureaus, operating across credit risk, identity verification, fraud prevention, marketing data and
-data quality.
+Experian plc is a global information services company and one of the three major consumer credit bureaus, operating across credit risk, identity verification, fraud prevention, marketing data and data quality. Its public API surface spans two distinct platforms: the Experian Global Developer Portal (developer.experian.com), a region-partitioned OAuth2/OpenID Connect gateway fronting credit, business information, KYC/KYB and decisioning products across the US, UK, EMEA, Brazil, India, Singapore and Australia; and Experian Data Quality / Aperture (api.experianaperture.io), which publishes machine-readable OpenAPI 3.0.4 contracts for address, email and phone validation, demographic enrichment, identity append and bulk batch processing. A legacy SOAP contract (Experian QAS Pro OnDemand) remains published and callable alongside the REST surface.
 
-Its public API surface spans two distinct platforms with very different postures.
+**Areas:** Company · Credit Bureau · Credit Reporting · Identity Verification · Fraud Prevention · Data Quality · Address Validation · Email Verification · Phone Validation · Data Enrichment · Financial Services · Risk Management
 
-**Experian Data Quality / Aperture** (`api.experianaperture.io`) is the machine-readable half.
-Eleven OpenAPI 3.0.4 documents are published openly at `api.experianaperture.io/docs/`, covering 41
-operations across 34 paths: address search, validate, format and layouts; email validation; phone
-validation; demographic enrichment; identity append; reverse phone append; and an asynchronous bulk
-batch surface for all three data types. A legacy SOAP contract — Experian QAS Pro OnDemand V3, 11
-RPCs — is still published and callable at `ws.ondemand.qas.com` and is documented by Experian
-alongside the REST surface.
+## Experian on APIs.io
 
-**Experian Global Developer Platform** (`developer.experian.com`) fronts the credit, business
-information, KYC/KYB and decisioning products. It is region-partitioned — the US, UK, EMEA, Brazil,
-India, Singapore and Australia each run their own production and sandbox hosts with their own
-OAuth2/OIDC issuer — and it publishes no OpenAPI. Product reference sits behind a Developer Portal
-account.
+Everything profiled for Experian is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/experian/](https://apis.io/providers/experian/)** — or go straight to one of the APIs or properties below.
 
-## What this profile found
+### APIs (11)
 
-- **11 OpenAPI 3.0.4 documents and 1 WSDL**, saved verbatim in `openapi/` and `wsdl/`.
-- **12 OAuth/OIDC discovery documents** served across ten hosts, saved verbatim in `well-known/`.
-  No `security.txt`, no `api-catalog`, no `apis.json` and no A2A agent card on any Experian host.
-- **Zero `operationId` values across all 41 operations** in the published spec, and zero operation
-  descriptions — the single highest-leverage fix available to Experian in this contract.
-- **A 150 request/minute limit enforced per ACCOUNT**, shared across every license, integration and
-  token, with the `X-Rate-Limit-*` header triplet returned at runtime.
-- **No idempotency mechanism anywhere**, on a surface that includes a billable, non-idempotent bulk
-  batch create.
-- **A documented SDK you cannot install** — the current Data Validation Solutions SDKs ship as
-  GitHub source only; the TypeScript manifest names `@experianplc/edq.dvs.sdk`, which returns 404
-  on npm.
-- **No MCP server and no agent card.** `mcp/` holds a derived candidate tool list, explicitly marked
-  `mode: none`.
+- [Experian Address Validate (Pro OnDemand SOAP)](https://apis.io/apis/experian/address-validate-soap/) — The legacy Experian QAS Pro OnDemand SOAP service, still published and documented by Experian Data Quality. Eleven RPCs (DoSearch, DoRefine, DoGetAddress,…
+- [Experian Global Developer Platform](https://apis.io/apis/experian/global-developer-platform/) — The region-partitioned Experian API gateway behind developer.experian.com, fronting credit, business information, KYC/KYB, decisioning and verification…
+- [Experian Address Validation API](https://apis.io/apis/experian/experian-address-validation-api/) — The Address Validation API from Experian — 13 operation(s) for address validation.
+- [Experian Bulk Address API](https://apis.io/apis/experian/experian-bulk-address-api/) — The Bulk Address API from Experian — 5 operation(s) for bulk address.
+- [Experian Bulk Email API](https://apis.io/apis/experian/experian-bulk-email-api/) — The Bulk Email API from Experian — 5 operation(s) for bulk email.
+- [Experian Bulk Phone API](https://apis.io/apis/experian/experian-bulk-phone-api/) — The Bulk Phone API from Experian — 5 operation(s) for bulk phone.
+- [Experian Email Validation API](https://apis.io/apis/experian/experian-email-validation-api/) — The Email Validation API from Experian — 2 operation(s) for email validation.
+- [Experian Enrichment API](https://apis.io/apis/experian/experian-enrichment-api/) — The Enrichment API from Experian — 1 operation(s) for enrichment.
+- [Experian Identity Append (USA only) API](https://apis.io/apis/experian/experian-identity-append-usa-only-api/) — The Identity Append (USA only) API from Experian — 1 operation(s) for identity append (usa only).
+- [Experian Phone Validation API](https://apis.io/apis/experian/experian-phone-validation-api/) — The Phone Validation API from Experian — 1 operation(s) for phone validation.
+- [Experian Reverse Phone Append (USA only) API](https://apis.io/apis/experian/experian-reverse-phone-append-usa-only-api/) — The Reverse Phone Append (USA only) API from Experian — 1 operation(s) for reverse phone append (usa only).
 
-See `apis.yml` for the full artifact index.
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [experian-aperture](https://apis.io/servers/experian/experian-aperture/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Experian Aperture Overlay](https://apis.io/overlays/experian/experian-aperture-overlay/)
+
+#### Security (4)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Experian Authentication](https://apis.io/security/experian/experian-authentication/)
+- [Experian Domain Security](https://apis.io/security/experian/experian-domain-security/)
+- [Experian Trust Center](https://apis.io/security/experian/experian-trust-center/)
+- [Experian Vulnerability Disclosure](https://apis.io/security/experian/experian-vulnerability-disclosure/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Experian Scopes](https://apis.io/scopes/experian/experian-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Experian Plans Pricing](https://apis.io/plans/experian/experian-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Experian Rate Limits](https://apis.io/rate-limits/experian/experian-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.experian.com/)
+- [Documentation](https://docs.experianaperture.io/)
+- [Getting started](https://developer.experian.com/get-started)
+- [API reference](https://docs.experianaperture.io/address-validation/experian-address-validation/realtime-api-reference/api-specification/)
+- [Sign up](https://developer.experian.com/sso/register)
+- [Support](https://community.experianaperture.io/)
+- [Blog](https://developer.experian.com/blogs)
+- [Security](https://hackerone.com/experian)
+- [Terms of service](https://developer.experian.com/terms-and-conditions)
+- [Privacy policy](https://developer.experian.com/privacy-policy)
+- [GitHub](https://github.com/experianplc)
+- [Status](https://status.edq.com/)
+
+## API Evangelist rating
+
+**Kin Score 57.0** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 71.4 |
+| Contract quality | 49.0 |
+| Contract governance | 4.5 |
+| Operational transparency | 78.9 |
+| Developer ergonomics | 73.2 |
+| Access clarity | 42.1 |
+
+**Agent readiness 40.2** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | — |
+
+**Regulatory alignment 45.1** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/experian/](https://apis.io/providers/experian/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Experian: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/experian/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
